@@ -78,21 +78,21 @@ SEC: process (CLK, RESET_L) begin
 end process SEC;
 
 --Activacion de señales de cada estado
-CL_MUX   <='1' when EP=E0 or EP=E1 or EP=E12;
-CL_DAT   <='1' when EP=E1;
-LD_INF   <='1' when EP=E1 or EP=E12;
-RS_COM   <='1' when EP=E1 or EP=E10 or EP=E12;
-LCD_CS_N <='0' when EP=E2 or EP=E5;
-LCD_WR_N <='0' when EP=E2 or EP=E5;
-INC_DAT  <='1' when EP=E4 or EP=E10 or EP=E11;
-RS_DAT   <='1' when EP=E4 or EP=E11;
-DONE_CURSOR<='1' when EP=E9;
-LD_2C    <='1' when EP=E12;
-DEC_PIX  <='1' when EP=E6;
-DONE_COLOUR <='1' when EP=E8;
+CL_MUX   <='1' when EP=E0 or EP=E1 or EP=E12 else '0';
+CL_DAT   <='1' when EP=E1 else '0';
+LD_INF   <='1' when EP=E1 or EP=E12 else '0';
+RS_COM   <='1' when EP=E1 or EP=E10 or EP=E12 else '0';
+LCD_CS_N <='0' when EP=E2 or EP=E5 else '0';
+LCD_WR_N <='0' when EP=E2 or EP=E5 else '0';
+INC_DAT  <='1' when EP=E4 or EP=E10 or EP=E11 else '0';
+RS_DAT   <='1' when EP=E4 or EP=E11 else '0';
+DONE_CURSOR<='1' when EP=E9 else '0';
+LD_2C    <='1' when EP=E12 else '0';
+DEC_PIX  <='1' when EP=E6 else '0';
+DONE_COLOUR <='1' when EP=E8 else '0';
 
 --REG XCOL
-process(CLK, LD_INF)
+process(CLK,RESET_L)
 begin
 	if RESET_L = '0' then RXCOL <= (others => '0');
 	elsif CLK'event and CLK='1' then
@@ -102,7 +102,7 @@ begin
 end process;
 
 --REG YROW
-process(CLK, LD_INF)
+process(CLK,RESET_L)
 begin
 	if RESET_L = '0' then RYROW <= (others => '0');
 	elsif CLK'event and CLK='1' then
@@ -112,7 +112,7 @@ begin
 end process;
 
 --REG RGB
-process(CLK, LD_INF)
+process(CLK,RESET_L)
 begin
 	if RESET_L = '0' then RRGB <= (others => '0');
 	elsif CLK'event and CLK='1' then
@@ -122,7 +122,7 @@ begin
 end process;
 
 -- JK LCD_RS
-process (CLK, RS_COM, RS_DAT)
+process (CLK, RESET_L)
 begin
 	if RESET_L = '0' then LCD_RS <= '0';
 	elsif CLK'event and CLK='1' then
@@ -135,7 +135,7 @@ begin
 end process;
 
 --CONTADOR DECREMENTAL
-process(CLK,LD_INF,DEC_PIX)
+process(CLK,RESET_L)
 begin
 	if clk'event and clk='1' then
 		if LD_INF='1' then Q_PIX<=NUM_PIX;
@@ -148,7 +148,7 @@ begin
 end process;
 
 --CONTADOR INCREMENTAL
-process(CLK,LD_2C,INC_DAT,CL_DAT)
+process(CLK,RESET_L)
 begin
 	if CLK'event and CLK='1' then
 		if LD_2C='1' then DAT<="110";

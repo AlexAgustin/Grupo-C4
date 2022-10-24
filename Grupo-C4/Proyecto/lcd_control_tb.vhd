@@ -29,12 +29,12 @@ signal XCOL: std_logic_vector(7 downto 0) :="00000000";
 signal YROW: std_logic_vector(8 downto 0) :="000000000";
 signal RGB: std_logic_vector(15 downto 0) :="0000000000000000";
 signal NUM_PIX: unsigned(16 downto 0) :="00000000000000000";
-signal DONE_CURSOR: std_logic :='0';
-signal DONE_COLOUR: std_logic :='0';
-signal LCD_CS_N: std_logic :='1';
-signal LCD_WR_N: std_logic :='1';
-signal LCD_RS: std_logic :='0';
-signal LCD_DATA: std_logic_vector(15 downto 0) :="0000000000000000";
+signal DONE_CURSOR: std_logic;
+signal DONE_COLOUR: std_logic;
+signal LCD_CS_N: std_logic;
+signal LCD_WR_N: std_logic;
+signal LCD_RS: std_logic;
+signal LCD_DATA: std_logic_vector(15 downto 0);
 
 begin
 
@@ -56,15 +56,22 @@ DUT: lcd_control port map(
 	LCD_DATA=>LCD_DATA
 );
 
-CLK <= not CLK after 20 ns;
+CLK <= not CLK after 10 ns;
 
 process
 begin
 	wait for 20 ns;
 
 	RESET_L<='1';
+	LCD_Init_Done<='1';
+	OP_SETCURSOR<='1';	
 
-	wait for 40 ns;
+	wait for 20 ns;
+
+	OP_SETCURSOR<='0';
+	LCD_Init_Done<='0';
+
+	wait for 20 ns;
 
 	LCD_RS<='1';
 	XCOL<="01001110";

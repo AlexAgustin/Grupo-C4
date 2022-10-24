@@ -78,18 +78,18 @@ SEC: process (CLK, RESET_L) begin
 end process SEC;
 
 --Activacion de señales de cada estado
-CL_MUX   <='1' when EP=E0 or EP=E1 or EP=E12;
-CL_DAT   <='1' when EP=E1;
-LD_INF   <='1' when EP=E1 or EP=E12;
-RS_COM   <='1' when EP=E1 or EP=E10 or EP=E12;
-LCD_CS_N <='0' when EP=E2 or EP=E5;
-LCD_WR_N <='0' when EP=E2 or EP=E5;
-INC_DAT  <='1' when EP=E4 or EP=E10 or EP=E11;
-RS_DAT   <='1' when EP=E4 or EP=E11;
-DONE_CURSOR<='1' when EP=E9;
-LD_2C    <='1' when EP=E12;
-DEC_PIX  <='1' when EP=E6;
-DONE_COLOUR <='1' when EP=E8;
+CL_MUX   <='1' when EP=E0 or EP=E1 or EP=E12 else '0';
+CL_DAT   <='1' when EP=E1 else '0';
+LD_INF   <='1' when EP=E1 or EP=E12 else '0';
+RS_COM   <='1' when EP=E1 or EP=E10 or EP=E12 else '0';
+LCD_CS_N <='0' when EP=E2 or EP=E5 else '1';
+LCD_WR_N <='0' when EP=E2 or EP=E5 else '1';
+INC_DAT  <='1' when EP=E4 or EP=E10 or EP=E11 else '0';
+RS_DAT   <='1' when EP=E4 or EP=E11 else '0';
+DONE_CURSOR<='1' when EP=E9 else '0';
+LD_2C    <='1' when EP=E12 else '0';
+DEC_PIX  <='1' when EP=E6 else '0';
+DONE_COLOUR <='1' when EP=E8 else '0';
 
 --REG XCOL
 process(CLK,RESET_L)
