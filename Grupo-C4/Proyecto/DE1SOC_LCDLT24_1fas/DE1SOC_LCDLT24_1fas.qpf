@@ -1,0 +1,6 @@
+QUARTUS_VERSION = "18.1"
+
+
+# Revisions
+
+PROJECT_REVISION = "DE1SOC_LCDLT24_1fas"
