@@ -157,7 +157,7 @@ architecture arq_lcd_control of lcd_control is
 	--CONTADOR INCREMENTAL: ddat
 	CDDAT: process(CLK,RESET_L)
 	begin
-		if RESET_L = '0' then Q_PIX <= (others => '0'); -- clear  con señal reset
+		if RESET_L = '0' then DDAT <= (others => '0'); -- clear  con señal reset
 		elsif CLK'event and CLK='1' then				-- flanco reloj
 			if LD_2C='1' then DDAT<="110";
 				elsif INC_DAT='1' then DDAT<= DDAT+1;
