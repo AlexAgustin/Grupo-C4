@@ -1,4 +1,4 @@
-# Proyectos
+# Proyecto
 En esta carpeta guardaremos el material relacionado con el proyecto. 
 
 Lo hemos distribuido en diferentes carpetas según la categoría en cuestión:
