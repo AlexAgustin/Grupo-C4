@@ -44,8 +44,8 @@ architecture arq_lcd_control of lcd_control is
 							if OP_SETCURSOR = '1' then ES<=E1;
 							elsif OP_DRAWCOLOUR = '1' then ES<=E12;
 							else ES<=E0;
-								end if;
 							end if;
+						
 						else ES <= E0;
 						end if;
 
@@ -132,7 +132,7 @@ architecture arq_lcd_control of lcd_control is
 		end if;
 	end process RC;
 
-	-- RDAT
+	-- REG RDAT
 	RDAT : process(clk, reset_L)
 	begin
 		if reset_L = '0' then LCD_RS <= '0'; 	-- clear con señal reset
@@ -144,7 +144,7 @@ architecture arq_lcd_control of lcd_control is
 	end process RDAT;
 
 
-	--CONTADOR DECREMENTAL
+	--CONTADOR DECREMENTAL: pixels
 	CNPIX: process(CLK,RESET_L)
 	begin
 		if RESET_L = '0' then Q_PIX <= (others => '0'); -- clear  con señal reset
@@ -156,7 +156,7 @@ architecture arq_lcd_control of lcd_control is
 	end process CNPIX;
 	END_PIX <= '1' when Q_PIX = ('0' & x"0000") else '0';
 
-	--CONTADOR INCREMENTAL
+	--CONTADOR INCREMENTAL: ddat
 	CDDAT: process(CLK,RESET_L)
 	begin
 		if RESET_L = '0' then Q_PIX <= (others => '0'); -- clear  con señal reset
