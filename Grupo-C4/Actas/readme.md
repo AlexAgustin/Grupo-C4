@@ -1,3 +1,3 @@
 # Actas
 
-En esta carpeta guardaremos las actas de constitución de grupo y reuniones
+En esta carpeta guardaremos las actas de reuniones y constitución de grupo.
