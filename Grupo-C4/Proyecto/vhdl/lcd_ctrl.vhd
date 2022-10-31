@@ -21,15 +21,13 @@ architecture arq_lcd_control of lcd_control is
 
 	-- Declaración de señales
 	signal EP, ES: ESTADOS;
-	signal LD_INF,DEC_PIX,END_PIX,RS_DAT,RS_COM,CL_DAT,INC_DAT,LD_2C,CL_MUX: std_logic; -- END_PIX HERE??????????????????????????
-	signal D0,D1,D2,D3,D4,D5,D6,D7: std_logic; -- gonzalo dijo que mejor direct por DDAT
+	signal LD_INF,DEC_PIX,END_PIX,RS_DAT,RS_COM,CL_DAT,INC_DAT,LD_2C,CL_MUX: std_logic;
+	signal D0,D1,D2,D3,D4,D5,D6,D7: std_logic; -- gonzalo dijo que mejor direct por DDAT TODO: comentarlo en la reu ***************
 	signal DDAT: unsigned(2 downto 0);
+	signal Q_PIX: unsigned(16 downto 0);
 	signal RXCOL: std_logic_vector(7 downto 0);
 	signal RYROW: std_logic_vector(8 downto 0);
 	signal RRGB: std_logic_vector(15 downto 0);
-
-	signal AUX: std_logic;
-	signal Q_PIX: unsigned(16 downto 0);
 
 	begin
 
