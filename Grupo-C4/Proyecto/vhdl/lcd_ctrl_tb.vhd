@@ -56,8 +56,10 @@ architecture arq_lcd_control_tb of lcd_control_tb is
 		LCD_DATA=>LCD_DATA
 	);
 
+	-- actualización del reloj
 	CLK <= not CLK after 10 ns;
 
+	-- simulación de ejecución
 	process
 	begin
 		wait for 20 ns;
