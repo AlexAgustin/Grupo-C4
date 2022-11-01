@@ -4,7 +4,7 @@ use IEEE.numeric_std.all;
 
 entity lcd_drawing is
 	port(
-		clk, reset_L: in std_logic;
+		CLK, RESET_L: in std_logic;
 
 		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR: in std_logic;
 		COLOUR_CODE: in std_logic_vector(2 downto 0);
@@ -26,11 +26,6 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	-- DeclaraciÃ³n de seÃ±ales de control
 	signal SEL_DATA, LD_YROW, LD_CONT, INC, DEC, ALL_PIX: std_logic :='0';
-
-	-- DeclaraciÃ³n de seÃ±ales intermedias
-	signal TC_CNPIX: std_logic := '0';
-	signal QPIX: std_logic_vector(16 downto 0);
-	signal DMUX: std_logic_vector(16 downto 0);
 
 	-- DeclaraciÃ³n de enteros sin signo para contadores
 	signal u_YROW, cnt_YROW: unsigned(8 downto 0);
@@ -58,7 +53,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- #######################
 
 	-- TransiciÃ³n de estados (cÃ¡lculo de estado siguiente)
-SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, TC_CNPIX) begin
+SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 		case EP is
 			when E0 => 	if DEL_SCREEN = '1' then ES <= E1;
 					elsif DRAW_FIG = '1' then ES <= E5;
@@ -102,9 +97,9 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, TC_CNPIX) 
 
 
 	-- ActualizaciÃ³n de EP en cada flanco de reloj (sequencia)
-	SEQ: process (clk, reset_L) begin
-		if reset_L = '0' then EP <= E0; -- reset asÃ­ncrono
-		elsif clk'event and clk = '1'  -- flanco de reloj
+	SEQ: process (CLK, RESET_L) begin
+		if RESET_L = '0' then EP <= E0; -- reset asÃ­ncrono
+		elsif CLK'event and CLK = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
 	end process SEQ;
@@ -125,25 +120,25 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, TC_CNPIX) 
 	-- #######################
 
 	--MUX para NUM_PIX
-	NUMPIX <= (others => '0') when reset_L='0' else
+	NUMPIX <= (others => '0') when RESET_L='0' else
 			"10010110000000000" when SEL_DATA='0' else
 			"00000000001100100";
 
 	--MUX para XCOL
-	XCOL <= (others => '0') when reset_L='0' else
+	XCOL <= (others => '0') when RESET_L='0' else
 			(others => '0') when SEL_DATA='0' else
 			"01000110";
 
 	--MUX para YROW
-	u_YROW <= (others => '0') when reset_L='0' else
+	u_YROW <= (others => '0') when RESET_L='0' else
 			(others => '0') when SEL_DATA='0' else
 			"001101110";
 
 	-- CNYROW     contador YROW
-	CNYROW : process(clk, reset_L)
+	CNYROW : process(CLK, RESET_L)
 	begin
-		if reset_L = '0' then cnt_YROW <= (others =>'0');
-		elsif clk'event and clk='1' then
+		if RESET_L = '0' then cnt_YROW <= (others =>'0');
+		elsif CLK'event and CLK='1' then
 			if LD_CONT = '1' then cnt_YROW <= unsigned(u_YROW);
 			elsif DEC = '1' then cnt_YROW <= cnt_YROW - 1;
 			end if;
@@ -152,10 +147,10 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, TC_CNPIX) 
 	YROW <= std_logic_vector(cnt_YROW);
 
 	--CNPIX
-	CNPIX : process(clk, reset_L)
+	CNPIX : process(CLK, RESET_L)
 	begin
-		if reset_L = '0' then u_QPIX <= (others =>'0');
-		elsif clk'event and clk='1' then
+		if RESET_L = '0' then u_QPIX <= (others =>'0');
+		elsif CLK'event and CLK='1' then
 			if LD_CONT = '1' then u_QPIX <= "01100011";
 			elsif DEC = '1' then u_QPIX <= u_QPIX - 1;
 			end if;
@@ -165,7 +160,7 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, TC_CNPIX) 
 		   '0';
 
 	-- RGB   
-	RGB <= (others => '0') when reset_L='0' else
+	RGB <= (others => '0') when RESET_L='0' else
 	       col_0 when COLOUR_CODE = "000" else
 	       col_1 when COLOUR_CODE = "001" else
 	       col_2 when COLOUR_CODE = "010" else
