@@ -9,7 +9,7 @@ architecture arq_lcd_drawing_tb_draw of lcd_drawing_tb_draw is
 
 component lcd_drawing
 port(
-	clk, reset_L: in std_logic;
+	CLK, RESET_L: in std_logic;
 
 	DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR: in std_logic;
 	COLOUR_CODE: in std_logic_vector(2 downto 0);
@@ -23,8 +23,8 @@ port(
 end component;
 
 
-    signal clk : std_logic := '1';
-    signal reset_L : std_logic := '0';
+    signal CLK : std_logic := '1';
+    signal RESET_L : std_logic := '0';
     signal DONE_CURSOR : std_logic := '0';
     signal DONE_COLOUR : std_logic := '0';
     signal DEL_SCREEN : std_logic := '0';
@@ -45,7 +45,7 @@ begin
 
 DUT: lcd_drawing port map(
     CLK => CLK,
-    reset_L => reset_L,
+    RESET_L => RESET_L,
     DONE_CURSOR => DONE_CURSOR,
     DONE_COLOUR => DONE_COLOUR,
     DEL_SCREEN => DEL_SCREEN,
@@ -58,7 +58,7 @@ DUT: lcd_drawing port map(
     OP_SETCURSOR => OP_SETCURSOR,
     OP_DRAWCOLOUR => OP_DRAWCOLOUR);
 
-clk <= not clk after 10 ns;
+CLK <= not CLK after 10 ns;
 
 
 
@@ -66,10 +66,10 @@ process
 begin
 	-- reset
 	wait for 10 ns;
-	reset_L <= '0';
+	RESET_L <= '0';
 
 	wait for 20 ns;
-	reset_L <= '1';	
+	RESET_L <= '1';	
 
 	--prueba dibujar figura
 	DRAW_FIG <= '1';
