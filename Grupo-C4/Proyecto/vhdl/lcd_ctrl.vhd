@@ -100,7 +100,7 @@ architecture arq_lcd_control of lcd_control is
 	-- ## UNIDAD DE PROCESO ##
 	-- #######################
 
-	--REG XCOL
+	--REG XCOL: RX
 	RX: process(CLK,RESET_L)
 	begin
 		if RESET_L = '0' then RXCOL <= (others => '0');  -- clear con señal reset
@@ -110,7 +110,7 @@ architecture arq_lcd_control of lcd_control is
 		end if;
 	end process RX;
 
-	--REG YROW
+	--REG YROW: RY
 	RY: process(CLK,RESET_L)
 	begin
 		if RESET_L = '0' then RYROW <= (others => '0'); -- clear con señal reset
@@ -120,7 +120,7 @@ architecture arq_lcd_control of lcd_control is
 		end if;
 	end process RY;
 
-	--REG RGB
+	--REG RGB: RC
 	RC: process(CLK,RESET_L)
 	begin
 		if RESET_L = '0' then RRGB <= (others => '0'); -- clear con señal reset
@@ -130,8 +130,8 @@ architecture arq_lcd_control of lcd_control is
 		end if;
 	end process RC;
 
-	-- REG RDAT
-	RDAT : process(clk, reset_L)
+	-- REG RRS
+	RRS : process(clk, reset_L)
 	begin
 		if reset_L = '0' then LCD_RS <= '0'; 	-- clear con señal reset
 		elsif clk'event and clk='1' then 		-- flanco de reloj
@@ -139,7 +139,7 @@ architecture arq_lcd_control of lcd_control is
 			elsif RS_COM = '1' then LCD_RS <=  '0';
 			end if;
 		end if;
-	end process RDAT;
+	end process RRS;
 
 
 	--CONTADOR DECREMENTAL: pixels
