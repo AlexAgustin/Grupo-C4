@@ -13,7 +13,7 @@ entity lcd_drawing is
 		XCOL: out std_logic_vector(7 downto 0);
 		YROW: out std_logic_vector(8 downto 0);
 		RGB: out std_logic_vector(15 downto 0);
-		NUMPIX: out std_logic_vector(16 downto 0)
+		NUM_PIX: out std_logic_vector(16 downto 0)
 	);
 end lcd_drawing;
 
@@ -120,7 +120,7 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 	-- #######################
 
 	--MUX para NUM_PIX
-	NUMPIX <= (others => '0') when RESET_L='0' else
+	NUM_PIX <= (others => '0') when RESET_L='0' else
 			"10010110000000000" when SEL_DATA='0' else
 			"00000000001100100";
 
