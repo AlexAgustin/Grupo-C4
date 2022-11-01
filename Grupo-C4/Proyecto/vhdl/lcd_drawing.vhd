@@ -20,20 +20,19 @@ end lcd_drawing;
 
 architecture arq_lcd_drawing of lcd_drawing is
 
-	-- Declaración de estados
+	-- DeclaraciÃ³n de estados
 	type estados is (E0, E1, E2, E3, E4, E5, E6, E7);
 	signal EP, ES : estados;
 
-	-- Declaración de señales de control
-	signal CL_XY, LD_XY, LD_NPIX, LD_RGB, SEL, LD_CNPIX, E_CNPIX, E_YROW: std_logic; --esto deberia borrarse
+	-- DeclaraciÃ³n de seÃ±ales de control
 	signal SEL_DATA, LD_YROW, LD_CONT, INC, DEC, ALL_PIX: std_logic :='0';
 
-	-- Declaración de señales intermedias
+	-- DeclaraciÃ³n de seÃ±ales intermedias
 	signal TC_CNPIX: std_logic := '0';
 	signal QPIX: std_logic_vector(16 downto 0);
 	signal DMUX: std_logic_vector(16 downto 0);
 
-	-- Declaración de enteros sin signo para contadores
+	-- DeclaraciÃ³n de enteros sin signo para contadores
 	signal u_YROW, cnt_YROW: unsigned(8 downto 0);
 	signal u_QPIX: unsigned(7 downto 0);
 
@@ -58,7 +57,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- ## UNIDAD DE CONTROL ## 
 	-- #######################
 
-	-- Transición de estados (cálculo de estado siguiente)
+	-- TransiciÃ³n de estados (cÃ¡lculo de estado siguiente)
 	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, TC_CNPIX) begin
 		case EP is
 			when E0 => 	if DEL_SCREEN = '1' then ES <= E1;
@@ -101,27 +100,23 @@ architecture arq_lcd_drawing of lcd_drawing is
 	end process SWSTATE;
 
 
-	-- Actualización de EP en cada flanco de reloj (sequencia)
+	-- ActualizaciÃ³n de EP en cada flanco de reloj (sequencia)
 	SEQ: process (clk, reset_L) begin
-		if reset_L = '0' then EP <= E0; -- reset asíncrono
+		if reset_L = '0' then EP <= E0; -- reset asÃ­ncrono
 		elsif clk'event and clk = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
 	end process SEQ;
 
 
-	-- Activación de señales de control: asignaciones combinacionales - valor a se�al
-	CL_XY    <= '1' when EP = E0 and DEL_SCREEN = '1' else '0';
-	LD_XY    <= '1' when (EP = E0 and DEL_SCREEN = '1') or (EP = E0 and DEL_SCREEN = '0' and DRAW_FIG = '1') else '0';
-	LD_NPIX  <= '1' when (EP = E0 and DEL_SCREEN = '1') or (EP = E0 and DEL_SCREEN = '0' and DRAW_FIG = '1') else '0';
-	LD_RGB   <= '1' when (EP = E0 and DEL_SCREEN = '1') or (EP = E0 and DEL_SCREEN = '0' and DRAW_FIG = '1') else '0';
-	SEL      <= '1' when EP = E0 and DEL_SCREEN = '0' and DRAW_FIG = '1' else '0';
-	LD_CNPIX <= '1' when EP = E0 and DEL_SCREEN = '0' and DRAW_FIG = '1' else '0';
-	E_CNPIX  <= '1' when (EP = E5 and DONE_COLOUR='1') else '0';
-	E_YROW   <= '1' when EP = E6 and TC_CNPIX = '0' else '0';
-	OP_DRAWCOLOUR <= '1' when ( EP = E2 and DONE_COLOUR = '0') or ( EP = E5 and DONE_COLOUR = '0') else '0';
-	OP_SETCURSOR <= '1' when( EP = E1 and DONE_CURSOR = '0') or ( EP = E4 and DONE_CURSOR = '0') else '0';
-
+	-- ActivaciÃ³n de seÃ±ales de control: asignaciones combinacionales - valor a señal
+	LD_YROW <= '1' when DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '1') else '0';
+	SEL_DATA <=  '1' when (DEL_SCREEN = '0' and DRAW_FIG = '1') or LD_CONT = '1' or INC = '1' else '0';
+	LD_CONT <= '1' when EP = E6 and DONE_CURSOR = '1' else '0';
+	INC <=  '1' when EP = E8 and DONE_COLOUR = '1' and ALL_PIX = '0' else '0';
+	DEC <=   '1' when EP = E8 and DONE_COLOUR = '1' and ALL_PIX = '0' else '0';
+	OP_DRAWCOLOUR <= '1' when EP = E3 or EP = E7 else '0';
+	OP_SETCURSOR <= 1' when EP = E1 or EP = E5 else '0';
 
 
 	-- #######################
@@ -179,8 +174,4 @@ architecture arq_lcd_drawing of lcd_drawing is
 	       col_6 when COLOUR_CODE = "110" else
 	       col_7;
 
-end arq_lcd_drawing;
-
-
- -- notas: circ combinacional: todo if ha de tener un else
- -- DMUX: processs para esto?????????????????????????????????? cuando funcionalidad compleja. 
+end arq_lcd_drawing; 
