@@ -20,21 +20,22 @@ end lcd_drawing;
 
 architecture arq_lcd_drawing of lcd_drawing is
 
-	-- DeclaraciÃ³n de estados
+	-- Declaración de estados
 	type estados is (E0, E1, E2, E3, E4, E5, E6, E7);
 	signal EP, ES : estados;
 
-	-- DeclaraciÃ³n de seÃ±ales de control
-	signal CL_XY, LD_XY, LD_NPIX, LD_RGB, SEL, LD_CNPIX, E_CNPIX, E_YROW: std_logic;
+	-- Declaración de señales de control
+	signal CL_XY, LD_XY, LD_NPIX, LD_RGB, SEL, LD_CNPIX, E_CNPIX, E_YROW: std_logic; --esto deberia borrarse
+	signal SEL_DATA, LD_YROW, LD_CONT, INC, DEC, ALL_PIX: std_logic :='0';
 
-	-- DeclaraciÃ³n de seÃ±ales intermedias
+	-- Declaración de señales intermedias
 	signal TC_CNPIX: std_logic := '0';
 	signal QPIX: std_logic_vector(16 downto 0);
 	signal DMUX: std_logic_vector(16 downto 0);
 
-	-- DeclaraciÃ³n de enteros sin signo para contadores
-	signal u_YROW: unsigned(8 downto 0);
-	signal u_QPIX: unsigned(16 downto 0);
+	-- Declaración de enteros sin signo para contadores
+	signal u_YROW, cnt_YROW: unsigned(8 downto 0);
+	signal u_QPIX: unsigned(7 downto 0);
 
 
 	-- Valores de entrada constantes
@@ -57,41 +58,41 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- ## UNIDAD DE CONTROL ## 
 	-- #######################
 
-	-- TransiciÃ³n de estados (cÃ¡lculo de estado siguiente)
+	-- Transición de estados (cálculo de estado siguiente)
 	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, TC_CNPIX) begin
 		case EP is
 			when E0 => 	if DEL_SCREEN = '1' then ES <= E1;
-					elsif DRAW_FIG = '1' then ES <= E5;
+					elsif DRAW_FIG = '1' then ES <= E4;
 					else ES <= E0;
 					end if;
 
-			when E1 =>  ES <= E2;
-			
-			when E2 =>	if DONE_CURSOR = '1' then ES <= E3;
-					else ES <= E2;
+			when E1 =>	if DONE_CURSOR = '1' then ES <= E2;
+					else ES <= E1;
 					end if;
-					
-			when E3 => ES <= E4;
 
-			when E4 =>	if DONE_COLOUR = '0' then ES <= E4;
-					elsif DEL_SCREEN = '1' then ES <= E4;
+			when E2 =>	if DONE_COLOUR = '0' then ES <= E2;
+					elsif DEL_SCREEN = '1' then ES <= E3;
 					else ES <= E0;
 					end if;
-					
-			when E5 => ES <= E6;
 
-			when E6 => 	if DONE_CURSOR = '1' then ES <= E7;
-					else ES <= E6;
+			when E3 => 	if DEL_SCREEN = '1' then ES <= E3;
+					else ES <= E0;
 					end if;
 
-			when E7 => ES <= E8;
-			
-			when E8 => 	if DONE_COLOUR = '1' and ALL = '1' then ES <= E9;
-					elsif  DONE_COLOUR = '1' and ALL = '0' then ES <= E5;
-					else ES <= E8;
+			when E4 => 	if DONE_CURSOR = '1' then ES <= E5;
+					else ES <= E4;
 					end if;
 
-			when E9 =>	if DRAW_FIG = '1' then ES <= E9;
+			when E5 => 	if DONE_COLOUR = '1' then ES <= E6;
+					else ES <= E5;
+					end if;
+
+			when E6 =>	if TC_CNPIX = '0' then ES <= E4;
+					elsif DRAW_FIG = '1' then ES <= E7;
+					else ES <= E0;
+					end if;
+
+			when E7 =>	if DRAW_FIG = '1' then ES <= E7;
 					else ES <= E0;
 					end if;
 
@@ -100,16 +101,16 @@ architecture arq_lcd_drawing of lcd_drawing is
 	end process SWSTATE;
 
 
-	-- ActualizaciÃ³n de EP en cada flanco de reloj (sequencia)
+	-- Actualización de EP en cada flanco de reloj (sequencia)
 	SEQ: process (clk, reset_L) begin
-		if reset_L = '0' then EP <= E0; -- reset asÃ­ncrono
+		if reset_L = '0' then EP <= E0; -- reset asíncrono
 		elsif clk'event and clk = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
 	end process SEQ;
 
 
-	-- ActivaciÃ³n de seÃ±ales de control: asignaciones combinacionales - valor a señal
+	-- Activación de señales de control: asignaciones combinacionales - valor a se�al
 	CL_XY    <= '1' when EP = E0 and DEL_SCREEN = '1' else '0';
 	LD_XY    <= '1' when (EP = E0 and DEL_SCREEN = '1') or (EP = E0 and DEL_SCREEN = '0' and DRAW_FIG = '1') else '0';
 	LD_NPIX  <= '1' when (EP = E0 and DEL_SCREEN = '1') or (EP = E0 and DEL_SCREEN = '0' and DRAW_FIG = '1') else '0';
@@ -127,71 +128,49 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- ## UNIDAD DE PROCESO ##
 	-- #######################
 
-	-- XCOL
-	RX : process(clk, reset_L)
+	--MUX para NUM_PIX
+	NUMPIX <= (others => '0') when reset_L='0' else
+			"10010110000000000" when SEL_DATA='0' else
+			"00000000001100100";
+
+	--MUX para XCOL
+	XCOL <= (others => '0') when reset_L='0' else
+			(others => '0') when SEL_DATA='0' else
+			"01000110";
+
+	--MUX para YROW
+	u_YROW <= (others => '0') when reset_L='0' else
+			(others => '0') when SEL_DATA='0' else
+			"001101110";
+
+	-- CNYROW     contador YROW
+	CNYROW : process(clk, reset_L)
 	begin
-		if reset_L = '0' then XCOL <= (others => '0'); -- clear registro con seÃ±al reset
-		elsif clk'event and clk='1' then 			   -- flanco de reloj
-			if LD_XY = '1' then XCOL <= pos_x;
-			elsif CL_XY = '1' then XCOL <= (others => '0');
+		if reset_L = '0' then cnt_YROW <= (others =>'0');
+		elsif clk'event and clk='1' then
+			if LD_CONT = '1' then cnt_YROW <= unsigned(u_YROW);
+			elsif DEC = '1' then cnt_YROW <= cnt_YROW - 1;
 			end if;
 		end if;
-	end process RX;
+	end process CNYROW;
+	YROW <= std_logic_vector(cnt_YROW);
 
-
-	-- YROW
-	CNY : process(clk, reset_L)
-	begin
-
-		if reset_L = '0' then u_YROW <= (others => '0'); -- clear registro con seÃ±al reset
-		elsif clk'event and clk='1' then 			   -- flanco de reloj
-			if LD_XY = '1' then u_YROW <= unsigned(pos_y);
-			elsif CL_XY = '1' then u_YROW <= (others => '0');
-			elsif E_YROW = '1' then u_YROW <= u_YROW + 1;
-			end if;
-		end if;
-	end process CNY;
- 	YROW <= std_logic_vector(u_YROW);
-
-
-	-- DMUX 
-	DMUX <= ('0' & x"0002") when SEL = '1' -- 100
-	else    ('1' & x"2c00"); 	       -- 76800 (240x320)
-
-
-	-- NUMPIX
-	RNPIX : process(clk, reset_L) -- cuando evento en alguna de las señales se ejecutan en sec
-	begin
-		if reset_L = '0' then NUMPIX <= (others => '0'); -- clear registro con seÃ±al reset
-		elsif clk'event and clk='1' then 			     -- flanco de reloj
-			if LD_NPIX = '1' then NUMPIX <= DMUX;
-			end if;
-		end if;
-	end process RNPIX;
-
-
-	-- CNPIX
+	--CNPIX
 	CNPIX : process(clk, reset_L)
 	begin
-		if reset_L = '0' then u_QPIX <= (others =>'0'); -- clear registro con seÃ±al reset
-		elsif clk'event and clk='1' then 			   -- flanco de reloj
-			if LD_CNPIX = '1' then u_QPIX <= unsigned(DMUX);
-			elsif E_CNPIX = '1' then u_QPIX <= u_QPIX - 1;
+		if reset_L = '0' then u_QPIX <= (others =>'0');
+		elsif clk'event and clk='1' then
+			if LD_CONT = '1' then u_QPIX <= "01100011";
+			elsif DEC = '1' then u_QPIX <= u_QPIX - 1;
 			end if;
 		end if;
 	end process CNPIX;
-	-- actualizar QPIX
-	QPIX <= std_logic_vector(u_QPIX);
+	ALL_PIX <= '1' when u_QPIX="00000000" else
+		   '0';
 
-	-- actualizar TC_CNPIX
-	TC_CNPIX <= '1' when u_QPIX = ('0' & x"0000")  
-			else '0';
-	 
- 	
-
-
-	-- RGB
-	RGB <= col_0 when COLOUR_CODE = "000" else
+	-- RGB   
+	RGB <= (others => '0') when reset_L='0' else
+	       col_0 when COLOUR_CODE = "000" else
 	       col_1 when COLOUR_CODE = "001" else
 	       col_2 when COLOUR_CODE = "010" else
 	       col_3 when COLOUR_CODE = "011" else
