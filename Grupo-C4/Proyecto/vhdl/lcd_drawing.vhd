@@ -20,21 +20,19 @@ end lcd_drawing;
 
 architecture arq_lcd_drawing of lcd_drawing is
 
-	-- DeclaraciÃ³n de estados
-	type estados is (E0, E1, E2, E3, E4, E5, E6, E7);
+	-- Declaración de estados
+	type estados is (E0, E1, E2, E3, E4, E5, E6, E7, E8, E9);
 	signal EP, ES : estados;
 
-	-- DeclaraciÃ³n de seÃ±ales de control
+	-- Declaración de señales de control
 	signal SEL_DATA, LD_YROW, LD_CONT, INC, DEC, ALL_PIX: std_logic :='0';
 
-	-- DeclaraciÃ³n de enteros sin signo para contadores
+	-- Declaración de enteros sin signo para contadores
 	signal u_YROW, cnt_YROW: unsigned(8 downto 0);
 	signal u_QPIX: unsigned(7 downto 0);
 
 
 	-- Valores de entrada constantes
-	signal pos_x: std_logic_vector(7 downto 0) := x"8c"; -- start at x,y = 145,145; provisional
-	signal pos_y: std_logic_vector(8 downto 0) := '0' & x"8c";
 
 	signal col_0: std_logic_vector(15 downto 0) := x"0000"; -- := negro
 	signal col_1: std_logic_vector(15 downto 0) := x"c973"; -- := violeta
@@ -52,7 +50,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- ## UNIDAD DE CONTROL ## 
 	-- #######################
 
-	-- TransiciÃ³n de estados (cÃ¡lculo de estado siguiente)
+	-- Transición de estados (cálculo de estado siguiente)
 SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 		case EP is
 			when E0 => 	if DEL_SCREEN = '1' then ES <= E1;
@@ -81,8 +79,8 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 
 			when E7 => ES <= E8;
 			
-			when E8 => 	if DONE_COLOUR = '1' and ALL = '1' then ES <= E9;
-					elsif  DONE_COLOUR = '1' and ALL = '0' then ES <= E5;
+			when E8 => 	if DONE_COLOUR = '1' and ALL_PIX = '1' then ES <= E9;
+					elsif  DONE_COLOUR = '1' and ALL_PIX = '0' then ES <= E5;
 					else ES <= E8;
 					end if;
 
@@ -96,23 +94,23 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 
 
 
-	-- ActualizaciÃ³n de EP en cada flanco de reloj (sequencia)
+	-- Actualización de EP en cada flanco de reloj (sequencia)
 	SEQ: process (CLK, RESET_L) begin
-		if RESET_L = '0' then EP <= E0; -- reset asÃ­ncrono
+		if RESET_L = '0' then EP <= E0; -- reset asíncrono
 		elsif CLK'event and CLK = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
 	end process SEQ;
 
 
-	-- ActivaciÃ³n de seÃ±ales de control: asignaciones combinacionales - valor a señal
-	LD_YROW <= '1' when DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '1') else '0';
-	SEL_DATA <=  '1' when (DEL_SCREEN = '0' and DRAW_FIG = '1') or LD_CONT = '1' or INC = '1' else '0';
-	LD_CONT <= '1' when EP = E6 and DONE_CURSOR = '1' else '0';
+	-- Activación de señales de control: asignaciones combinacionales - valor a se�al
+	LD_YROW <= '1' when EP = E0 and (DEL_SCREEN = '1' or  (DEL_SCREEN = '0' and DRAW_FIG = '1')) else '0';
+	SEL_DATA <=  '1' when LD_CONT = '1' or INC = '1' else '0';
+	LD_CONT <= '1' when EP = E0 and (DEL_SCREEN = '0' and DRAW_FIG = '1') else '0';
 	INC <=  '1' when EP = E8 and DONE_COLOUR = '1' and ALL_PIX = '0' else '0';
 	DEC <=   '1' when EP = E8 and DONE_COLOUR = '1' and ALL_PIX = '0' else '0';
 	OP_DRAWCOLOUR <= '1' when EP = E3 or EP = E7 else '0';
-	OP_SETCURSOR <= 1' when EP = E1 or EP = E5 else '0';
+	OP_SETCURSOR <= '1' when EP = E1 or EP = E5 else '0';
 
 
 	-- #######################
@@ -151,7 +149,8 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 	begin
 		if RESET_L = '0' then u_QPIX <= (others =>'0');
 		elsif CLK'event and CLK='1' then
-			if LD_CONT = '1' then u_QPIX <= "01100011";
+			--if LD_CONT = '1' then u_QPIX <= "01100011";
+			if LD_CONT = '1' then u_QPIX <= "00000001";
 			elsif DEC = '1' then u_QPIX <= u_QPIX - 1;
 			end if;
 		end if;

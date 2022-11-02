@@ -1,3 +1,4 @@
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -65,7 +66,6 @@ CLK <= not CLK after 10 ns;
 process
 begin
 	-- reset
-	wait for 10 ns;
 	RESET_L <= '0';
 
 	wait for 20 ns;
@@ -74,14 +74,35 @@ begin
 	--prueba dibujar figura
 	DRAW_FIG <= '1';
 
-	wait for 40 ns;
+	wait for 60 ns;
 	DONE_CURSOR <= '1';
-	DRAW_FIG <= '0';
+
+	wait for 20 ns;
+	DONE_CURSOR <= '0';
 
 	wait for 60 ns;
 	DONE_COLOUR <= '1';
 
-	wait for 200 ns;
+	wait for 20 ns;
+	DONE_COLOUR <= '0';
+------------------------
+	wait for 60 ns;	
+	DONE_CURSOR <= '1';
+
+	wait for 40 ns;
+	DONE_CURSOR <= '0';
+
+	wait for 60 ns;
+	DONE_COLOUR <= '1';
+
+	wait for 20 ns;
+	DONE_COLOUR <= '0';
+------------------
+	wait for 20 ns;
+
+	DRAW_FIG <= '0';
+
+	wait for 40 ns;
 		
 	-- prueba borrar pantalla	
 	DEL_SCREEN <= '1';
@@ -100,4 +121,3 @@ begin
 
 end process;
 end arq_lcd_drawing_tb_draw;
-
