@@ -24,7 +24,7 @@ port(
 end component;
 
 
-    signal CLK : std_logic := '1';
+    signal CLK : std_logic := '0';
     signal RESET_L : std_logic := '0';
     signal DONE_CURSOR : std_logic := '0';
     signal DONE_COLOUR : std_logic := '0';
