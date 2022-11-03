@@ -20,7 +20,7 @@ architecture arq_lcd_control_tb of lcd_control_tb is
 	end component lcd_control;
 
 	--Inicializacion de las se?ales de entrada y salida
-	signal CLK: std_logic :='1';
+	signal CLK: std_logic :='0';
 	signal RESET_L: std_logic :='0';
 	signal LCD_Init_Done: std_logic :='0';
 	signal OP_SETCURSOR: std_logic :='0';
@@ -56,10 +56,10 @@ architecture arq_lcd_control_tb of lcd_control_tb is
 		LCD_DATA=>LCD_DATA
 	);
 
-	-- actualización del reloj
+	-- actualizaciÃ³n del reloj
 	CLK <= not CLK after 10 ns;
 
-	-- simulación de ejecución
+	-- simulaciÃ³n de ejecuciÃ³n
 	process
 	begin
 		wait for 20 ns;
