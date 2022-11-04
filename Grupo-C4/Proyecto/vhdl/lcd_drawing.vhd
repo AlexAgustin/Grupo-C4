@@ -13,7 +13,7 @@ entity lcd_drawing is
 		XCOL: out std_logic_vector(7 downto 0);
 		YROW: out std_logic_vector(8 downto 0);
 		RGB: out std_logic_vector(15 downto 0);
-		NUM_PIX: out std_logic_vector(16 downto 0)
+		NUM_PIX: out unsigned(16 downto 0)
 	);
 end lcd_drawing;
 
@@ -103,7 +103,7 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 	end process SEQ;
 
 
-	-- Activación de señales de control: asignaciones combinacionales - valor a se�al
+	-- Activación de señales de control: asignaciones combinacionales - valor a se�al
 	LD_YROW <= '1' when EP = E0 and (DEL_SCREEN = '1' or  (DEL_SCREEN = '0' and DRAW_FIG = '1')) else '0';
 	SEL_DATA <=  '1' when LD_CONT = '1' or INC = '1' else '0';
 	LD_CONT <= '1' when EP = E0 and (DEL_SCREEN = '0' and DRAW_FIG = '1') else '0';

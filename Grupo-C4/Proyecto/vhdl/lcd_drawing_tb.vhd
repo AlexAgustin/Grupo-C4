@@ -19,7 +19,7 @@ port(
 	XCOL: out std_logic_vector(7 downto 0);
 	YROW: out std_logic_vector(8 downto 0);
 	RGB: out std_logic_vector(15 downto 0);
-	NUM_PIX: out std_logic_vector(16 downto 0)
+	NUM_PIX: out unsigned(16 downto 0)
 );
 end component;
 
@@ -36,7 +36,7 @@ end component;
     signal XCOL : std_logic_vector(7 downto 0) := "00000000";
     signal YROW : std_logic_vector(8 downto 0):= "000000000";
     signal RGB : std_logic_vector(15 downto 0):= "0000000000000000";
-    signal NUM_PIX : std_logic_vector(16 downto 0) := "00000000000000000";
+    signal NUM_PIX : unsigned(16 downto 0) := "00000000000000000";
 
     signal OP_SETCURSOR : std_logic := '0';
     signal OP_DRAWCOLOUR : std_logic := '0';
