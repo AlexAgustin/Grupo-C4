@@ -2,12 +2,12 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity lcd_control_tb is 
-end lcd_control_tb;
+entity lcd_ctrl_tb is 
+end lcd_ctrl_tb;
 
-architecture arq_lcd_control_tb of lcd_control_tb is
+architecture arq_lcd_ctrl_tb of lcd_ctrl_tb is
 
-	component lcd_control
+	component lcd_ctrl
 		port(
 			CLK,RESET_L,LCD_Init_Done,OP_SETCURSOR,OP_DRAWCOLOUR: in std_logic;
 			XCOL: in std_logic_vector(7 downto 0);
@@ -17,7 +17,7 @@ architecture arq_lcd_control_tb of lcd_control_tb is
 			DONE_CURSOR,DONE_COLOUR,LCD_CS_N,LCD_WR_N,LCD_RS: out std_logic;
 			LCD_DATA: out std_logic_vector(15 downto 0)
 		);
-	end component lcd_control;
+	end component lcd_ctrl;
 
 	--Inicializacion de las se?ales de entrada y salida
 	signal CLK: std_logic :='0';
@@ -38,7 +38,7 @@ architecture arq_lcd_control_tb of lcd_control_tb is
 
 	begin
 
-	DUT: lcd_control port map(
+	DUT: lcd_ctrl port map(
 		CLK=>CLK,
 		RESET_L=>RESET_L,
 		LCD_Init_Done=>LCD_Init_Done,
@@ -93,4 +93,4 @@ architecture arq_lcd_control_tb of lcd_control_tb is
 		
 	end process;
 
-end arq_lcd_control_tb;
+end arq_lcd_ctrl_tb;
