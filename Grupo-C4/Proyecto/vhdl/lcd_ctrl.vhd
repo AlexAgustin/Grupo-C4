@@ -142,7 +142,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	end process RRS;
 
 
-	--CONTADOR DECREMENTAL: pixels
+	--CONTADOR DECREMENTAL PÍXELES: CNPIX
 	CNPIX: process(CLK,RESET_L)
 	begin
 		if RESET_L = '0' then Q_PIX <= (others => '0'); -- clear  con se�al reset
@@ -154,7 +154,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	end process CNPIX;
 	END_PIX <= '1' when Q_PIX = ('0' & x"0000") else '0';
 
-	--CONTADOR INCREMENTAL: ddat
+	--CONTADOR INCREMENTAL DDAT: CDDAT
 	CDDAT: process(CLK,RESET_L)
 	begin
 		if RESET_L = '0' then DDAT <= (others => '0'); -- clear  con se�al reset
@@ -166,7 +166,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 		end if;
 	end process CDDAT;
 
-	--DECODIFICADOR
+	--DECODIFICADOR: DEC
 	D0 <= '1' when DDAT="000" else '0';
 	D1 <= '1' when DDAT="001" else '0';
 	D2 <= '1' when DDAT="010" else '0';
@@ -176,7 +176,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	D6 <= '1' when DDAT="110" else '0';
 	D7 <= '1' when DDAT="111" else '0';
 
-	--MULTIPLEXOR
+	--MULTIPLEXOR: MUX
 	LCD_DATA <= x"0000" when CL_MUX ='1' else
 		    x"002A" when DDAT="000" else
 			x"0000" when DDAT="001" else
