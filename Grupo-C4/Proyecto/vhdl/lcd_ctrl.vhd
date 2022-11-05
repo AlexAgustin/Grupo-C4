@@ -136,7 +136,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	RRS : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then LCD_RS <= '0'; 	-- clear con se�al reset
-		elsif CLK'event and clk='1' then 		-- flanco de reloj
+		elsif CLK'event and CLK='1' then 		-- flanco de reloj
 			if RS_DAT = '1' then LCD_RS <= '1';
 			elsif RS_COM = '1' then LCD_RS <=  '0';
 			end if;
@@ -148,7 +148,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	CNPIX: process(CLK,RESET_L)
 	begin
 		if RESET_L = '0' then Q_PIX <= (others => '0'); -- clear  con se�al reset
-		elsif clk'event and clk='1' then				-- flanco reloj
+		elsif CLK'event and CLK='1' then				-- flanco reloj
 			if LD_INF='1' then Q_PIX<=NUM_PIX;
 			elsif DEC_PIX='1' then Q_PIX<= Q_PIX-1;
 			end if;
