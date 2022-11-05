@@ -51,33 +51,33 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- #######################
 
 	-- Transición de estados (cálculo de estado siguiente)
-SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
+	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 		case EP is
 			when E0 => 	if DEL_SCREEN = '1' then ES <= E1;
 					elsif DRAW_FIG = '1' then ES <= E5;
 					else ES <= E0;
 					end if;
 
-			when E1 =>  ES <= E2;
+			when E1 =>  	ES <= E2;
 			
 			when E2 =>	if DONE_CURSOR = '1' then ES <= E3;
 					else ES <= E2;
 					end if;
 					
-			when E3 => ES <= E4;
+			when E3 => 	ES <= E4;
 
 			when E4 =>	if DONE_COLOUR = '0' then ES <= E4;
 					elsif DEL_SCREEN = '1' then ES <= E4;
 					else ES <= E0;
 					end if;
 					
-			when E5 => ES <= E6;
+			when E5 => 	ES <= E6;
 
 			when E6 => 	if DONE_CURSOR = '1' then ES <= E7;
 					else ES <= E6;
 					end if;
 
-			when E7 => ES <= E8;
+			when E7 => 	ES <= E8;
 			
 			when E8 => 	if DONE_COLOUR = '1' and ALL_PIX = '1' then ES <= E9;
 					elsif  DONE_COLOUR = '1' and ALL_PIX = '0' then ES <= E5;
@@ -88,7 +88,7 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 					else ES <= E0;
 					end if;
 
-			when others    =>      ES <= E0; -- inalcanzable
+			when others =>  ES <= E0; -- inalcanzable
 		end case;
 	end process SWSTATE;
 
@@ -132,7 +132,7 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 			(others => '0') when SEL_DATA='0' else
 			"001101110";
 
-	-- CNYROW     contador YROW
+	-- CNYROW :    contador YROW
 	CNYROW : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then cnt_YROW <= (others =>'0');
@@ -144,7 +144,7 @@ SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 	end process CNYROW;
 	YROW <= std_logic_vector(cnt_YROW);
 
-	--CNPIX
+	--CNPIX : contador píxeles restantes
 	CNPIX : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then u_QPIX <= (others =>'0');
