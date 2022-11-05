@@ -150,7 +150,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 		if RESET_L = '0' then u_QPIX <= (others =>'0');
 		elsif CLK'event and CLK='1' then
 			--if LD_CONT = '1' then u_QPIX <= "01100011";
-			if LD_CONT = '1' then u_QPIX <= "00000001";
+			if LD_CONT = '1' then u_QPIX <= "00000010";
 			elsif DEC = '1' then u_QPIX <= u_QPIX - 1;
 			end if;
 		end if;
