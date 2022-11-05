@@ -26,6 +26,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	-- Declaración de señales de control
 	signal SEL_DATA, LD_XY, LD_RGB, CL_XY, INC_Y, LD_NPIX, LD_CNPIX, DEC_CNPIX, ALL_PIX: std_logic :='0';
+	signal DRGB: std_logic_vector(15 downto 0);
 
 	-- Declaración de enteros sin signo para contadores
 	signal cnt_YROW: unsigned(8 downto 0);
