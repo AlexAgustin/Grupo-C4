@@ -68,7 +68,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 			when E10 =>	ES<=E2;
 			when E11 =>	ES<=E2;
 			when E12 =>	ES<=E2;
-
+			when others=>   ES<=E0;
 			end case;
 	end process COMB;
 
