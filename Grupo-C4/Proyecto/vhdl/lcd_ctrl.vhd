@@ -39,28 +39,30 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	COMB: process (EP, LCD_Init_done, OP_SETCURSOR, OP_DRAWCOLOUR, D0,D1,D2,D3,D4,D5,D6,D7, END_PIX) begin 
 		case EP is
 			when E0 => 	if LCD_Init_Done = '1' then 
-							if OP_SETCURSOR = '1' then ES<=E1;
-							elsif OP_DRAWCOLOUR = '1' then ES<=E12;
-							else ES<=E0;
-							end if;
-						
-						else ES <= E0;
+						if OP_SETCURSOR = '1' then ES<=E1;
+						elsif OP_DRAWCOLOUR = '1' then ES<=E12;
+						else ES<=E0;
 						end if;
+						
+					else ES <= E0;
+					end if;
 
 			when E1 =>	ES<=E2;
 			when E2 =>	ES<=E3;
 			when E3 =>	if D0='1' OR D1='1' OR D3='1' OR D4='1' then ES<=E11;
-						elsif D2='1' then ES<=E10;
-						elsif D5='1' then ES<=E9;
-						else ES<=E4;
-						end if;
+					elsif D2='1' then ES<=E10;
+					elsif D5='1' then ES<=E9;
+					else ES<=E4;
+					end if;
 
 			when E4 =>	ES<=E5;
 			when E5 =>	ES<=E6;
 			when E6 =>	ES<=E7;
+		
 			when E7 =>	if END_PIX ='0' then ES<=E5;
-						else ES<=E8;
-						end if;
+					else ES<=E8;
+					end if;
+						
 			when E8 =>	ES<=E0;
 			when E9 =>	ES<=E0;
 			when E10 =>	ES<=E2;
@@ -131,10 +133,10 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	end process RC;
 
 	-- REG RRS
-	RRS : process(clk, reset_L)
+	RRS : process(CLK, RESET_L)
 	begin
-		if reset_L = '0' then LCD_RS <= '0'; 	-- clear con se�al reset
-		elsif clk'event and clk='1' then 		-- flanco de reloj
+		if RESET_L = '0' then LCD_RS <= '0'; 	-- clear con se�al reset
+		elsif CLK'event and clk='1' then 		-- flanco de reloj
 			if RS_DAT = '1' then LCD_RS <= '1';
 			elsif RS_COM = '1' then LCD_RS <=  '0';
 			end if;
@@ -148,7 +150,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 		if RESET_L = '0' then Q_PIX <= (others => '0'); -- clear  con se�al reset
 		elsif clk'event and clk='1' then				-- flanco reloj
 			if LD_INF='1' then Q_PIX<=NUM_PIX;
-				elsif DEC_PIX='1' then Q_PIX<= Q_PIX-1;
+			elsif DEC_PIX='1' then Q_PIX<= Q_PIX-1;
 			end if;
 		end if;
 	end process CNPIX;
@@ -177,8 +179,8 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	D7 <= '1' when DDAT="111" else '0';
 
 	--MULTIPLEXOR: MUX
-	LCD_DATA <= x"0000" when CL_MUX ='1' else
-		    x"002A" when DDAT="000" else
+	LCD_DATA <= 	x"0000" when CL_MUX ='1' else
+		        x"002A" when DDAT="000" else
 			x"0000" when DDAT="001" else
 			x"00"&RXCOL when DDAT="010" else
 			x"002B" when DDAT="011" else
