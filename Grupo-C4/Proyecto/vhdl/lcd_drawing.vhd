@@ -20,15 +20,15 @@ end lcd_drawing;
 
 architecture arq_lcd_drawing of lcd_drawing is
 
-	-- DeclaraciÃ³n de estados
+	-- DeclaraciÃÂ³n de estados
 	type estados is (E0, E1, E2, E3, E4, E5, E6, E7, E8, E9, E10, E11);
 	signal EP, ES : estados;
 
-	-- DeclaraciÃ³n de seÃ±ales de control
+	-- DeclaraciÃÂ³n de seÃÂ±ales de control
 	signal SEL_DATA, LD_XY, LD_RGB, CL_XY, INC_Y, LD_NPIX, LD_CNPIX, DEC_CNPIX, ALL_PIX: std_logic :='0';
 	signal DRGB: std_logic_vector(15 downto 0);
 	signal MUX_PIX: unsigned(16 downto 0);
-	-- DeclaraciÃ³n de enteros sin signo para contadores
+	-- DeclaraciÃÂ³n de enteros sin signo para contadores
 	signal cnt_YROW: unsigned(8 downto 0);
 	signal u_QPIX: unsigned(16 downto 0);
 
@@ -51,7 +51,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- ## UNIDAD DE CONTROL ## 
 	-- #######################
 
-	-- TransiciÃ³n de estados (cÃ¡lculo de estado siguiente)
+	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
 	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 		case EP is
 			when E0 => 	if DEL_SCREEN = '1' then ES <= E1;
@@ -101,16 +101,16 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 
 
-	-- ActualizaciÃ³n de EP en cada flanco de reloj (sequential)
+	-- ActualizaciÃÂ³n de EP en cada flanco de reloj (sequential)
 	SEQ: process (CLK, RESET_L) begin
-		if RESET_L = '0' then EP <= E0; -- reset asÃ­ncrono
+		if RESET_L = '0' then EP <= E0; -- reset asÃÂ­ncrono
 		elsif CLK'event and CLK = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
 	end process SEQ;
 
 
-	-- ActivaciÃ³n de seÃ±ales de control: asignaciones combinacionales - valor a seï¿½al
+	-- ActivaciÃÂ³n de seÃÂ±ales de control: asignaciones combinacionales - valor a seÃ¯Â¿Â½al
 	SEL_DATA <= '1' when EP = E0 and DEL_SCREEN = '0' and DRAW_FIG = '1' else '0';
 	LD_XY <= '1' when SEL_DATA = '1' else '0';
 	LD_CNPIX <= '1' when SEL_DATA = '1' else '0';
@@ -131,7 +131,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- REG XCOL: RX
 	RX : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then XCOL <= (others => '0'); -- clear registro con seÃÂ±al reset
+		if RESET_L = '0' then XCOL <= (others => '0'); -- clear registro con seÃÂÃÂ±al reset
 		elsif CLK'event and CLK='1' then 			   -- flanco de reloj
 			if LD_XY = '1' then XCOL <= "01000110";
 			elsif CL_XY = '1' then XCOL <= (others => '0');
@@ -142,7 +142,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- REG RGB: RC
 	RC : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then RGB <= (others => '0'); -- clear registro con seÃÂ±al reset
+		if RESET_L = '0' then RGB <= (others => '0'); -- clear registro con seÃÂÃÂ±al reset
 		elsif CLK'event and CLK='1' then 			   -- flanco de reloj
 			if LD_XY = '1' then RGB <= DRGB;
 			end if;
@@ -160,10 +160,11 @@ architecture arq_lcd_drawing of lcd_drawing is
 			elsif CL_XY = '1' then cnt_YROW <= (others => '0');
 			end if;
 		end if;
+		YROW <= std_logic_vector(cnt_YROW);
 	end process CY;
-	YROW <= std_logic_vector(cnt_YROW);
+	
 
-	--Multiplexor para nÃºmero de pÃ­xels
+	--Multiplexor para numero de pixels
 	MUX_PIX <= (others => '0') when RESET_L='0' else
 			"10010110000000000" when SEL_DATA='0' else
 			"00000000000000010";
@@ -173,25 +174,34 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- REG NUM_PIX: RNPIX
 	RNPIX : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then NUM_PIX <= (others => '0'); -- clear registro con seÃÂ±al reset
-		elsif CLK'event and CLK='1' then 			   -- flanco de reloj
+		if RESET_L = '0' then NUM_PIX <= (others => '0');
+		elsif CLK'event and CLK='1' then 			   
 			if LD_NPIX = '1' then NUM_PIX <= MUX_PIX;
 			end if;
 		end if;
 	end process RNPIX;
 
-	--contador pÃ­xeles restantes: CNPIX 
+	--contador pÃÂ­xeles restantes: CNPIX 
 	CNPIX : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then u_QPIX <= (others =>'0');
 		elsif CLK'event and CLK='1' then
 			if LD_CNPIX = '1' then u_QPIX <= MUX_PIX;
-			elsif DEC_CNPIX = '1' then u_QPIX <= u_QPIX - 1;
+			elsif DEC_CNPIX = '1' and u_QPIX = "00000000000000001" 
+			then 
+				u_QPIX <= u_QPIX - 1;
+				ALL_PIX <= '1';
+			elsif DEC_CNPIX = '1' and u_QPIX = "00000000000000000" 
+			then 
+				u_QPIX <= "11111111111111111";
+				ALL_PIX <= '0';
+			elsif DEC_CNPIX = '1' then u_QPIX <= u_QPIX - 1; ALL_PIX<='0';
 			end if;
 		end if;
+		--ALL_PIX <= '1' when u_QPIX="00000000" else
+		--  	   '0';
 	end process CNPIX;
-	ALL_PIX <= '1' when u_QPIX="00000000" else
-		   '0';
+	
 
 	-- Multiplexor para RGB   
 	DRGB <= (others => '0') when RESET_L='0' else
