@@ -149,12 +149,13 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	begin
 		if RESET_L = '0' then Q_PIX <= (others => '0'); -- clear  con se�al reset
 		elsif CLK'event and CLK='1' then				-- flanco reloj
-			if LD_INF='1' then Q_PIX<=NUM_PIX;
-			elsif DEC_PIX='1' then Q_PIX<= Q_PIX-1;
+			if LD_INF='1' then Q_PIX<=NUM_PIX; END_PIX<='0';
+			elsif DEC_PIX='1' and Q_PIX="00000000000000001" then Q_PIX<= Q_PIX-1; END_PIX<='1';
+			elsif DEC_PIX='1' and Q_PIX="00000000000000000" then Q_PIX<= "11111111111111111"; END_PIX<='0';
+			elsif DEC_PIX='1' then Q_PIX<= Q_PIX-1; END_PIX<='0';
 			end if;
 		end if;
 	end process CNPIX;
-	END_PIX <= '1' when Q_PIX = ('0' & x"0000") else '0';
 
 	--CONTADOR INCREMENTAL DDAT: CDDAT
 	CDDAT: process(CLK,RESET_L)
