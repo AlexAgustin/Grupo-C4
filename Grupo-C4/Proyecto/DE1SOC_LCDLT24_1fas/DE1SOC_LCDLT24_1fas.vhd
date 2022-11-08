@@ -16,7 +16,8 @@ entity DE1SOC_LCDLT24_1fas is
 	SW 			: in	std_logic_vector(2 downto 0);
 --	SW 			: in	std_logic_vector(9 downto 0);
 	-- LEDR ----------------
-	LEDR 		: out	std_logic_vector(9 downto 0);
+	--LEDR 		: out	std_logic_vector(8 downto 0);
+	LEDR 		: out	std_logic_vector(9 downto 9);
 --      -- LT24_LCD ----------------
         LT24_LCD_ON     : out std_logic;
         LT24_RESET_N    : out std_logic;
@@ -103,17 +104,6 @@ component LCD_CTRL
           NUM_PIX: in unsigned(16 downto 0);
           DONE_CURSOR,DONE_COLOUR,LCD_CS_N,LCD_WR_N,LCD_RS: out std_logic;
           LCD_DATA: out std_logic_vector(15 downto 0)
-		--reset,CLK		: in 	std_logic;
-		--LCD_INIT_DONE		: in std_logic;
-		--OP_SETCURSOR		: in	std_logic;
-		--XCOL			: in std_logic_vector(7 downto 0);
-		--YROW			: in std_logic_vector(8 downto 0);
-		--OP_DRAWCOLOUR		: in	std_logic;
-		--RGB			: in std_logic_vector(15 downto 0);
-		--NUMPIX			: in std_logic_vector(16 downto 0);
-		--DONE_CURSOR,DONE_COLOUR	: out std_logic;
-		--LCD_CSN,LCD_RS,LCD_WRN	: out std_logic;
-		--LCD_DATA		: out std_logic_vector(15 downto 0)
 	);
 end component;
   
@@ -149,13 +139,15 @@ end component;
   
 begin 
    clk <= CLOCK_50;
-   reset <= not(KEY(0));
    reset_l<=KEY(0);
 	
+	LT24_CS_N_Int<='1';
    LT24_RD_N_Int<='1';
+	LT24_RS_Int<='0';
+	LT24_WR_N_Int<='1';
 
-	DEL_SCREEN <= KEY(1);
-	DRAW_FIG <= KEY(2);
+	DEL_SCREEN <= not(KEY(1));
+	DRAW_FIG <= not(KEY(2));
 	COLOUR_CODE <= SW(2 downto 0);
 	
     
@@ -183,7 +175,7 @@ begin
       
       LT24_Init_Done      => LT24_Init_Done
  );
-   LEDR(8)  <= LT24_Init_Done; --para comprobar visualmente q funciona
+   LEDR(9)  <= LT24_Init_Done; --para comprobar visualmente q funciona
 
 
 
