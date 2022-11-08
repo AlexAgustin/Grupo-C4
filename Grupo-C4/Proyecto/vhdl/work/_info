@@ -75,7 +75,7 @@ Aarq_lcd_ctrl_tb
 R1
 R2
 R3
-Z19 DEx4 work 11 lcd_ctrl_tb 0 22 Un1m>69P[M9633k;gjnm73
+DEx4 work 11 lcd_ctrl_tb 0 22 Un1m>69P[M9633k;gjnm73
 l39
 L8
 VX2mfNKP@MQo4:z=DjkUJ>3
@@ -87,6 +87,88 @@ R8
 R9
 R17
 R18
+!i113 1
+R12
+R13
+Elcd_drawing
+Z19 w1667900687
+R1
+R2
+R3
+R4
+Z20 8C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_drawing.vhd
+Z21 FC:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_drawing.vhd
+l0
+L5
+VnHdUd9Q>b7BmFOQ_1Rg1g1
+!s100 _nTXS[fC7=a6_XdKCM@eT0
+R7
+32
+Z22 !s110 1667901326
+!i10b 1
+Z23 !s108 1667901326.000000
+Z24 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_drawing.vhd|
+Z25 !s107 C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_drawing.vhd|
+!i113 1
+R12
+R13
+Aarq_lcd_drawing
+R1
+R2
+R3
+DEx4 work 11 lcd_drawing 0 22 nHdUd9Q>b7BmFOQ_1Rg1g1
+l48
+L21
+VD6R5OJIma=UUdEKCO2`:g2
+!s100 8HH8=PMPD:Z@5c?:gHgT23
+R7
+32
+R22
+!i10b 1
+R23
+R24
+R25
+!i113 1
+R12
+R13
+Elcd_drawing_tb_draw
+Z26 w1667901317
+R1
+R2
+R3
+R4
+Z27 8C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/tb_lcd_drawing.vhd
+Z28 FC:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/tb_lcd_drawing.vhd
+l0
+L7
+VQTXc<C5eZWfc7jACh^D1O3
+!s100 K@egRAPFFC4NzD:_CTgZo3
+R7
+32
+R22
+!i10b 1
+R23
+Z29 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/tb_lcd_drawing.vhd|
+Z30 !s107 C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/tb_lcd_drawing.vhd|
+!i113 1
+R12
+R13
+Aarq_lcd_drawing_tb_draw
+R1
+R2
+R3
+Z31 DEx4 work 19 lcd_drawing_tb_draw 0 22 QTXc<C5eZWfc7jACh^D1O3
+l46
+L10
+V=ACz:hkdMZi3lWMBC>l3[1
+!s100 bKCLohbMij=_]^ol:[E]T1
+R7
+32
+R22
+!i10b 1
+R23
+R29
+R30
 !i113 1
 R12
 R13

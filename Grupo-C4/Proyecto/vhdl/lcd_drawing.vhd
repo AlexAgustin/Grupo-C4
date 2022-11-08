@@ -55,7 +55,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
 		case EP is
 			when E0 => 	if DEL_SCREEN = '1' then ES <= E1;
-					elsif DRAW_FIG = '1' then ES <= E5;
+					elsif DRAW_FIG = '1' then ES <= E6;
 					else ES <= E0;
 					end if;
 
@@ -120,8 +120,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 	
 	DEC_CNPIX <= '1' when EP = E9 and DONE_COLOUR = '1' else '0';
 	INC_Y <= '1' when EP = E10 and ALL_PIX = '0' else '0';
-	OP_DRAWCOLOUR <= '1' when EP = E3 or EP = E7 else '0';
-	OP_SETCURSOR <= '1' when EP = E1 or EP = E5 else '0';
+	OP_DRAWCOLOUR <= '1' when EP = E3 or EP = E8 else '0';
+	OP_SETCURSOR <= '1' when EP = E1 or EP = E6 else '0';
 
 
 	-- #######################
@@ -160,13 +160,13 @@ architecture arq_lcd_drawing of lcd_drawing is
 			elsif CL_XY = '1' then cnt_YROW <= (others => '0');
 			end if;
 		end if;
-		YROW <= std_logic_vector(cnt_YROW);
 	end process CY;
-	
+	YROW <= std_logic_vector(cnt_YROW);	
 
 	--Multiplexor para numero de pixels
 	MUX_PIX <= (others => '0') when RESET_L='0' else
-			"10010110000000000" when SEL_DATA='0' else
+			"00000000000000011" when SEL_DATA='0' else
+			--"10010110000000000" when SEL_DATA='0' else
 			"00000000000000010";
 			-- "00000000001100100";
 
@@ -184,9 +184,9 @@ architecture arq_lcd_drawing of lcd_drawing is
 	--contador pÃÂ­xeles restantes: CNPIX 
 	CNPIX : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then u_QPIX <= (others =>'0');
+		if RESET_L = '0' then u_QPIX <= (others =>'0');ALL_PIX <= '0';
 		elsif CLK'event and CLK='1' then
-			if LD_CNPIX = '1' then u_QPIX <= MUX_PIX;
+			if LD_CNPIX = '1' then u_QPIX <= MUX_PIX; ALL_PIX <= '0';
 			elsif DEC_CNPIX = '1' and u_QPIX = "00000000000000001" 
 			then 
 				u_QPIX <= u_QPIX - 1;

@@ -1,0 +1,10 @@
+C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_drawing.vhd {1 {vcom -work work -2002 -explicit -stats=none C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_drawing.vhd
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity lcd_drawing
+-- Compiling architecture arq_lcd_drawing of lcd_drawing
+
+} {} {}}
