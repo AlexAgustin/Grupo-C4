@@ -10,7 +10,7 @@ entity DE1SOC_LCDLT24_1fas is
 --	CLOCK3_50	: in	std_logic;
 --	CLOCK4_50	: in	std_logic;
 	-- KEY ----------------
-	KEY 		: in	std_logic_vector(3 downto 0);
+	KEY 		: in	std_logic_vector(2 downto 0);
 --	KEY 		: in	std_logic_vector(3 downto 0);
 	-- SW ----------------
 	SW 			: in	std_logic_vector(2 downto 0);
@@ -141,10 +141,7 @@ begin
    clk <= CLOCK_50;
    reset_l<=KEY(0);
 	
-	LT24_CS_N_Int<='1';
    LT24_RD_N_Int<='1';
-	LT24_RS_Int<='0';
-	LT24_WR_N_Int<='1';
 
 	DEL_SCREEN <= not(KEY(1));
 	DRAW_FIG <= not(KEY(2));
@@ -214,10 +211,10 @@ begin
 		-- salidas
 		DONE_CURSOR => DONE_CURSOR,
 		DONE_COLOUR => DONE_COLOUR,
-		LCD_CS_N => LCD_CS_N,
-		LCD_RS => LCD_RS,
-		LCD_WR_N => LCD_WR_N,
-		LCD_DATA => LCD_DATA 
+		LCD_CS_N => LT24_CS_N_Int,
+		LCD_RS => LT24_RS_Int,
+		LCD_WR_N => LT24_WR_N_Int,
+		LCD_DATA => LT24_D_Int 
 		);
   
 END str;
