@@ -176,8 +176,8 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	D3 <= '1' when DDAT="011" else '0';
 	D4 <= '1' when DDAT="100" else '0';
 	D5 <= '1' when DDAT="101" else '0';
-	D6 <= '1' when DDAT="110" else '0';
-	D7 <= '1' when DDAT="111" else '0';
+	--D6 <= '1' when DDAT="110" else '0';
+	--D7 <= '1' when DDAT="111" else '0';
 
 	--MULTIPLEXOR: MUX
 	LCD_DATA <= x"0000" when CL_MUX ='1' else
