@@ -22,7 +22,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	-- Declaraci�n de se�ales
 	signal EP, ES: ESTADOS;
 	signal LD_INF,DEC_PIX,END_PIX,RS_DAT,RS_COM,CL_DAT,INC_DAT,LD_2C,CL_MUX: std_logic;
-	signal D0,D1,D2,D3,D4,D5,D6,D7: std_logic; -- gonzalo dijo que mejor direct por DDAT TODO: comentarlo en la reu ***************
+	signal D0,D1,D2,D3,D4,D5,D6,D7: std_logic; 
 	signal DDAT: unsigned(2 downto 0);
 	signal Q_PIX: unsigned(16 downto 0);
 	signal RXCOL: std_logic_vector(7 downto 0);
@@ -50,10 +50,10 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 			when E1 =>		ES<=E2;
 			when E2 =>		ES<=E3;
 			when E3 =>		if D0='1' OR D1='1' OR D3='1' OR D4='1' then ES<=E11;
-							elsif D2='1' then ES<=E10;
-							elsif D5='1' then ES<=E9;
-							else ES<=E4;
-							end if;
+								elsif D2='1' then ES<=E10;
+								elsif D5='1' then ES<=E9;
+								else ES<=E4;
+								end if;
 
 			when E4 =>		ES<=E5;
 			when E5 =>		ES<=E6;

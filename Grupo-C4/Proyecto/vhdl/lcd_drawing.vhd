@@ -33,17 +33,6 @@ architecture arq_lcd_drawing of lcd_drawing is
 	signal u_QPIX: unsigned(16 downto 0);
 
 
-	-- Valores de entrada constantes
-
-	signal col_0: std_logic_vector(15 downto 0) := x"0000"; -- := negro
-	signal col_1: std_logic_vector(15 downto 0) := x"c973"; -- := violeta
-	signal col_2: std_logic_vector(15 downto 0) := x"427f"; -- := azul
-	signal col_3: std_logic_vector(15 downto 0) := x"4605"; -- := verde
-	signal col_4: std_logic_vector(15 downto 0) := x"f885"; -- := rojo
-	signal col_5: std_logic_vector(15 downto 0) := x"fca8"; -- := naranja
-	signal col_6: std_logic_vector(15 downto 0) := x"ffca"; -- := amarillo
-	signal col_7: std_logic_vector(15 downto 0) := x"ffff"; -- := blanco
-
 
 	begin
 
@@ -52,7 +41,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR) begin
+	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, ALL_PIX) begin
 		case EP is
 			when E0 => 	if DEL_SCREEN = '1' then ES <= E1;
 					elsif DRAW_FIG = '1' then ES <= E6;
@@ -144,7 +133,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	begin
 		if RESET_L = '0' then RGB <= (others => '0'); -- clear registro con seÃÂÃÂ±al reset
 		elsif CLK'event and CLK='1' then 			   -- flanco de reloj
-			if LD_XY = '1' then RGB <= DRGB;
+			if LD_RGB = '1' then RGB <= DRGB;
 			end if;
 		end if;
 	end process RC;
@@ -205,13 +194,13 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	-- Multiplexor para RGB   
 	DRGB <= (others => '0') when RESET_L='0' else
-	       col_0 when COLOUR_CODE = "000" else
-	       col_1 when COLOUR_CODE = "001" else
-	       col_2 when COLOUR_CODE = "010" else
-	       col_3 when COLOUR_CODE = "011" else
-	       col_4 when COLOUR_CODE = "100" else
-	       col_5 when COLOUR_CODE = "101" else
-	       col_6 when COLOUR_CODE = "110" else
-	       col_7;
+	       x"0000" when COLOUR_CODE = "000" else -- negro
+	       x"c973" when COLOUR_CODE = "001" else -- violeta
+	       x"427f" when COLOUR_CODE = "010" else -- azul
+	       x"4605" when COLOUR_CODE = "011" else -- verde
+	       x"f885" when COLOUR_CODE = "100" else -- rojo
+	       x"fca8" when COLOUR_CODE = "101" else -- naranja
+	       x"ffca" when COLOUR_CODE = "110" else -- amarillo
+	       x"ffff"; --blanco
 
 end arq_lcd_drawing; 
