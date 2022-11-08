@@ -79,7 +79,7 @@ component LCD_DRAWING IS
       XCOL: out std_logic_vector(7 downto 0);
       YROW: out std_logic_vector(8 downto 0);
       RGB: out std_logic_vector(15 downto 0);
-      NUM_PIX: out std_logic_vector(16 downto 0)
+      NUM_PIX: out unsigned(16 downto 0)
 		--reset,CLK		: in std_logic;
 		--DEL_SCREEN		: in std_logic;
 		--DRAW_FIG		: in std_logic;
@@ -126,7 +126,27 @@ end component;
   signal  LT24_WR_N_Int        :  std_logic;
   signal  LT24_RD_N_Int        :  std_logic;
   signal  LT24_D_Int           :  std_logic_vector(15 downto 0);
+  
+  signal	DONE_CURSOR :  std_logic;
+  signal	DONE_COLOUR :  std_logic;
+  signal	COLOUR_CODE :  std_logic_vector(2 downto 0);
 
+  signal	OP_SETCURSOR :  std_logic;
+  signal	OP_DRAWCOLOUR :  std_logic;
+  signal	XCOL :  std_logic_vector(7 downto 0);
+  signal	YROW :  std_logic_vector(8 downto 0);
+  signal	RGB :  std_logic_vector(15 downto 0);
+  signal	NUM_PIX : unsigned(16 downto 0);
+
+  signal LCD_CS_N :  std_logic;
+  signal	LCD_RS :  std_logic;
+  signal	LCD_WR_N :  std_logic;
+  signal	LCD_DATA: std_logic_vector(15 downto 0);
+  signal	LCD_Init_Done :  std_logic;
+  
+  signal DEL_SCREEN : std_logic;
+  signal DRAW_FIG : std_logic;
+  
 begin 
    clk <= CLOCK_50;
    reset <= not(KEY(0));
@@ -134,6 +154,10 @@ begin
 	
    LT24_RD_N_Int<='1';
 
+	DEL_SCREEN <= KEY(1);
+	DRAW_FIG <= KEY(2);
+	COLOUR_CODE <= SW(2 downto 0);
+	
     
 -- Osagaien elkarketa        --------------    
 
@@ -165,26 +189,43 @@ begin
 
   O2_LCDDRAW: LCD_DRAWING
   port map (
+		CLK =>  clk,
+		RESET_L => reset_l,
 
+      DEL_SCREEN => DEL_SCREEN,
+		DRAW_FIG => DRAW_FIG, 
+		DONE_CURSOR => DONE_CURSOR,
+		DONE_COLOUR =>  DONE_COLOUR,
+      COLOUR_CODE => COLOUR_CODE,
+
+      OP_SETCURSOR => OP_SETCURSOR,
+		OP_DRAWCOLOUR => OP_DRAWCOLOUR,
+      XCOL => XCOL,
+      YROW => YROW,
+      RGB => RGB,
+      NUM_PIX => NUM_PIX
 		);
 	
   O3_LCDCONT: LCD_CTRL
   port map (
-        reset
-        CLK
-		LCD_INIT_DONE
-		OP_SETCURSOR
-		XCOL
-		YROW
-		OP_DRAWCOLOUR
-		RGB
-		NUMPIX
-		DONE_CURSOR
-		DONE_COLOUR
-		LCD_CSN
-		LCD_RS
-		LCD_WR_N
-		LCD_DATA
+		-- entradas
+      RESET_L => reset_l,
+      CLK	=> clk,
+		LCD_INIT_DONE	=> LT24_Init_Done,
+		OP_SETCURSOR	=> OP_SETCURSOR,
+		XCOL	=>	XCOL,
+		YROW => YROW,
+		OP_DRAWCOLOUR => OP_DRAWCOLOUR,
+		RGB => RGB,
+		NUM_PIX => NUM_PIX,
+		
+		-- salidas
+		DONE_CURSOR => DONE_CURSOR,
+		DONE_COLOUR => DONE_COLOUR,
+		LCD_CS_N => LCD_CS_N,
+		LCD_RS => LCD_RS,
+		LCD_WR_N => LCD_WR_N,
+		LCD_DATA => LCD_DATA 
 		);
   
 END str;
