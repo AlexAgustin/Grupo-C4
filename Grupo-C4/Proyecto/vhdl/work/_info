@@ -9,7 +9,7 @@ z2
 cModel Technology
 dC:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4-main/Grupo-C4/Proyecto/vhdl
 Elcd_ctrl
-Z0 w1667854146
+Z0 w1667897097
 Z1 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
 Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z3 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
@@ -22,9 +22,9 @@ VNXjWZN30`X66I6eFSRLP62
 !s100 92?Z:FY1QdY]ec<[Gzm>Y2
 Z7 OV;C;10.5b;63
 32
-Z8 !s110 1667854148
+Z8 !s110 1667898057
 !i10b 1
-Z9 !s108 1667854148.000000
+Z9 !s108 1667898057.000000
 Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_ctrl.vhd|
 Z11 !s107 C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_ctrl.vhd|
 !i113 1
@@ -37,8 +37,8 @@ R3
 DEx4 work 8 lcd_ctrl 0 22 NXjWZN30`X66I6eFSRLP62
 l32
 L17
-VzjD5MHe<B^edbLLH?=ZJ62
-!s100 6XmX[LRRQ=e?:h<LBA=>T3
+V^eJPYfJA5jfznjC12Sej91
+!s100 KiMkI2831a:3>_4N@N4aI2
 R7
 32
 R8
@@ -50,7 +50,7 @@ R11
 R12
 R13
 Elcd_ctrl_tb
-Z14 w1667853680
+Z14 w1667898054
 R1
 R2
 R3
@@ -63,11 +63,11 @@ VUn1m>69P[M9633k;gjnm73
 !s100 IzFSaE^DNiQ]DhmBe0okj3
 R7
 32
-Z17 !s110 1667854149
+R8
 !i10b 1
-Z18 !s108 1667854149.000000
-Z19 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_ctrl_tb.vhd|
-Z20 !s107 C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_ctrl_tb.vhd|
+R9
+Z17 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_ctrl_tb.vhd|
+Z18 !s107 C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/vhdl/lcd_ctrl_tb.vhd|
 !i113 1
 R12
 R13
@@ -75,18 +75,18 @@ Aarq_lcd_ctrl_tb
 R1
 R2
 R3
-Z21 DEx4 work 11 lcd_ctrl_tb 0 22 Un1m>69P[M9633k;gjnm73
+Z19 DEx4 work 11 lcd_ctrl_tb 0 22 Un1m>69P[M9633k;gjnm73
 l39
 L8
-Z22 VkE_?`BDQUVE;8[U@3;NLO1
-Z23 !s100 [Uo4o3mZaQ6RilW_1i8;:1
+VX2mfNKP@MQo4:z=DjkUJ>3
+!s100 zm<><nag:SVeA98fDTfi10
 R7
 32
-R17
+R8
 !i10b 1
+R9
+R17
 R18
-R19
-R20
 !i113 1
 R12
 R13

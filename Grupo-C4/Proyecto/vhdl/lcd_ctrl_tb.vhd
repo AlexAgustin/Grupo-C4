@@ -69,28 +69,86 @@ architecture arq_lcd_ctrl_tb of lcd_ctrl_tb is
 		OP_SETCURSOR<='1';	
 
 		XCOL<="01001110";
-		YROW<="000101010";
+		YROW<="010100000";
 
 		wait for 20 ns;
 
 		OP_SETCURSOR<='0';
-		LCD_Init_Done<='0';
 
 		wait for 420 ns;
 
 		NUM_PIX<='0'&x"0002";
-		RGB<=x"1111";
+		RGB<=x"FFFF";
 		OP_DRAWCOLOUR<='1';
-		LCD_Init_Done<='1';
 	
 		wait for 20 ns;
 
 		OP_DRAWCOLOUR<='0';
-		LCD_Init_Done<='0';
 
-		wait for 420 ns;
+		wait for 240 ns;
+--iteracion 1 terminada
+		OP_SETCURSOR<='1';	
 
-		
+		XCOL<="01001111";
+		YROW<="000000011";
+
+		wait for 20 ns;
+
+		OP_SETCURSOR<='0';
+
+		wait for 420 ns; -------cursor
+
+		OP_SETCURSOR<='1';	
+
+		XCOL<="01010000";
+		YROW<="000000100";
+
+		wait for 20 ns;
+
+		OP_SETCURSOR<='0';
+
+		wait for 420 ns;----- cursor
+
+		OP_SETCURSOR<='1';	
+
+		XCOL<="01010001";
+		YROW<="000000101";
+
+		wait for 20 ns;
+
+		OP_SETCURSOR<='0';
+
+		wait for 420 ns; ----cursor
+
+		NUM_PIX<='0'&x"0002";
+		RGB<=x"AAAA";
+		OP_DRAWCOLOUR<='1';
+	
+		wait for 20 ns;
+
+		OP_DRAWCOLOUR<='0';
+
+		wait for 240 ns; -------drawcolor
+
+		NUM_PIX<='0'&x"0002";
+		RGB<=x"BBBB";
+		OP_DRAWCOLOUR<='1';
+	
+		wait for 20 ns;
+
+		OP_DRAWCOLOUR<='0';
+
+		wait for 240 ns; --------drawcolor
+
+		NUM_PIX<='0'&x"0002";
+		RGB<=x"CCCC";
+		OP_DRAWCOLOUR<='1';
+	
+		wait for 20 ns;
+
+		OP_DRAWCOLOUR<='0';
+
+		wait for 240 ns; ---------drawcolor
 	end process;
 
 end arq_lcd_ctrl_tb;

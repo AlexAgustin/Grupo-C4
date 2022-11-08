@@ -147,7 +147,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	--CONTADOR DECREMENTAL PÍXELES: CNPIX
 	CNPIX: process(CLK,RESET_L)
 	begin
-		if RESET_L = '0' then Q_PIX <= (others => '0'); -- clear  con se�al reset
+		if RESET_L = '0' then Q_PIX <= (others => '0'); END_PIX<='0'; -- clear  con se�al reset
 		elsif CLK'event and CLK='1' then				-- flanco reloj
 			if LD_INF='1' then Q_PIX<=NUM_PIX; END_PIX<='0';
 			elsif DEC_PIX='1' and Q_PIX="00000000000000001" then Q_PIX<= Q_PIX-1; END_PIX<='1';
