@@ -140,8 +140,8 @@ architecture str of DE1SOC_LCDLT24_1fas is
 		COLOUR_CODE <= SW(2 downto 0);
 		LEDR(9)  <= LT24_Init_Done; --para comprobar visualmente q funciona
 		
-	-- Osagaien elkarketa        --------------    
-	--    señal de entrada del componente     => señal a la que se va ha enlazar
+		-- Osagaien elkarketa        --------------    
+		--    señal de entrada del componente     => señal a la que se va ha enlazar
 		O1_SETUP:LT24Setup 
 		port map(
 				clk          => clk,
