@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity DE1SOC_LCDLT24_1fas is
 	port(
-	--  CLOCK ----------------
+		--  CLOCK ----------------
 		CLOCK_50	: in	std_logic;
 	--	CLOCK2_50	: in	std_logic;
 	--	CLOCK3_50	: in	std_logic;
