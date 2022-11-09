@@ -48,24 +48,24 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to KEY[2]
 #============================================================
 # LED
 #============================================================
-# set_location_assignment PIN_V16 -to LEDR[0]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[0]
-# set_location_assignment PIN_W16 -to LEDR[1]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[1]
-# set_location_assignment PIN_V17 -to LEDR[2]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[2]
-# set_location_assignment PIN_V18 -to LEDR[3]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[3]
-# set_location_assignment PIN_W17 -to LEDR[4]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[4]
-# set_location_assignment PIN_W19 -to LEDR[5]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[5]
-# set_location_assignment PIN_Y19 -to LEDR[6]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[6]
-# set_location_assignment PIN_W20 -to LEDR[7]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[7]
-# set_location_assignment PIN_W21 -to LEDR[8]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[8]
+set_location_assignment PIN_V16 -to LEDR[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[0]
+set_location_assignment PIN_W16 -to LEDR[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[1]
+set_location_assignment PIN_V17 -to LEDR[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[2]
+set_location_assignment PIN_V18 -to LEDR[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[3]
+set_location_assignment PIN_W17 -to LEDR[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[4]
+set_location_assignment PIN_W19 -to LEDR[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[5]
+set_location_assignment PIN_Y19 -to LEDR[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[6]
+set_location_assignment PIN_W20 -to LEDR[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[7]
+set_location_assignment PIN_W21 -to LEDR[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[8]
 set_location_assignment PIN_Y21 -to LEDR[9]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LEDR[9]
 
@@ -572,6 +572,8 @@ set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VHDL_FILE lcd_drawing.vhd
+set_global_assignment -name VHDL_FILE lcd_ctrl.vhd
 set_global_assignment -name VHDL_FILE LCD_SetUp/romsinc.vhd
 set_global_assignment -name VHDL_FILE LCD_SetUp/LT24SetUp.vhd
 set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitReset.vhd
@@ -579,6 +581,4 @@ set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitLCD.vhd
 set_global_assignment -name VHDL_FILE LCD_SetUp/Init128rom_pkg.vhd
 set_global_assignment -name SDC_FILE DE1SOC_LCDLT24_1fas.sdc
 set_global_assignment -name VHDL_FILE DE1SOC_LCDLT24_1fas.vhd
-set_global_assignment -name VHDL_FILE ../vhdl/lcd_drawing.vhd
-set_global_assignment -name VHDL_FILE ../vhdl/lcd_ctrl.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
