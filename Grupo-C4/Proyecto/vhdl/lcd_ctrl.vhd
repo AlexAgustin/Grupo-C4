@@ -53,7 +53,7 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 								elsif D2='1' then ES<=E10;
 								elsif D5='1' then ES<=E9;
 								elsif D6='1' or D7='1' then ES<=E4;
-								else ES<=E4; --else insalcanzable, siempre habra un D activo.
+								else ES<=E4; --else inalcanzable, siempre habra un D activo.
 								end if;
 
 			when E4 =>		ES<=E5;
