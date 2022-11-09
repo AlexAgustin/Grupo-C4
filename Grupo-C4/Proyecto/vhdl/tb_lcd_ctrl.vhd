@@ -63,6 +63,7 @@ architecture arq_tb_lcd_ctrl of tb_lcd_ctrl is
 	process
 	begin
 		-- reset
+		RESET_L<='0';
 		wait for 20 ns;
 		RESET_L<='1';
 		LCD_Init_Done<='1';
