@@ -21,7 +21,7 @@ end lcd_drawing;
 architecture arq_lcd_drawing of lcd_drawing is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (E0, E1, E2, E3, E4, E5, E6, E7, E8, E9, E10, E11);
+	type estados is (E0, E1, E2, E3, E4, E5, E6, E7);
 	signal EP, ES : estados;
 
 	-- DeclaraciÃÂ³n de seÃÂ±ales de control
@@ -45,43 +45,35 @@ architecture arq_lcd_drawing of lcd_drawing is
 	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, ALL_PIX) begin
 		case EP is
 			when E0 => 		if DEL_SCREEN = '1' then ES <= E1;
-							elsif DRAW_FIG = '1' then ES <= E6;
+							elsif DRAW_FIG = '1' then ES <= E4;
 							else ES <= E0;
 							end if;
-
-			when E1 =>  	ES <= E2;
 			
-			when E2 =>		if DONE_CURSOR = '0' then ES <= E2;
+			when E1 =>		if DONE_CURSOR = '0' then ES <= E1;
+							else ES <= E2;
+							end if;
+
+			when E2 =>		if DONE_COLOUR = '0' then ES <= E2;
 							else ES <= E3;
 							end if;
-					
-			when E3 => 		ES <= E4;
 
-			when E4 =>		if DONE_COLOUR = '0' then ES <= E4;
-							else ES <= E5;
-							end if;
-
-			when E5 =>		if DEL_SCREEN = '1' then ES <= E5;
+			when E3 =>		if DEL_SCREEN = '1' then ES <= E3;
 							else ES <= E0;
 							end if;
 					
-			when E6 => 		ES <= E7;
-
-			when E7 => 		if DONE_CURSOR = '0' then ES <= E7;
-							else ES <= E8;
+			when E4 => 		if DONE_CURSOR = '0' then ES <= E4;
+							else ES <= E5;
 							end if;
-
-			when E8 => 		ES <= E9;
 			
-			when E9 => 		if DONE_COLOUR = '0' then ES <= E9;
-							else ES <= E10;
+			when E5 => 		if DONE_COLOUR = '0' then ES <= E5;
+							else ES <= E6;
 							end if;
 
-			when E10 => 	if ALL_PIX = '0' then ES <= E6;
-							else ES <= E11;
+			when E6 => 		if ALL_PIX = '0' then ES <= E4;
+							else ES <= E7;
 							end if;
 
-			when E11 =>		if DRAW_FIG = '1' then ES <= E11;
+			when E7 =>		if DRAW_FIG = '1' then ES <= E7;
 							else ES <= E0;
 							end if;
 
@@ -107,10 +99,11 @@ architecture arq_lcd_drawing of lcd_drawing is
 	CL_XY <= '1' when EP = E0 and DEL_SCREEN = '1' else '0';
 	LD_CN <= '1' when SEL_DATA = '1' or CL_XY = '1' else '0';
 	
-	DEC_CNPIX <= '1' when EP = E9 and DONE_COLOUR = '1' else '0';
-	INC_Y <= '1' when EP = E10 and ALL_PIX = '0' else '0';
-	OP_DRAWCOLOUR <= '1' when EP = E3 or EP = E8 else '0';
-	OP_SETCURSOR <= '1' when EP = E1 or EP = E6 else '0';
+	DEC_CNPIX <= '1' when EP = E5 and DONE_COLOUR = '1' else '0';
+	INC_Y <= '1' when EP = E6 and ALL_PIX = '0' else '0';
+	OP_DRAWCOLOUR <= '1' when EP = E2 or EP = E5 else '0';
+	OP_SETCURSOR <= '1' when EP = E1 or EP = E4 else '0';
+
 
 
 	-- #######################
