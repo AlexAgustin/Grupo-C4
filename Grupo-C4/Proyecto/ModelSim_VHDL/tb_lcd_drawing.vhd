@@ -150,7 +150,7 @@ begin
 	DEL_SCREEN <= '1';
 
 	wait for 40 ns;
-    DONE_CURSOR <= '1';
+	DONE_CURSOR <= '1';
 
 	wait for 20 ns;
 	DONE_CURSOR <= '0';
