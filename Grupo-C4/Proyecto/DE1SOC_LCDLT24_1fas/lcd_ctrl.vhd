@@ -52,7 +52,8 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 			when E3 =>		if D0='1' OR D1='1' OR D3='1' OR D4='1' then ES<=E11;
 								elsif D2='1' then ES<=E10;
 								elsif D5='1' then ES<=E9;
-								else ES<=E4;
+								elsif D6='1' or D7='1' then ES<=E4;
+								else ES<=E4; --else inalcanzable, siempre habra un D activo.
 								end if;
 
 			when E4 =>		ES<=E5;
@@ -176,8 +177,8 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	D3 <= '1' when DDAT="011" else '0';
 	D4 <= '1' when DDAT="100" else '0';
 	D5 <= '1' when DDAT="101" else '0';
-	--D6 <= '1' when DDAT="110" else '0';
-	--D7 <= '1' when DDAT="111" else '0';
+	D6 <= '1' when DDAT="110" else '0';
+	D7 <= '1' when DDAT="111" else '0';
 
 	--MULTIPLEXOR: MUX
 	LCD_DATA <= x"0000" when CL_MUX ='1' else
