@@ -76,11 +76,11 @@ architecture arq_tb_lcd_ctrl of tb_lcd_ctrl is
 		XCOL<="01001110";
 		YROW<="010100000";
 
-		wait for 20 ns;
+		wait for 390 ns;
 
 		OP_SETCURSOR<='0';
 
-		wait for 420 ns;
+		wait for 30 ns;
 		
 -------------------------------------------------
 
@@ -90,11 +90,11 @@ architecture arq_tb_lcd_ctrl of tb_lcd_ctrl is
 		RGB<=x"FFFF";
 		OP_DRAWCOLOUR<='1';
 	
-		wait for 20 ns;
+		wait for 230 ns;
 
 		OP_DRAWCOLOUR<='0';
 
-		wait for 240 ns;
+		wait for 30 ns;
 
 -------------------------------------------------
 
@@ -104,11 +104,11 @@ architecture arq_tb_lcd_ctrl of tb_lcd_ctrl is
 		XCOL<="01001111";
 		YROW<="000000011";
 
-		wait for 20 ns;
+		wait for 390 ns;
 
 		OP_SETCURSOR<='0';
 
-		wait for 420 ns; -------cursor
+		wait for 30 ns; -------cursor
 
 -------------------------------------------------
 
@@ -119,11 +119,11 @@ architecture arq_tb_lcd_ctrl of tb_lcd_ctrl is
 		XCOL<="01010000";
 		YROW<="000000100";
 
-		wait for 20 ns;
+		wait for 390 ns;
 
 		OP_SETCURSOR<='0';
 
-		wait for 420 ns;----- cursor
+		wait for 30 ns;----- cursor
 		
 -------------------------------------------------
 
@@ -134,11 +134,11 @@ architecture arq_tb_lcd_ctrl of tb_lcd_ctrl is
 		XCOL<="01010001";
 		YROW<="000000101";
 
-		wait for 20 ns;
+		wait for 390 ns;
 
 		OP_SETCURSOR<='0';
 
-		wait for 420 ns; ----cursor
+		wait for 30 ns; ----cursor
 		
 -------------------------------------------------
 
@@ -148,12 +148,12 @@ architecture arq_tb_lcd_ctrl of tb_lcd_ctrl is
 		RGB<=x"AAAA";
 		OP_DRAWCOLOUR<='1';
 	
-		wait for 20 ns;
-		
+		wait for 230 ns;
 
 		OP_DRAWCOLOUR<='0';
 
-		wait for 240 ns; -------drawcolor
+		wait for 30 ns;
+ -------drawcolor
 		
 -------------------------------------------------
 
@@ -163,11 +163,12 @@ architecture arq_tb_lcd_ctrl of tb_lcd_ctrl is
 		RGB<=x"BBBB";
 		OP_DRAWCOLOUR<='1';
 	
-		wait for 20 ns;
+		wait for 230 ns;
 
 		OP_DRAWCOLOUR<='0';
 
-		wait for 240 ns; --------drawcolor
+		wait for 30 ns;
+ --------drawcolor
 		
 -------------------------------------------------
 
@@ -176,12 +177,14 @@ architecture arq_tb_lcd_ctrl of tb_lcd_ctrl is
 		NUM_PIX<='0'&x"0002";
 		RGB<=x"CCCC";
 		OP_DRAWCOLOUR<='1';
-	
-		wait for 20 ns;
+
+		wait for 230 ns;
 
 		OP_DRAWCOLOUR<='0';
 
-		wait for 240 ns; ---------drawcolor
+		wait for 30 ns;
+
+		 ---------drawcolor
 	end process;
 
 end arq_tb_lcd_ctrl;
