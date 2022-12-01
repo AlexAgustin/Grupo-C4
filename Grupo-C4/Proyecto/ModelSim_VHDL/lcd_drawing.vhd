@@ -21,13 +21,21 @@ end lcd_drawing;
 architecture arq_lcd_drawing of lcd_drawing is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (E0, E1, E2, E3, E4, E5, E6, E7);
+	type estados is (INICIO, DELCURSOR, DELCOLOUR, DELWAIT, DRAWCURSOR, DRAWCOLOUR, DRAWREPEAT, DRAWWAIT);
 	signal EP, ES : estados;
 
 	-- DeclaraciÃÂ³n de seÃÂ±ales de control
-	signal SEL_DATA, LD_XY, CL_XY, INC_Y, LD_CN, LD_CNPIX, DEC_CNPIX, ALL_PIX: std_logic :='0';
+	signal SELREV, LD_X, INC_X, CL_X, LD_Y, INC_Y, CL_Y, LD_CN, DEC_NUMPIX, LD_CNPIX, DEC_CNPIX, ALL_PIX : std_logic := '0';
+	signal LD_MIRROR, CL_MIRROR, ISMIRROR, LD_DIAG, CL_DIAG, ISDIAG, LD_TRIAN, CL_TRIAN, ISTRIAN, INC_JUMP, CL_JUMP, LD_VERT, CL_VERT, ISVERT, LD_HORIZ, CL_HORIZ, ISHORIZ: std_logic := '0';
+	signal RESX, RESY, NOTJUMP, NOTMIRX, NOTMIRY, NOTMIRROR : std_logic := '0';
+	
+	signal DX: unsigned(7 downto 0);
+	signal RESX: unsigned(7 downto 0);
+	signal DY: unsigned(8 downto 0);
+	signal RESY: unsigned(8 downto 0);
 	signal DRGB: std_logic_vector(15 downto 0);
 	signal MUX_PIX: unsigned(16 downto 0);
+	signal QJUMP: std_logic_vector(1 downto 0);
 	
 	-- DeclaraciÃÂ³n de enteros sin signo para contadores
 	signal cnt_YROW: unsigned(8 downto 0);
@@ -44,40 +52,48 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
 	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, ALL_PIX) begin
 		case EP is
-			when E0 => 		if DEL_SCREEN = '1' then ES <= E1;
-							elsif DRAW_FIG = '1' then ES <= E4;
-							else ES <= E0;
-							end if;
+			when INICIO => 		if DEL_SCREEN = '1' then ES <= DELCURSOR;
+								elsif (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1') then ES <= DRAWCURSOR;
+								else ES <= INICIO;
+								end if;
 			
-			when E1 =>		if DONE_CURSOR = '0' then ES <= E1;
-							else ES <= E2;
-							end if;
+			when DELCURSOR =>	if DONE_CURSOR = '0' then ES <= DELCURSOR;
+								else ES <= DELCOLOUR;
+								end if;
 
-			when E2 =>		if DONE_COLOUR = '0' then ES <= E2;
-							else ES <= E3;
-							end if;
+			when DELCOLOUR =>	if DONE_COLOUR = '0' then ES <= DELCOLOUR;
+								else ES <= DELWAIT;
+								end if;
 
-			when E3 =>		if DEL_SCREEN = '1' then ES <= E3;
-							else ES <= E0;
-							end if;
+			when DELWAIT =>		if ISHORIZ = '1' and HORIZ = '0' then ES <= INICIO;
+								elsif ISHORIZ = '1' and HORIZ = '1' then ES <= DELWAIT;
+								elsif DEL_SCREEN = '1' then ES <= DELWAIT;
+								else ES <= INICIO;
+								end if;
 					
-			when E4 => 		if DONE_CURSOR = '0' then ES <= E4;
-							else ES <= E5;
-							end if;
+			when DRAWCURSOR => 	if DONE_CURSOR = '0' then ES <= DRAWCURSOR;
+								else ES <= DRAWCOLOUR;
+								end if;
 			
-			when E5 => 		if DONE_COLOUR = '0' then ES <= E5;
-							else ES <= E6;
-							end if;
+			when DRAWCOLOUR => 	if DONE_COLOUR = '0' then ES <= DRAWCOLOUR;
+								else ES <= DRAWREPEAT;
+								end if;
 
-			when E6 => 		if ALL_PIX = '0' then ES <= E4;
-							else ES <= E7;
-							end if;
+			when DRAWREPEAT => 	if ALL_PIX = '0' then ES <= DRAWCURSOR;
+								elsif MIRROR = '1' and NOTMIRROR = '0' then ES <= DRAWCURSOR;
+								else ES <= DRAWWAIT;
+								end if;
 
-			when E7 =>		if DRAW_FIG = '1' then ES <= E7;
-							else ES <= E0;
-							end if;
+			when DRAWWAIT =>	if    ISMIRROR = '1' and MIRROR = '1' then ES <= DRAWWAIT;
+								elsif ISMIRROR = '1' and MIRROR = '0' then ES <= DRAWCURSOR;
+								elsif ISDIAG = '1' and DIAG = '1' then ES <= DRAWWAIT;
+								elsif ISVERT = '1' and VERT = '1' then ES <= DRAWWAIT;
+								elsif ISTRIAN = '1' and TRIAN = '1' then ES <= DRAWWAIT;								
+								elsif DRAW_FIG = '1' then ES <= DRAWWAIT;
+								else ES <= INICIO;
+								end if;
 
-			when others =>  ES <= E0; -- inalcanzable
+			when others =>  	ES <= INICIO; -- inalcanzable
 		end case;
 	end process SWSTATE;
 
