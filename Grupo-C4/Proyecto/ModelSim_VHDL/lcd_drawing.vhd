@@ -6,7 +6,7 @@ entity lcd_drawing is
 	port(
 		CLK, RESET_L: in std_logic;
 
-		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR: in std_logic;
+		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, HORIZ, VERT, DIAG, MIRROR, TRIAN, PATRON: in std_logic;
 		COLOUR_CODE: in std_logic_vector(2 downto 0);
 
 		OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
@@ -36,9 +36,13 @@ architecture arq_lcd_drawing of lcd_drawing is
 	signal DRGB: std_logic_vector(15 downto 0);
 	signal MUX_PIX: unsigned(16 downto 0);
 	signal QJUMP: std_logic_vector(1 downto 0);
+	signal REVX: unsigned(7 downto 0);
+	signal REVY: unsigned(8 downto 0);
 	
 	-- DeclaraciÃÂ³n de enteros sin signo para contadores
 	signal cnt_YROW: unsigned(8 downto 0);
+	signal cnt_XCOL: unsigned(7 downto 0);
+	signal cnt_JUMP: unsigned(1 downto 0);
 	signal u_QPIX: unsigned(16 downto 0);
 
 
@@ -126,77 +130,51 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- ## UNIDAD DE PROCESO ##
 	-- #######################
 
-	-- REG XCOL: RX
-	RX : process(CLK, RESET_L)
+	--Multiplexor DX
+	DX <= x"46" when SELSERV = '0' else
+			 REVX;
+
+	--Contador XCOL
+	CX : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then XCOL <= (others => '0'); -- clear registro con seÃÂÃÂ±al reset
-		elsif CLK'event and CLK='1' then 			   -- flanco de reloj
-			if LD_XY = '1' then XCOL <= "01000110";
-			elsif CL_XY = '1' then XCOL <= (others => '0');
+		if RESET_L = '0' then cnt_XCOL <= (others =>'0');
+		elsif CLK'event and CLK='1' then
+			if LD_X = '1' then cnt_XCOL <= DX;
+			elsif INC_X = '1' then cnt_XCOL <= cnt_XCOL + 1;
+			elsif CL_X = '1' then cnt_XCOL <= (others => '0');
 			end if;
 		end if;
-	end process RX;
+	end process CY;
+	XCOL <= std_logic_vector(cnt_XCOL);	
 
-	-- REG RGB: RC
-	RC : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then RGB <= (others => '0'); -- clear registro con seÃÂÃÂ±al reset
-		elsif CLK'event and CLK='1' then 			   -- flanco de reloj
-			if LD_CN = '1' then RGB <= DRGB;
-			end if;
-		end if;
-	end process RC;
-
+	--Multiplexor DY
+	DY <= '0' & x"6E" when SELSERV = '0' else
+			 REVY;
 
 	-- Contador YROW : CY
 	CY : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then cnt_YROW <= (others =>'0');
 		elsif CLK'event and CLK='1' then
-			if LD_XY = '1' then cnt_YROW <= "001101110";
+			if LD_Y = '1' then cnt_YROW <= DY;
 			elsif INC_Y = '1' then cnt_YROW <= cnt_YROW + 1;
-			elsif CL_XY = '1' then cnt_YROW <= (others => '0');
+			elsif CL_Y = '1' then cnt_YROW <= (others => '0');
 			end if;
 		end if;
 	end process CY;
-	YROW <= std_logic_vector(cnt_YROW);	
+	YROW <= std_logic_vector(cnt_YROW);
 
-	--Multiplexor para numero de pixels
-	MUX_PIX <= "00000000000000011" when SEL_DATA='0' else -- tb modelsim
-			-- "10010110000000000" when SEL_DATA='0' else -- quartus
-				"00000000000000010"; -- tb modelsym
-			-- "00000000001100100"; --quartus
-
-
-	-- REG NUM_PIX: RNPIX
-	RNPIX : process(CLK, RESET_L)
+	-- Contador JUMP : CJUMP
+	CY : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then NUM_PIX <= (others => '0');
-		elsif CLK'event and CLK='1' then 			   
-			if LD_CN = '1' then NUM_PIX <= MUX_PIX;
-			end if;
-		end if;
-	end process RNPIX;
-
-	--contador pÃÂ­xeles restantes: CNPIX 
-	CNPIX : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then u_QPIX <= (others =>'0');ALL_PIX <= '0';
+		if RESET_L = '0' then cnt_YROW <= (others =>'0');
 		elsif CLK'event and CLK='1' then
-			if LD_CNPIX = '1' then u_QPIX <= MUX_PIX; ALL_PIX <= '0';
-			elsif DEC_CNPIX = '1' and u_QPIX = "00000000000000001" 
-			then 
-				u_QPIX <= u_QPIX - 1;
-				ALL_PIX <= '1';
-			elsif DEC_CNPIX = '1' and u_QPIX = "00000000000000000" 
-			then 
-				u_QPIX <= "11111111111111111";
-				ALL_PIX <= '0';
-			elsif DEC_CNPIX = '1' then u_QPIX <= u_QPIX - 1; ALL_PIX<='0';
+			if INC_JUMP = '1' then cnt_JUMP <= cnt_JUMP + 1;
+			elsif CL_JUMP = '1' then cnt_JUMP <= (others => '0');
 			end if;
 		end if;
-	end process CNPIX;
-	
+	end process CY;
+	QJUMP <= std_logic_vector(cnt_JUMP);
 
 	-- Multiplexor para RGB   
 	DRGB <= x"0000" when COLOUR_CODE = "000" else -- negro
@@ -207,5 +185,123 @@ architecture arq_lcd_drawing of lcd_drawing is
 			x"fca8" when COLOUR_CODE = "101" else -- naranja
 			x"ffca" when COLOUR_CODE = "110" else -- amarillo
 			x"ffff"; --blanco
+
+	-- REG RGB: RC
+	RC : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then RGB <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if LD_CN = '1' then RGB <= DRGB;
+			end if;
+		end if;
+	end process RC;
+
+	-- Multiplexor para MUX_NPIX   
+	MUX_NPIX <= '1'&x"2C00" when SEL_DATA = "00" else
+		    '0'&x"0064" when SEL_DATA = "01" else
+		    '0'&x"0334" when SEL_DATA = "10" else
+		    '0'&x"0005";
+
+	-- Contador NUM_PIX : CNPIX
+	CNPIX : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_NPIX <= (others =>'0');
+		elsif CLK'event and CLK='1' then
+			if LD_CNPIX = '1' then cnt_NPIX <= MUX_NPIX;
+			elsif DEC_CNPIX = '1' then cnt_NPIX <= cnt_NPIX - 1;
+			end if;
+		end if;
+	end process CNPIX;
+	NUM_PIX <= std_logic_vector(cnt_NPIX);
+
+	-- Multiplexor para MUX_LINES   
+	MUX_LINES <= '0'&x"0000" when SEL_DATA = "00" else
+		    '0'&x"0064" when SEL_DATA = "01" else
+		    '0'&x"0000" when SEL_DATA = "10" else
+		    '0'&x"0140";
+
+	-- Contador NUM_PIX : CLINES
+	CLINES : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_LINES <= (others =>'0'); ALL_PIX <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_CNPIX = '1' then
+				cnt_LINES <= MUX_LINES;
+				ALL_PIX <= '0';
+			elsif DEC_CNPIX='1' and cnt_LINES="00000000000000001" then 
+				cnt_LINES<= cnt_LINES-1;
+				ALL_PIX <= '1';
+			elsif DEC_CNPIX='1' and cnt_LINES="00000000000000000" then 
+				cnt_LINES<= "11111111111111111";
+				ALL_PIX <= '0';
+			elsif DEC_CNPIX = '1' then 
+				cnt_LINES <= cnt_LINES - 1;
+				ALL_PIX <= '0';
+			end if;
+		end if;
+	end process CLINES;
+	u_LINES <= std_logic_vector(cnt_NPIX);
+
+	-- REG MIRROR: RMIRROR
+	RMIRROR : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISMIRROR <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_MIRROR = '1' then ISMIRROR <= '1';
+			elsif CL_MIRROR = '1' then ISMIRROR <= '0';
+			end if;
+		end if;
+	end process RMIRROR;
+
+	-- REG DIAG: RDIAG
+	RDIAG : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISDIAG <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_DIAG = '1' then ISDIAG <= '1';
+			elsif CL_DIAG = '1' then ISDIAG <= '0';
+			end if;
+		end if;
+	end process RDIAG;
+
+	-- REG TRIAN: RTRIAN
+	RTRIAN : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISTRIAN <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_TRIAN = '1' then ISTRIAN <= '1';
+			elsif CL_TRIAN = '1' then ISTRIAN <= '0';
+			end if;
+		end if;
+	end process RTRIAN;
+
+	-- REG VERT: RVERT
+	RVERT : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISVERT <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_VERT = '1' then ISVERT <= '1';
+			elsif CL_VERT = '1' then ISVERT <= '0';
+			end if;
+		end if;
+	end process RVERT;
+
+	-- REG HORIZ: RHORIZ
+	RHORIZ : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISHORIZ <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_HORIZ = '1' then ISHORIZ <= '1';
+			elsif CL_HORIZ = '1' then ISHORIZ <= '0';
+			end if;
+		end if;
+	end process RHORIZ;
+
+	--Restador para REVX
+	RESX: process (XCOL)
+	begin
+		
+	end process RESX;
+	
 
 end arq_lcd_drawing; 
