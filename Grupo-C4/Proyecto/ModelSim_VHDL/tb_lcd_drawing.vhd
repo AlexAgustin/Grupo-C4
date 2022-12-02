@@ -1,4 +1,6 @@
-
+--------------------------------
+-- fichero tb_lcd_drawing.vhd --
+--------------------------------
 
 library IEEE;
 use IEEE.std_logic_1164.all;
@@ -13,7 +15,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 	port(
 		CLK, RESET_L: in std_logic;
 
-		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR: in std_logic;
+		DEL_SCREEN, DRAW_FIG, HORIZ, VERT, DIAG, TRIAN, MIRROR, DONE_CURSOR, DONE_COLOUR: in std_logic;
 		COLOUR_CODE: in std_logic_vector(2 downto 0);
 
 		OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
@@ -31,6 +33,11 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
     signal DONE_COLOUR : std_logic := '0';
     signal DEL_SCREEN : std_logic := '0';
     signal DRAW_FIG : std_logic := '0';
+	signal HORIZ : std_logic := '0';
+	signal VERT : std_logic := '0';
+	signal DIAG : std_logic := '0';
+	signal TRIAN : std_logic := '0';
+	signal MIRROR : std_logic := '0';
 
     signal COLOUR_CODE : std_logic_vector(2 downto 0):= "000";
 
@@ -191,6 +198,414 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		
 		wait for 200 ns;
 
+	------------------------------------------------------------------------------
+		--prueba dibujar linea horizontal 1
+		COLOUR_CODE <= "010";
+		HORIZ <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+
+		HORIZ <= '0';
+
+		wait for 40 ns;
+
+	-------------------------------------------------
+
+		--prueba dibujar linea vertical 1
+		COLOUR_CODE <= "001";
+		VERT <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		VERT <= '0';
+		
+		wait for 40 ns;
+		
+		
+	-------------------------------------------------
+
+		--prueba dibujar linea vertical 2
+		COLOUR_CODE <= "101";
+		VERT <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		VERT <= '0';
+		
+		wait for 40 ns;
+		
+	-------------------------------------------------
+
+		--prueba dibujar linea horizontal 2
+		COLOUR_CODE <= "101";
+		HORIZ <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		HORIZ <= '0';
+		
+		wait for 40 ns;
+		
+		
+	-------------------------------------------------
+
+		--prueba dibujar diagonal 1
+		COLOUR_CODE <= "100";
+		DIAG <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		DIAG <= '0';
+		
+		wait for 40 ns;
+		
+	-------------------------------------------------
+
+		--prueba dibujar diagonal 2
+		COLOUR_CODE <= "011";
+		DIAG <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		DIAG <= '0';
+		
+		wait for 40 ns;
+		
+		
+		
+	-------------------------------------------------
+
+		--prueba dibujar triangulo 1
+		COLOUR_CODE <= "110";
+		TRIAN <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		TRIAN <= '0';
+		
+		wait for 40 ns;
+		
+	-------------------------------------------------
+
+		--prueba dibujar espejo 1
+		COLOUR_CODE <= "011";
+		MIRROR <= '1';
+
+		-- figura 1
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+		
+		-- figura 2
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		MIRROR <= '0';
+		
+		wait for 40 ns;
+		
+		wait for 40 ns;
+		
+		
+	-------------------------------------------------
+
+		--prueba dibujar triangulo 2
+		COLOUR_CODE <= "101";
+		TRIAN <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		TRIAN <= '0';
+		
+		wait for 40 ns;
+		
+	-------------------------------------------------
+
+		--prueba dibujar espejo 2
+		COLOUR_CODE <= "111";
+		MIRROR <= '1';
+
+		-- figura 1
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+		
+		-- figura 2
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		MIRROR <= '0';
+		
+		wait for 40 ns;
 
 	end process;
 end arq_tb_lcd_drawing;
