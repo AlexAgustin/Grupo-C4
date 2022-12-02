@@ -491,7 +491,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		wait for 20 ns;
 		DONE_COLOUR <= '0';
 
-		wait for 80 ns;	
+		wait for 60 ns;	
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
@@ -529,7 +529,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		wait for 20 ns;
 		DONE_COLOUR <= '0';
 
-		wait for 80 ns;	
+		wait for 60 ns;	
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
