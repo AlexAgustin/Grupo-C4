@@ -24,26 +24,29 @@ architecture arq_lcd_drawing of lcd_drawing is
 	type estados is (INICIO, DELCURSOR, DELCOLOUR, DELWAIT, DRAWCURSOR, DRAWCOLOUR, DRAWREPEAT, DRAWWAIT, DRAWDECPIX);
 	signal EP, ES : estados;
 
-	-- DeclaraciÃÂ³n de seÃÂ±ales de control
+	-- Declaracion de senales de control
 	signal SELREV, LD_X, INC_X, CL_X, LD_Y, INC_Y, CL_Y, LD_CN, DEC_NUMPIX, LD_CNPIX, DEC_CNPIX, ALL_PIX : std_logic := '0';
 	signal LD_MIRROR, CL_MIRROR, ISMIRROR, LD_DIAG, CL_DIAG, ISDIAG, LD_TRIAN, CL_TRIAN, ISTRIAN, INC_JUMP, CL_JUMP, LD_VERT, CL_VERT, ISVERT, LD_HORIZ, CL_HORIZ, ISHORIZ: std_logic := '0';
-	signal RESX, RESY, NOTJUMP, NOTMIRX, NOTMIRY, NOTMIRROR : std_logic := '0';
+	signal NOTJUMP, NOTMIRX, NOTMIRY, NOTMIRROR, SELSERV : std_logic := '0';
 	
 	signal DX: unsigned(7 downto 0);
-	signal RESX: unsigned(7 downto 0);
+	signal REVX: unsigned(7 downto 0);
 	signal DY: unsigned(8 downto 0);
-	signal RESY: unsigned(8 downto 0);
+	signal REVY: unsigned(8 downto 0);
 	signal DRGB: std_logic_vector(15 downto 0);
 	signal MUX_PIX: unsigned(16 downto 0);
+	signal MUX_NPIX: unsigned(16 downto 0);
 	signal QJUMP: std_logic_vector(1 downto 0);
-	signal REVX: unsigned(7 downto 0);
-	signal REVY: unsigned(8 downto 0);
+	signal MUX_LINES: unsigned (16 downto 0);
+	signal SEL_DATA: std_logic_vector(1 downto 0);
 	
 	-- DeclaraciÃÂ³n de enteros sin signo para contadores
 	signal cnt_YROW: unsigned(8 downto 0);
 	signal cnt_XCOL: unsigned(7 downto 0);
 	signal cnt_JUMP: unsigned(1 downto 0);
-	signal u_QPIX: unsigned(16 downto 0);
+	signal cnt_NPIX: unsigned(16 downto 0);
+	signal cnt_LINES: unsigned(16 downto 0);
+	signal u_LINES: unsigned(16 downto 0);
 
 
 
@@ -108,7 +111,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	-- ActualizaciÃÂ³n de EP en cada flanco de reloj (sequential)
 	SEQ: process (CLK, RESET_L) begin
-		if RESET_L = '0' then EP <= E0; -- reset asÃÂ­ncrono
+		if RESET_L = '0' then EP <= INICIO; -- reset asÃÂ­ncrono
 		elsif CLK'event and CLK = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
@@ -168,7 +171,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 			elsif CL_X = '1' then cnt_XCOL <= (others => '0');
 			end if;
 		end if;
-	end process CY;
+	end process CX;
 	XCOL <= std_logic_vector(cnt_XCOL);	
 
 	--Multiplexor DY
@@ -189,7 +192,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	YROW <= std_logic_vector(cnt_YROW);
 
 	-- Contador JUMP : CJUMP
-	CY : process(CLK, RESET_L)
+	CJUMP : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then cnt_YROW <= (others =>'0');
 		elsif CLK'event and CLK='1' then
@@ -197,7 +200,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 			elsif CL_JUMP = '1' then cnt_JUMP <= (others => '0');
 			end if;
 		end if;
-	end process CY;
+	end process CJUMP;
 	QJUMP <= std_logic_vector(cnt_JUMP);
 
 	-- Multiplexor para RGB   
@@ -236,7 +239,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 			end if;
 		end if;
 	end process CNPIX;
-	NUM_PIX <= std_logic_vector(cnt_NPIX);
+	NUM_PIX <= cnt_NPIX;
 
 	-- Multiplexor para MUX_LINES   
 	MUX_LINES <= '0'&x"0000" when SEL_DATA = "00" else
@@ -264,7 +267,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 			end if;
 		end if;
 	end process CLINES;
-	u_LINES <= std_logic_vector(cnt_NPIX);
+	u_LINES <= cnt_LINES;
 
 	-- REG MIRROR: RMIRROR
 	RMIRROR : process(CLK, RESET_L)
@@ -322,10 +325,25 @@ architecture arq_lcd_drawing of lcd_drawing is
 	end process RHORIZ;
 
 	--Restador para REVX
-	RESX: process (XCOL)
-	begin
-		
-	end process RESX;
+	REVX <= x"8C" - cnt_XCOL;
+
+	--Restador para REVX
+	REVY <= x"DC" - cnt_XCOL;
+
+	--Comparador NOTJUMP
+	NOTJUMP <= '1' when cnt_JUMP = "10" else
+			'0';
+
+	--Comparador NOTMIRX
+	NOTMIRX <= '1' when cnt_XCOL > x"8B" else
+			'0';
+
+	--Comparador NOTMIRY
+	NOTMIRY <= '1' when cnt_YROW > '0'&x"DB" else
+			'0';
+
+	--Puerta OR NOTMIRROR
+	NOTMIRROR <= NOTMIRX or NOTMIRY;
 	
 
 end arq_lcd_drawing; 
