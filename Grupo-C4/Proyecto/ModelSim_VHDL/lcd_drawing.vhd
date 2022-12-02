@@ -21,7 +21,7 @@ end lcd_drawing;
 architecture arq_lcd_drawing of lcd_drawing is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (INICIO, DELCURSOR, DELCOLOUR, DELWAIT, DRAWCURSOR, DRAWCOLOUR, DRAWREPEAT, DRAWWAIT, DRAWDECPIX);
+	type estados is (INICIO, DELCURSOR, DELCOLOUR, DELWAIT, DRAWCURSOR, DRAWCOLOUR, DRAWREPEAT, DRAWWAIT);
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
@@ -86,13 +86,10 @@ architecture arq_lcd_drawing of lcd_drawing is
 								else ES <= DRAWREPEAT;
 								end if;
 
-			when DRAWREPEAT => 	if ALL_PIX = '0' and ISTRIAN = '1' then ES <= DRAWDECPIX;
-								elsif ALL_PIX = '0' and ISTRIAN = '0' then ES <= DRAWCURSOR;
+			when DRAWREPEAT => 	if ALL_PIX = '0'  then ES <= DRAWCURSOR;
 								elsif MIRROR = '1' and NOTMIRROR = '0' then ES <= DRAWCURSOR;
 								else ES <= DRAWWAIT;
 								end if;
-								
-			when DRAWDECPIX =>	ES <= DRAWCURSOR;
 
 			when DRAWWAIT =>	if    ISMIRROR = '1' and MIRROR = '1' then ES <= DRAWWAIT;
 								elsif ISMIRROR = '1' and MIRROR = '0' then ES <= DRAWCURSOR;
@@ -118,16 +115,27 @@ architecture arq_lcd_drawing of lcd_drawing is
 	end process SEQ;
 
 
+	
 	-- ActivaciÃÂ³n de seÃÂ±ales de control: asignaciones combinacionales - valor a seÃ¯Â¿Â½al
 	LD_X <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and TRIAN = '1')))))))	 	or	 (EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0') else 0;
 	LD_Y <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and TRIAN = '1')))))))	 	or	 (EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0') else 0;
 	CL_X <= '1' when EP = INICIO and (DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '1')))) else '0';
 	CL_Y <= '1' when EP = INICIO and (DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '1'))) else '0';
+	
+	INC_X
+	LD_CNPIX
+	DEC_CNPIX
+	INC_JUMP
+	CL_JUMP
+	NOTJUMP
+	SELSERV
+	SELDATA
 
 	LD_CN <= '1' when EP = INICIO and (DEL_SCREEN = '1' or DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1') else '0';
 	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1'))	or	(EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0') else '0';
 	DEC_LINES <= '1' when EP = DRAWCOLOUR and DONE_COLOUR = '1' else '0';
 	INC_Y <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' else '0';
+	DEC_NUMPIX <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '1' else '0';
 	
 	LD_HORIZ <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '1' else '0';
 	LD_VERT <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '1' else '0';
