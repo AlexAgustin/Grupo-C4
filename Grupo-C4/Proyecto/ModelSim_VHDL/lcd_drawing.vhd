@@ -25,8 +25,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal SELREV, LD_X, INC_X, CL_X, LD_Y, INC_Y, CL_Y, LD_CN, DEC_NUMPIX, LD_CNPIX, DEC_CNPIX, ALL_PIX : std_logic := '0';
-	signal LD_MIRROR, CL_MIRROR, ISMIRROR, LD_DIAG, CL_DIAG, ISDIAG, LD_TRIAN, CL_TRIAN, ISTRIAN, INC_JUMP, CL_JUMP, LD_VERT, CL_VERT, ISVERT, LD_HORIZ, CL_HORIZ, ISHORIZ: std_logic := '0';
+	signal SELREV, LD_X, INC_X, CL_X, LD_Y, INC_Y, CL_Y, LD_CN, DEC_NUMPIX, LD_LINES, DEC_LINES, ALL_PIX : std_logic := '0';
+	signal LD_MIRROR, CL_MIRROR, ISMIRROR, LD_DIAG, CL_DIAG, ISDIAG, LD_TRIAN, CL_TRIAN, ISTRIAN, DEC_JUMP, CL_JUMP, LD_VERT, CL_VERT, ISVERT, LD_HORIZ, CL_HORIZ, ISHORIZ: std_logic := '0';
 	signal NOTJUMP, NOTMIRX, NOTMIRY, NOTMIRROR, SELSERV : std_logic := '0';
 	
 	signal DX: unsigned(7 downto 0);
@@ -36,7 +36,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	signal DRGB: std_logic_vector(15 downto 0);
 	signal MUX_PIX: unsigned(16 downto 0);
 	signal MUX_NPIX: unsigned(16 downto 0);
-	signal QJUMP: std_logic_vector(1 downto 0);
+	--signal QJUMP: std_logic_vector(1 downto 0);
 	signal MUX_LINES: unsigned (16 downto 0);
 	signal SEL_DATA: std_logic_vector(1 downto 0);
 	
@@ -117,19 +117,17 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	
 	-- ActivaciÃÂ³n de seÃÂ±ales de control: asignaciones combinacionales - valor a seÃ¯Â¿Â½al
-	LD_X <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and TRIAN = '1')))))))	 	or	 (EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0') else 0;
-	LD_Y <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and TRIAN = '1')))))))	 	or	 (EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0') else 0;
+	LD_X <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and TRIAN = '1')))))))	 	or	 SELREV else 0;
+	LD_Y <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and TRIAN = '1')))))))	 	or	 SELREV else 0;
 	CL_X <= '1' when EP = INICIO and (DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '1')))) else '0';
 	CL_Y <= '1' when EP = INICIO and (DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '1'))) else '0';
 	
-	INC_X
-	LD_CNPIX
-	DEC_CNPIX
-	INC_JUMP
-	CL_JUMP
-	NOTJUMP
-	SELSERV
-	SELDATA
+	INC_X <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '1' and NOTJUMP = '0' else '0';
+	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1')) or  (EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '0') else '0';
+	DEC_JUMP <= '1' when INC_X else '0';
+	LD_JUMP <= '1' when (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '1' and NOTJUMP = '1') or (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0') else '0'; 
+	SELSERV <= '1' when EP = DRAWREPEAT and ALL_PIX '1' and ISMIRROR = '1' and NOTMIRROR = '0' else '0';
+	 
 
 	LD_CN <= '1' when EP = INICIO and (DEL_SCREEN = '1' or DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1') else '0';
 	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1'))	or	(EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0') else '0';
@@ -151,8 +149,14 @@ architecture arq_lcd_drawing of lcd_drawing is
 	CL_TRIAN <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '0' and ISTRIAN = '1' and TRIAN ='0' else  '0';
 	
 	SELREV <= '1' when EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0' else '0';
+
+	SELDATA <= "0" when EP = INICIO and DEL_SCREEN = '1' else
+				"1" when EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or (DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG = '0' and MIRROR = '0' and TRIAN = '1')) else
+				"2" when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '0' and MIRROR = '1')) else
+				"3" when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '1')) else
+				"0";
 	
-	NOTMIRROR <= '1' when NOTMIRX or NOTMIRY else '0';
+	--NOTMIRROR <= '1' when NOTMIRX or NOTMIRY else '0';
 	
 	OP_DRAWCOLOUR <= '1' when EP = DELCOLOUR or EP = DRAWCOLOUR else '0';
 	OP_SETCURSOR <= '1' when EP = DELCURSOR or EP = DRAWCURSOR else '0';
@@ -198,18 +202,30 @@ architecture arq_lcd_drawing of lcd_drawing is
 		end if;
 	end process CY;
 	YROW <= std_logic_vector(cnt_YROW);
-
+	
+	
 	-- Contador JUMP : CJUMP
 	CJUMP : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then cnt_YROW <= (others =>'0');
 		elsif CLK'event and CLK='1' then
-			if INC_JUMP = '1' then cnt_JUMP <= cnt_JUMP + 1;
-			elsif CL_JUMP = '1' then cnt_JUMP <= (others => '0');
+			if LD_JUMP = '1' then
+				cnt_JUMP <= 2;
+				NOTJUMP <= '0';
+			elsif DEC_JUMP='1' and cnt_JUMP="01" then 
+				cnt_JUMP<= cnt_JUMP-1;
+				NOTJUMP <= '1';
+			elsif DEC_JUMP='1' and cnt_JUMP="00" then 
+				cnt_JUMP<= "11";
+				NOTJUMP <= '0';
+			elsif DEC_JUMP = '1' then 
+				cnt_JUMP <= cnt_JUMP - 1;
+				NOTJUMP <= '0';
 			end if;
 		end if;
-	end process CJUMP;
-	QJUMP <= std_logic_vector(cnt_JUMP);
+	end process CLINES;
+	--QJUMP <= std_logic_vector(cnt_JUMP);
+	
 
 	-- Multiplexor para RGB   
 	DRGB <= x"0000" when COLOUR_CODE = "000" else -- negro
@@ -221,6 +237,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 			x"ffca" when COLOUR_CODE = "110" else -- amarillo
 			x"ffff"; --blanco
 
+
+				
 	-- REG RGB: RC
 	RC : process(CLK, RESET_L)
 	begin
@@ -242,8 +260,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 	begin
 		if RESET_L = '0' then cnt_NPIX <= (others =>'0');
 		elsif CLK'event and CLK='1' then
-			if LD_CNPIX = '1' then cnt_NPIX <= MUX_NPIX;
-			elsif DEC_CNPIX = '1' then cnt_NPIX <= cnt_NPIX - 1;
+			if LD_LINES = '1' then cnt_NPIX <= MUX_NPIX;
+			elsif DEC_LINES = '1' then cnt_NPIX <= cnt_NPIX - 1;
 			end if;
 		end if;
 	end process CNPIX;
@@ -260,16 +278,16 @@ architecture arq_lcd_drawing of lcd_drawing is
 	begin
 		if RESET_L = '0' then cnt_LINES <= (others =>'0'); ALL_PIX <= '0';
 		elsif CLK'event and CLK='1' then
-			if LD_CNPIX = '1' then
+			if LD_LINES = '1' then
 				cnt_LINES <= MUX_LINES;
 				ALL_PIX <= '0';
-			elsif DEC_CNPIX='1' and cnt_LINES="00000000000000001" then 
+			elsif DEC_LINES='1' and cnt_LINES="00000000000000001" then 
 				cnt_LINES<= cnt_LINES-1;
 				ALL_PIX <= '1';
-			elsif DEC_CNPIX='1' and cnt_LINES="00000000000000000" then 
+			elsif DEC_LINES='1' and cnt_LINES="00000000000000000" then 
 				cnt_LINES<= "11111111111111111";
 				ALL_PIX <= '0';
-			elsif DEC_CNPIX = '1' then 
+			elsif DEC_LINES = '1' then 
 				cnt_LINES <= cnt_LINES - 1;
 				ALL_PIX <= '0';
 			end if;
@@ -337,10 +355,6 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	--Restador para REVX
 	REVY <= x"DC" - cnt_XCOL;
-
-	--Comparador NOTJUMP
-	NOTJUMP <= '1' when cnt_JUMP = "10" else
-			'0';
 
 	--Comparador NOTMIRX
 	NOTMIRX <= '1' when cnt_XCOL > x"8B" else
