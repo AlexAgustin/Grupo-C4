@@ -145,13 +145,13 @@ architecture str of DE1SOC_LCDLT24_1fas is
 		LT24_RD_N_Int<='1'; -- no usaremos la funcionalidad táctil.
 
 		reset_l<=KEY(0);
-		DEL_SCREEN <= not(KEY(1)) and not (SW(3) and not (SW(4);
-		DRAW_FIG <= not(KEY(2)) and not (SW(3) and not (SW(4);
-		TRIAN <= not (KEY(3))and not (SW(3) and not (SW(4);
-		HORIZ <= not(KEY(1)) and  (SW(3) and not (SW(4);
-		VERT <= not(KEY(2)) and  (SW(3) and not (SW(4);
-		DIAG <= not (KEY(3)) and  (SW(3) and not (SW(4);
-		MIRROR <= not (KEY(1)) and not (SW(3) and  (SW(4);
+		DEL_SCREEN <= not(KEY(1)) and not (SW(3)) and not (SW(4));
+		DRAW_FIG <= not(KEY(2)) and not (SW(3)) and not (SW(4));
+		TRIAN <= not (KEY(3))and not (SW(3)) and not (SW(4));
+		HORIZ <= not(KEY(1)) and  (SW(3)) and not (SW(4));
+		VERT <= not(KEY(2)) and  (SW(3)) and not (SW(4));
+		DIAG <= not (KEY(3)) and  (SW(3)) and not (SW(4));
+		MIRROR <= not (KEY(1)) and not (SW(3)) and  (SW(4));
 		
 		COLOUR_CODE <= SW(2 downto 0);
 		
