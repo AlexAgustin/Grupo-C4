@@ -572,18 +572,8 @@ set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name VHDL_FILE lcd_drawing.vhd
-set_global_assignment -name VHDL_FILE lcd_ctrl.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/romsinc.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/LT24SetUp.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitReset.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitLCD.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/Init128rom_pkg.vhd
-set_global_assignment -name SDC_FILE DE1SOC_LCDLT24_1fas.sdc
-set_global_assignment -name VHDL_FILE DE1SOC_LCDLT24_1fas.vhd
 set_global_assignment -name ENABLE_SIGNALTAP ON
 set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to CLOCK_50~inputCLKENA0 -section_id auto_signaltap_0
@@ -651,7 +641,6 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -t
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "lcd_drawing:O2_LCDDRAW|EP.E7" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "lcd_drawing:O2_LCDDRAW|OP_DRAWCOLOUR" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "lcd_drawing:O2_LCDDRAW|OP_SETCURSOR" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_PIN_TO_SLD_NODE_ENTITY_PORT storage_enable -to auto_stp_external_storage_qualifier -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=32" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=32" -section_id auto_signaltap_0
@@ -711,5 +700,19 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id auto_signaltap_0
+
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT storage_enable -to "lcd_drawing:O2_LCDDRAW|OP_SETCURSOR" -section_id auto_signaltap_0
+set_global_assignment -name SDC_FILE DE1SOC_LCDLT24_2fas.sdc
+set_global_assignment -name VHDL_FILE DE1SOC_LCDLT24_2fas.vhd
+set_global_assignment -name VHDL_FILE lcd_drawing.vhd
+set_global_assignment -name VHDL_FILE lcd_ctrl.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/romsinc.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/LT24SetUp.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitReset.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitLCD.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/Init128rom_pkg.vhd
+set_global_assignment -name SDC_FILE DE1SOC_LCDLT24_2fas.sdc
+set_global_assignment -name VHDL_FILE DE1SOC_LCDLT24_2fas.vhd
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
