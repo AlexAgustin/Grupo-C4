@@ -6,7 +6,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity DE1SOC_LCDLT24_1fas is
+entity DE1SOC_LCDLT24_2fas is
 	port(
 		--  CLOCK ----------------
 		CLOCK_50	: in	std_logic;
@@ -47,7 +47,7 @@ entity DE1SOC_LCDLT24_1fas is
 	);
 end;
 
-architecture str of DE1SOC_LCDLT24_1fas is 
+architecture str of DE1SOC_LCDLT24_2fas is 
 		
 	component LT24Setup 
 		port(
