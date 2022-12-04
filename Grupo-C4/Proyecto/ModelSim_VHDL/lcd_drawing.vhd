@@ -46,7 +46,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	signal cnt_JUMP: unsigned(1 downto 0);
 	signal cnt_NPIX: unsigned(16 downto 0);
 	signal cnt_LINES: unsigned(16 downto 0);
-	signal u_LINES: unsigned(16 downto 0);
+	--signal u_LINES: unsigned(16 downto 0);
 
 
 
@@ -57,10 +57,10 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, ALL_PIX) begin
+	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, ALL_PIX, HORIZ, VERT, DIAG, MIRROR, TRIAN, ISHORIZ, ISVERT, ISDIAG, ISTRIAN,ISMIRROR, NOTMIRROR) begin
 		case EP is
 			when INICIO => 		if DEL_SCREEN = '1' then ES <= DELCURSOR;
-								elsif (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1') then ES <= DRAWCURSOR;
+								elsif (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1') then ES <= DRAWCURSOR;
 								else ES <= INICIO;
 								end if;
 			
@@ -130,7 +130,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	 
 
 	LD_CN <= '1' when EP = INICIO and (DEL_SCREEN = '1' or DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1') else '0';
-	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1'))	or	(EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0') else '0';
+	--LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1'))	or	(EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0') else '0';
 	DEC_LINES <= '1' when EP = DRAWCOLOUR and DONE_COLOUR = '1' else '0';
 	INC_Y <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' else '0';
 	DEC_NUMPIX <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '1' else '0';
@@ -207,7 +207,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- Contador JUMP : CJUMP
 	CJUMP : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then cnt_YROW <= (others =>'0');
+		if RESET_L = '0' then cnt_JUMP <= (others =>'0');
 		elsif CLK'event and CLK='1' then
 			if LD_JUMP='1' then
 				cnt_JUMP <= "10";
@@ -260,8 +260,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 	begin
 		if RESET_L = '0' then cnt_NPIX <= (others =>'0');
 		elsif CLK'event and CLK='1' then
-			if LD_LINES = '1' then cnt_NPIX <= MUX_NPIX;
-			elsif DEC_LINES = '1' then cnt_NPIX <= cnt_NPIX - 1;
+			if LD_CN = '1' then cnt_NPIX <= MUX_NPIX;
+			elsif DEC_NUMPIX = '1' then cnt_NPIX <= cnt_NPIX - 1;
 			end if;
 		end if;
 	end process CNPIX;
@@ -293,7 +293,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 			end if;
 		end if;
 	end process CLINES;
-	u_LINES <= cnt_LINES;
+	--u_LINES <= cnt_LINES;
 
 	-- REG MIRROR: RMIRROR
 	RMIRROR : process(CLK, RESET_L)
