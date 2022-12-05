@@ -7,4 +7,4 @@ ModelSim_VHDL: código vhdl de los módulos para la simulación en ModelSim.
 
 documentación: informe y diagramas de los módulos.
 
-DE1SOC_LCDLT24_1fas: ficheros para las pruebas en Quartus.
+DE1SOC_LCDLT24_2fas: ficheros para las pruebas en Quartus.
