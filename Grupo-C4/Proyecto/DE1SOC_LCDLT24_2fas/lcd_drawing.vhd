@@ -1,3 +1,6 @@
+--------------------------------
+-- fichero lcd_drawing.vhd --
+--------------------------------
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -6,7 +9,7 @@ entity lcd_drawing is
 	port(
 		CLK, RESET_L: in std_logic;
 
-		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, HORIZ, VERT, DIAG, MIRROR, TRIAN, PATRON: in std_logic;
+		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, HORIZ, VERT, DIAG, MIRROR, TRIAN, EQUIL, ROMBO, ROMBOIDE, TRAP, PATRON: in std_logic;
 		COLOUR_CODE: in std_logic_vector(2 downto 0);
 
 		OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
@@ -21,24 +24,29 @@ end lcd_drawing;
 architecture arq_lcd_drawing of lcd_drawing is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (INICIO, DELCURSOR, DELCOLOUR, DELWAIT, DRAWCURSOR, DRAWCOLOUR, DRAWREPEAT, DRAWWAIT);
+	type estados is (INICIO, DELCURSOR, DELCOLOUR, DELWAIT, DRAWCURSOR, DRAWCOLOUR, DRAWREPEAT, DRAWWAIT, UPROMB, DOWNROMB, TRAPEC, EQUILAT);
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal SELREV, LD_X, INC_X, CL_X, LD_Y, INC_Y, CL_Y, LD_CN, DEC_NUMPIX, LD_LINES, DEC_LINES, ALL_PIX : std_logic := '0';
+	signal SELREV, LD_X, E_X, UPX, CL_X, LD_Y, INC_Y, CL_Y, LD_CN, E_NUMPIX, UPNPIX, LD_LINES, DEC_LINES, ALL_PIX : std_logic := '0';
+	signal LD_TRAP, CL_TRAP, ISTRAP, LD_ROMBOIDE, CL_ROMBOIDE, ISROMBOIDE, LD_ROMBO, CL_ROMBO, ISROMBO, LD_EQUIL, CL_EQUIL, ISEQUIL, LD_PATRON, CL_PATRON, ISPATRON : std_logic := '0';
 	signal LD_MIRROR, CL_MIRROR, ISMIRROR, LD_DIAG, CL_DIAG, ISDIAG, LD_TRIAN, CL_TRIAN, ISTRIAN, DEC_JUMP, LD_JUMP, LD_VERT, CL_VERT, ISVERT, LD_HORIZ, CL_HORIZ, ISHORIZ: std_logic := '0';
-	signal NOTJUMP, NOTMIRX, NOTMIRY, NOTMIRROR, SELSERV : std_logic := '0';
+	signal NOTJUMP, NOTMIRX, NOTMIRY, NOTMIRROR, DROMB : std_logic := '0';
+	
+	
+	signal DRGB: std_logic_vector(15 downto 0);
+	signal SEL_DATA: std_logic_vector(1 downto 0);
 	
 	signal DX: unsigned(7 downto 0);
 	signal REVX: unsigned(7 downto 0);
 	signal DY: unsigned(8 downto 0);
 	signal REVY: unsigned(8 downto 0);
-	signal DRGB: std_logic_vector(15 downto 0);
+	signal PREVY: unsigned(8 downto 0);
+	
 	signal MUX_PIX: unsigned(16 downto 0);
 	signal MUX_NPIX: unsigned(16 downto 0);
 	--signal QJUMP: std_logic_vector(1 downto 0);
 	signal MUX_LINES: unsigned (16 downto 0);
-	signal SEL_DATA: std_logic_vector(1 downto 0);
 	
 	-- DeclaraciÃÂ³n de enteros sin signo para contadores
 	signal cnt_YROW: unsigned(8 downto 0);
@@ -90,6 +98,15 @@ architecture arq_lcd_drawing of lcd_drawing is
 								elsif MIRROR = '1' and NOTMIRROR = '0' then ES <= DRAWCURSOR;
 								else ES <= DRAWWAIT;
 								end if;
+								
+			when EQUILAT => 	ES <= DRAWCURSOR;
+			
+			when TRAPEC =>		ES <= DRAWCURSOR;
+			
+			when UPROMB =>		ES <= DRAWCURSOR;
+			
+			when DOWNROMB =>	ES <= DRAWCURSOR;
+			
 
 			when DRAWWAIT =>	if    ISMIRROR = '1' and MIRROR = '1' then ES <= DRAWWAIT;
 								elsif ISMIRROR = '1' and MIRROR = '0' then ES <= DRAWCURSOR;
@@ -106,9 +123,9 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 
 
-	-- ActualizaciÃÂ³n de EP en cada flanco de reloj (sequential)
+	-- Actualizacion de EP en cada flanco de reloj (sequential)
 	SEQ: process (CLK, RESET_L) begin
-		if RESET_L = '0' then EP <= INICIO; -- reset asÃÂ­ncrono
+		if RESET_L = '0' then EP <= INICIO; -- reset asincrono
 		elsif CLK'event and CLK = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
@@ -116,48 +133,64 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 
 	
-	-- ActivaciÃÂ³n de seÃÂ±ales de control: asignaciones combinacionales - valor a seÃ¯Â¿Â½al
-	LD_X <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and TRIAN = '1')))))))	 	or	 SELREV='1' else '0';
-	LD_Y <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and TRIAN = '1')))))))	 	or	 SELREV='1' else '0';
+	-- Activacion de signals de control: asignaciones combinacionales - valor a seÃ¯Â¿Â½al
+	---- Relacionadas con XCOL e YROW 
+	LD_X <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and (TRIAN = '1' or (TRIAN = '0' and (EQUIL = '1' or (EQUIL = '0' and (ROMBO = '1' or (ROMBO = '0' and (ROMBOIDE = '1' or (ROMBOIDE = '0' and (TRAP = '1' ))))))))))))))))	 	or	 SELREV='1' else '0';
+	LD_Y <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and (TRIAN = '1' or (TRIAN = '0' and (EQUIL = '1' or (EQUIL = '0' and (ROMBO = '1' or (ROMBO = '0' and (ROMBOIDE = '1' or (ROMBOIDE = '0' and (TRAP = '1' ))))))))))))))))	 	or	 SELREV='1' else '0';
 	CL_X <= '1' when EP = INICIO and (DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '1')))) else '0';
 	CL_Y <= '1' when EP = INICIO and (DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '1')))) else '0';
-	
-	INC_X <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '1' and NOTJUMP = '0' else '0';
-	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1')) or  (EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '0') else '0';
-	DEC_JUMP <= '1' when INC_X = '1' else '0';
-	LD_JUMP <= '1' when (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '1' and NOTJUMP = '1') or (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0') else '0'; 
-	SELSERV <= '1' when EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0' else '0';
-	 
-
-	LD_CN <= '1' when EP = INICIO and (DEL_SCREEN = '1' or DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1') else '0';
-	--LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or PATRON = '1'))	or	(EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0') else '0';
-	DEC_LINES <= '1' when EP = DRAWCOLOUR and DONE_COLOUR = '1' else '0';
+	E_X <= '1' when (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ((ISDIAG = '1' and NOTJUMP = '0') or (ISDIAG = '0' and ISEQUIL = '0'  and ((ISROMBO = '1' and DROMB = '1') or (ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '1'))))) or EP = UPROMB or EP = DOWNROMB or EP = EQUILAT or EP = TRAPEC else '0';
 	INC_Y <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' else '0';
-	DEC_NUMPIX <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '1' else '0';
+	UPX <= '1' when EP = DOWNROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '1');
 	
+	-- Relacionadas con el número de píxeles y lineas
+	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or LD_VERT = '1' or LD_DIAG = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or SELREV = '1' else '0';
+	LD_CN <= '1' when EP = INICIO and (DEL_SCREEN = '1' or DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or EQUIL = '1' or ROMBO = '1' or ROMBOIDE = '1' or TRAP = '1' or PATRON = '1') else '0';
+	DEC_LINES <= '1' when EP = DRAWCOLOUR and DONE_COLOUR = '1' else '0';
+	E_NUMPIX <= '1' when UPNPIX = '1' or EP = DOWNROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '1') else '0';
+	UPNPIX <= '1' when EP = EQUILAT or EP = TRAPEC or EP = UPROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0'  and ISDIAG = '0' and (ISEQUIL = '1' or (ISEQUIL = '0' and ((ISROMBO = '1' and DROMB = '0') or (ISROMBO = '0' and ISTRAP = '1'))))) else '0';
+
+	---- Salto de linea
+	LD_JUMP <= '1' when LD_DIAG = '1' or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '1' and NOTJUMP = '1')  else '0';
+	DEC_JUMP <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '1' and NOTJUMP = '0' else '0';
+	
+
+	---- LD opciones extra
 	LD_HORIZ <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '1' else '0';
 	LD_VERT <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '1' else '0';
 	LD_DIAG <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG ='1' else '0';
 	LD_MIRROR <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '1' else '0';
 	LD_TRIAN <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '1' else '0';
-	
-	
+	LD_EQUIL <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '1' else '0';
+	LD_ROMBO <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '0' and ROMBO = '1' else '0';
+	LD_ROMBOIDE <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '0' and ROMBO = '0' and ROMBOIDE = '1' else '0';
+	LD_TRAP <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '0' and ROMBO = '0' and ROMBOIDE = '0' and TRAP = '1' else '0';
+	LD_PATRON<= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '0' and ROMBO = '0' and ROMBOIDE = '0' and TRAP = '0' and PATRON = '1' else '0';
+
+	---- CL opciones extra
 	CL_HORIZ <= '1' when EP = DELWAIT and ISHORIZ = '1' and HORIZ = '0' else '0';
-	CL_MIRROR <= '1' when EP = DRAWWAIT and ISMIRROR = '1' and MIRROR ='0' else  '0';
-	CL_DIAG <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='1' and DIAG ='0' else  '0';
-	CL_VERT <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '1' and VERT ='0' else  '0';
-	CL_TRIAN <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '0' and ISTRIAN = '1' and TRIAN ='0' else  '0';
+	CL_MIRROR <= '1' when EP = DRAWWAIT and ISMIRROR = '1' and MIRROR = '0' else  '0';
+	CL_DIAG <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='1' and DIAG = '0' else  '0';
+	CL_VERT <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '1' and VERT = '0' else  '0';
+	CL_TRIAN <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '0' and ISTRIAN = '1' and TRIAN = '0' else  '0';
+	CL_EQUIL <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '0' and ISTRIAN = '0' and ISEQUIL = '1' and EQUIL = '0' else  '0';
+	CL_ROMBO <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '0' and ISTRIAN = '0' and ISEQUIL = '0' and ISROMBO = '1' and ROMBO = '0' else  '0';
+	CL_ROMBOIDE <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '0' and ISTRIAN = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '1' and ROMBOIDE = '0' else  '0';
+	CL_TRAP <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '0' and ISTRIAN = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '1' and TRAP = '0' else  '0';
+	CL_PATRON <= '1' when EP = DRAWWAIT and ISMIRROR = '0' and ISDIAG ='0' and ISVERT = '0' and ISTRIAN = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISPATRON = '1' and PATRON = '0' else  '0';
 	
+	---- selectores de datos
 	SELREV <= '1' when EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0' else '0';
 
 	SEL_DATA <= "00" when EP = INICIO and DEL_SCREEN = '1' else
-				"01" when EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or (DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG = '0' and MIRROR = '0' and TRIAN = '1')) else
-				"10" when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and (HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '0' and MIRROR = '1')) else
+				"01" when EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or (DRAW_FIG = '0' and HORIZ = '0' and VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and (TRIAN = '1' or (TRIAN = '0' and (EQUIL = '1' or  (EQUIL = '0' and (ROMBO = '1' or (ROMBO = '0' and (ROMBOIDE = '1' or (ROMBOIDE = '0' and TRAP = '1')))))))))))) else
+				"10" when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '1' else
 				"11" when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '1')) else
-				"00";
+				"00"; -- inalcanzable
 	
 	--NOTMIRROR <= '1' when NOTMIRX or NOTMIRY else '0';
 	
+	---- operaciones
 	OP_DRAWCOLOUR <= '1' when EP = DELCOLOUR or EP = DRAWCOLOUR else '0';
 	OP_SETCURSOR <= '1' when EP = DELCURSOR or EP = DRAWCURSOR else '0';
 
@@ -169,8 +202,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- ## UNIDAD DE PROCESO ##
 	-- #######################
 
-	--Multiplexor DX
-	DX <= x"46" when SELSERV = '0' else
+	--Multiplexor DX (MUXX)
+	DX <= x"46" when SELREV = '0' else
 			 REVX;
 
 	--Contador XCOL
@@ -179,15 +212,16 @@ architecture arq_lcd_drawing of lcd_drawing is
 		if RESET_L = '0' then cnt_XCOL <= (others =>'0');
 		elsif CLK'event and CLK='1' then
 			if LD_X = '1' then cnt_XCOL <= DX;
-			elsif INC_X = '1' then cnt_XCOL <= cnt_XCOL + 1;
+			elsif E_X = '1' and UPX = '0' then cnt_XCOL <= cnt_XCOL - 1;
+			elsif E_X = '1' and UPX = '1' then cnt_XCOL <= cnt_XCOL + 1;
 			elsif CL_X = '1' then cnt_XCOL <= (others => '0');
 			end if;
 		end if;
 	end process CX;
 	XCOL <= std_logic_vector(cnt_XCOL);	
 
-	--Multiplexor DY
-	DY <= '0' & x"6E" when SELSERV = '0' else
+	--Multiplexor DY (MUXY)
+	DY <= '0' & x"6E" when SELREV = '0' else
 			 REVY;
 
 	-- Contador YROW : CY
@@ -204,52 +238,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	YROW <= std_logic_vector(cnt_YROW);
 	
 	
-	-- Contador JUMP : CJUMP
-	CJUMP : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then cnt_JUMP <= (others =>'0');
-		elsif CLK'event and CLK='1' then
-			if LD_JUMP='1' then
-				cnt_JUMP <= "10";
-				NOTJUMP <= '0';
-			elsif DEC_JUMP='1' and cnt_JUMP="01" then 
-				cnt_JUMP<= cnt_JUMP-1;
-				NOTJUMP <= '1';
-			elsif DEC_JUMP='1' and cnt_JUMP="00" then 
-				cnt_JUMP<= "11";
-				NOTJUMP <= '0';
-			elsif DEC_JUMP = '1' then 
-				cnt_JUMP <= cnt_JUMP - 1;
-				NOTJUMP <= '0';
-			end if;
-		end if;
-	end process CJUMP;
-	--QJUMP <= std_logic_vector(cnt_JUMP);
-	
-
-	-- Multiplexor para RGB   
-	DRGB <= x"0000" when COLOUR_CODE = "000" else -- negro
-			x"c973" when COLOUR_CODE = "001" else -- violeta
-			x"427f" when COLOUR_CODE = "010" else -- azul
-			x"4605" when COLOUR_CODE = "011" else -- verde
-			x"f885" when COLOUR_CODE = "100" else -- rojo
-			x"fca8" when COLOUR_CODE = "101" else -- naranja
-			x"ffca" when COLOUR_CODE = "110" else -- amarillo
-			x"ffff"; --blanco
-
-
-				
-	-- REG RGB: RC
-	RC : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then RGB <= (others => '0');
-		elsif CLK'event and CLK='1' then
-			if LD_CN = '1' then RGB <= DRGB;
-			end if;
-		end if;
-	end process RC;
-
-	-- Multiplexor para MUX_NPIX   
+	-- Multiplexor para MUX_NPIX   (MUXNPIX)
 	MUX_NPIX <= '1'&x"2C00" when SEL_DATA = "00" else
 		    '0'&x"0064" when SEL_DATA = "01" else
 		    '0'&x"0334" when SEL_DATA = "10" else
@@ -261,12 +250,14 @@ architecture arq_lcd_drawing of lcd_drawing is
 		if RESET_L = '0' then cnt_NPIX <= (others =>'0');
 		elsif CLK'event and CLK='1' then
 			if LD_CN = '1' then cnt_NPIX <= MUX_NPIX;
-			elsif DEC_NUMPIX = '1' then cnt_NPIX <= cnt_NPIX - 1;
+			elsif E_NUMPIX = '1' and UPNPIX = '0' then cnt_NPIX <= cnt_NPIX - 1;
+			elsif E_NUMPIX = '1' and UPNPIX = '1' then cnt_NPIX <= cnt_NPIX + 1;
 			end if;
 		end if;
 	end process CNPIX;
 	NUM_PIX <= cnt_NPIX;
-
+	
+	
 	-- Multiplexor para MUX_LINES   
 	MUX_LINES <= '0'&x"0000" when SEL_DATA = "00" else
 		    '0'&x"0064" when SEL_DATA = "01" else
@@ -294,6 +285,55 @@ architecture arq_lcd_drawing of lcd_drawing is
 		end if;
 	end process CLINES;
 	--u_LINES <= cnt_LINES;
+	
+	-- Contador JUMP : CJUMP
+	CJUMP : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_JUMP <= (others =>'0');
+		elsif CLK'event and CLK='1' then
+			if LD_JUMP='1' then
+				cnt_JUMP <= "10";
+				NOTJUMP <= '0';
+			elsif DEC_JUMP='1' and cnt_JUMP="01" then 
+				cnt_JUMP<= cnt_JUMP-1;
+				NOTJUMP <= '1';
+			elsif DEC_JUMP='1' and cnt_JUMP="00" then 
+				cnt_JUMP<= "11";
+				NOTJUMP <= '0';
+			elsif DEC_JUMP = '1' then 
+				cnt_JUMP <= cnt_JUMP - 1;
+				NOTJUMP <= '0';
+			end if;
+		end if;
+	end process CJUMP;
+	--QJUMP <= std_logic_vector(cnt_JUMP);
+	
+
+	-- Multiplexor para RGB  (MUXC) 
+	DRGB <= x"0000" when COLOUR_CODE = "000" else -- negro
+			x"c973" when COLOUR_CODE = "001" else -- violeta
+			x"427f" when COLOUR_CODE = "010" else -- azul
+			x"4605" when COLOUR_CODE = "011" else -- verde
+			x"f885" when COLOUR_CODE = "100" else -- rojo
+			x"fca8" when COLOUR_CODE = "101" else -- naranja
+			x"ffca" when COLOUR_CODE = "110" else -- amarillo
+			x"ffff"; --blanco
+
+
+				
+	-- REG RGB: RC
+	RC : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then RGB <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if LD_CN = '1' then RGB <= DRGB;
+			end if;
+		end if;
+	end process RC;
+
+
+
+
 
 	-- REG MIRROR: RMIRROR
 	RMIRROR : process(CLK, RESET_L)
@@ -305,6 +345,16 @@ architecture arq_lcd_drawing of lcd_drawing is
 			end if;
 		end if;
 	end process RMIRROR;
+	
+	-- REG PREV Y: RY
+	RY : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then PREVY <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if LD_MIRROR = '1' then PREVY <= '0' & x"6E";
+			end if;
+		end if;
+	end process RY;
 
 	-- REG DIAG: RDIAG
 	RDIAG : process(CLK, RESET_L)
@@ -349,12 +399,74 @@ architecture arq_lcd_drawing of lcd_drawing is
 			end if;
 		end if;
 	end process RHORIZ;
+	
+	-- REG ROMBOIDE: RROMBOIDE
+	RROMBOIDE : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISROMBOIDE <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_ROMBOIDE = '1' then ISROMBOIDE <= '1';
+			elsif CL_ROMBOIDE = '1' then ISROMBOIDE <= '0';
+			end if;
+		end if;
+	end process RROMBOIDE;
+	
+	
+	-- REG EQUIL: REQUIL
+	REQUIL : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISEQUIL <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_EQUIL = '1' then ISEQUIL <= '1';
+			elsif CL_EQUIL = '1' then ISEQUIL <= '0';
+			end if;
+		end if;
+	end process REQUIL;
+	
+	
+	-- REG ROMBO: RROMBO
+	RROMBO : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISROMBO <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_ROMBO = '1' then ISROMBO <= '1';
+			elsif CL_ROMBO = '1' then ISROMBO <= '0';
+			end if;
+		end if;
+	end process RROMBO;
+	
+	
+	-- REG TRAP: RTRAP
+	RTRAP : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISTRAP <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_TRAP = '1' then ISTRAP <= '1';
+			elsif CL_TRAP = '1' then ISTRAP <= '0';
+			end if;
+		end if;
+	end process RTRAP;
+	
+	-- REG PATRON: RPATR
+	RPATRON : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISPATRON <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_PATRON = '1' then ISPATRON <= '1';
+			elsif CL_PATRON = '1' then ISPATRON <= '0';
+			end if;
+		end if;
+	end process RPATRON;
 
 	--Restador para REVX
 	REVX <= x"8C" - cnt_XCOL;
 
-	--Restador para REVX
-	REVY <= ('0' & x"DC") - cnt_XCOL;
+	--Restador para REVY
+	REVY <= ('0' & x"DC") - PREVY;
+
+	--Comparador NOTMIRX
+	DROMB <= '1' when cnt_LINES < x"32" else
+			'0';
 
 	--Comparador NOTMIRX
 	NOTMIRX <= '1' when cnt_XCOL > x"8B" else
