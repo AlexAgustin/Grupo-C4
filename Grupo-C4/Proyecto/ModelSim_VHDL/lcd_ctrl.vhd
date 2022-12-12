@@ -17,7 +17,7 @@ end lcd_ctrl;
 architecture arq_lcd_ctrl of lcd_ctrl is
 
 	-- Declaraci�n de estados
-	type ESTADOS is (E0,E1,E2,E3,E4,E5,E6,E7,E8,E9,E10,E11,E12);
+	type ESTADOS is (INICIO,INITCUR,WR,CHOICE,DRDAT,DRWR,DECPIX,REPEAT,FINDR,FINCUR,COM,DAT,INITDR);
 
 	-- Declaraci�n de se�ales
 	signal EP, ES: ESTADOS;
@@ -38,64 +38,64 @@ architecture arq_lcd_ctrl of lcd_ctrl is
 	--Control de estado presente y siguiente
 	SWSTATE: process (EP, LCD_Init_done, OP_SETCURSOR, OP_DRAWCOLOUR, D0,D1,D2,D3,D4,D5,D6,D7, END_PIX) begin 
 		case EP is
-			when E0 => 		if LCD_Init_Done = '1' then 
-								if OP_SETCURSOR = '1' then ES<=E1;
-								elsif OP_DRAWCOLOUR = '1' then ES<=E12;
-								else ES<=E0;
+			when INICIO => 		if LCD_Init_Done = '1' then 
+								if OP_SETCURSOR = '1' then ES<=INITCUR;
+								elsif OP_DRAWCOLOUR = '1' then ES<=INITDR;
+								else ES<=INICIO;
 								end if;
 						
-							else ES <= E0;
+							else ES <= INICIO;
 							end if;
 
-			when E1 =>		ES<=E2;
-			when E2 =>		ES<=E3;
-			when E3 =>		if D0='1' OR D1='1' OR D3='1' OR D4='1' then ES<=E11;
-								elsif D2='1' then ES<=E10;
-								elsif D5='1' then ES<=E9;
-								elsif D6='1' or D7='1' then ES<=E4;
-								else ES<=E4; --else inalcanzable, siempre habra un D activo.
+			when INITCUR =>		ES<=WR;
+			when WR =>		ES<=CHOICE;
+			when CHOICE =>		if D0='1' OR D1='1' OR D3='1' OR D4='1' then ES<=DAT;
+								elsif D2='1' then ES<=COM;
+								elsif D5='1' then ES<=FINCUR;
+								elsif D6='1' or D7='1' then ES<=DRDAT;
+								else ES<=DRDAT; --else inalcanzable, siempre habra un D activo.
 								end if;
 
-			when E4 =>		ES<=E5;
-			when E5 =>		ES<=E6;
-			when E6 =>		ES<=E7;
+			when DRDAT =>		ES<=DRWR;
+			when DRWR =>		ES<=DECPIX;
+			when DECPIX =>		ES<=REPEAT;
 		
-			when E7 =>		if END_PIX ='0' then ES<=E5;
-							else ES<=E8;
+			when REPEAT =>		if END_PIX ='0' then ES<=DRWR;
+							else ES<=FINDR;
 							end if;
 						
-			when E8 =>		ES<=E0;
-			when E9 =>		ES<=E0;
-			when E10 =>		ES<=E2;
-			when E11 =>		ES<=E2;
-			when E12 =>		ES<=E2;
-			when others=>   ES<=E0;
+			when FINDR =>		ES<=INICIO;
+			when FINCUR =>		ES<=INICIO;
+			when COM =>		ES<=WR;
+			when DAT =>		ES<=WR;
+			when INITDR =>		ES<=WR;
+			when others=>   ES<=INICIO;
 			end case;
 	end process SWSTATE;
 
 	--Cambio de estado con flanco de reloj
 	SEC: process (CLK, RESET_L) begin
-		if RESET_L = '0' then EP <= E0; -- reset as�ncrono
+		if RESET_L = '0' then EP <= INICIO; -- reset as�ncrono
 		elsif CLK'event and CLK='1'     -- flanco de reloj
 			then EP <= ES;              -- Estado Presente = Estado Siguiente
 		end if;	
 	end process SEC;
 
 	--Activacion de se�ales de control
-	CL_MUX   <='1' when EP=E0 or EP=E1 or EP=E12 else '0';
-	CL_DAT   <='1' when EP=E1 else '0';
-	LD_INF   <='1' when EP=E1 or EP=E12 else '0';
-	RS_COM   <='1' when EP=E1 or EP=E10 or EP=E12 else '0';
-	INC_DAT  <='1' when EP=E4 or EP=E10 or EP=E11 else '0';
-	RS_DAT   <='1' when EP=E4 or EP=E11 else '0';
-	LD_2C    <='1' when EP=E12 else '0';
-	DEC_PIX  <='1' when EP=E6 else '0';
+	CL_MUX   <='1' when EP=INICIO or EP=INITCUR or EP=INITDR else '0';
+	CL_DAT   <='1' when EP=INITCUR else '0';
+	LD_INF   <='1' when EP=INITCUR or EP=INITDR else '0';
+	RS_COM   <='1' when EP=INITCUR or EP=COM or EP=INITDR else '0';
+	INC_DAT  <='1' when EP=DRDAT or EP=COM or EP=DAT else '0';
+	RS_DAT   <='1' when EP=DRDAT or EP=DAT else '0';
+	LD_2C    <='1' when EP=INITDR else '0';
+	DEC_PIX  <='1' when EP=DECPIX else '0';
 
 	-- Activaci�n de se�ales de salida
-	LCD_CS_N <='0' when EP=E2 or EP=E5 else '1';
-	LCD_WR_N <='0' when EP=E2 or EP=E5 else '1';
-	DONE_CURSOR<='1' when EP=E9 else '0';
-	DONE_COLOUR <='1' when EP=E8 else '0';
+	LCD_CS_N <='0' when EP=WR or EP=DRWR else '1';
+	LCD_WR_N <='0' when EP=WR or EP=DRWR else '1';
+	DONE_CURSOR<='1' when EP=FINCUR else '0';
+	DONE_COLOUR <='1' when EP=FINDR else '0';
 
 
 
