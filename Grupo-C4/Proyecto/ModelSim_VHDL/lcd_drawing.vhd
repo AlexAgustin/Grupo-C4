@@ -141,6 +141,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	CL_Y <= '1' when EP = INICIO and (DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '1')))) else '0';
 	E_X <= '1' when (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ((ISDIAG = '1' and NOTJUMP = '0') or (ISDIAG = '0' and ISEQUIL = '0'  and ((ISROMBO = '1' and DROMB = '1') or (ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '1'))))) or EP = UPROMB or EP = DOWNROMB or EP = EQUILAT or EP = TRAPEC else '0';
 	INC_Y <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' else '0';
+	UPX <= '1' when EP = DOWNROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '1');
 	
 	-- Relacionadas con el número de píxeles y lineas
 	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or LD_VERT = '1' or LD_DIAG = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or SELREV = '1' else '0';
