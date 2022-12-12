@@ -43,9 +43,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	signal REVY: unsigned(8 downto 0);
 	signal PREVY: unsigned(8 downto 0);
 	
-	signal MUX_PIX: unsigned(16 downto 0);
 	signal MUX_NPIX: unsigned(16 downto 0);
-	--signal QJUMP: std_logic_vector(1 downto 0);
 	signal MUX_LINES: unsigned (16 downto 0);
 	
 	-- DeclaraciÃÂ³n de enteros sin signo para contadores
@@ -54,7 +52,6 @@ architecture arq_lcd_drawing of lcd_drawing is
 	signal cnt_JUMP: unsigned(1 downto 0);
 	signal cnt_NPIX: unsigned(16 downto 0);
 	signal cnt_LINES: unsigned(16 downto 0);
-	--signal u_LINES: unsigned(16 downto 0);
 
 
 
