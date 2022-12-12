@@ -18,7 +18,7 @@ entity DE1SOC_LCDLT24_2fas is
 		KEY 		: in	std_logic_vector(3 downto 0);
 
 		-- SW ----------------
-		SW 			: in	std_logic_vector(4 downto 0);
+		SW 			: in	std_logic_vector(5 downto 0);
 	--	SW 			: in	std_logic_vector(9 downto 0);
 
 		-- LEDR ----------------
@@ -79,7 +79,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 		(
 			CLK, RESET_L: in std_logic;
 
-			DEL_SCREEN, DRAW_FIG, HORIZ, VERT, DIAG, TRIAN, MIRROR, DONE_CURSOR, DONE_COLOUR: in std_logic;
+			DEL_SCREEN, DRAW_FIG, HORIZ, VERT, DIAG, TRIAN, MIRROR, EQUIL, ROMBO, ROMBOIDE, TRAP, PATRON, DONE_CURSOR, DONE_COLOUR: in std_logic;
 			COLOUR_CODE: in std_logic_vector(2 downto 0);
 
 			OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
@@ -138,29 +138,44 @@ architecture str of DE1SOC_LCDLT24_2fas is
 		signal 	DIAG 					: 	std_logic;
 		signal 	TRIAN 					: 	std_logic;
 		signal 	MIRROR 					: 	std_logic;
+		signal 	EQUIL 					: 	std_logic;
+		signal 	ROMBO 					: 	std_logic;
+		signal 	ROMBOIDE 					: 	std_logic;
+		signal 	TRAP 					: 	std_logic;
+		signal 	PATRON 					: 	std_logic;
 	  
 	begin 
 		clk <= CLOCK_50;
 		
 		LT24_RD_N_Int<='1'; -- no usaremos la funcionalidad táctil.
 
-		reset_l<=KEY(0);
-		DEL_SCREEN <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4));
-		DRAW_FIG <= 	not(KEY(2)) and not 	(SW(3)) and not (SW(4));
-		TRIAN <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4));
-		HORIZ <= 		not(KEY(1)) and  		(SW(3)) and not (SW(4));
-		VERT <= 		not(KEY(2)) and  		(SW(3)) and not (SW(4));
-		DIAG <= 		not(KEY(3)) and  		(SW(3)) and not (SW(4));
-		MIRROR <= 		not(KEY(1)) and not 	(SW(3)) and  	(SW(4));
+		reset_l	<=		KEY(0);
+
+		DEL_SCREEN <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
+		DRAW_FIG <= 	not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
+		MIRROR <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
+		
+		HORIZ <= 		not(KEY(1)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
+		VERT <= 			not(KEY(2)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
+		DIAG <= 			not(KEY(3)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
+		
+		TRIAN <= 		not(KEY(1)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
+		EQUIL <= 		not(KEY(2)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
+		ROMBO <= 		not(KEY(3)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
+		
+		ROMBOIDE <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and	(SW(5));
+		TRAP <= 			not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
+		PATRON <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
+		
 		
 		COLOUR_CODE <= SW(2 downto 0);
 		
 		LEDR(0)  <= SW(0); --para comprobar visualmente que el switch está activado
 		LEDR(1)  <= SW(1); --para comprobar visualmente que el switch está activado
 		LEDR(2)  <= SW(2); --para comprobar visualmente que el switch está activado
-		LEDR(3)  <= SW(3); 
-		LEDR(4)  <= SW(4); 
-		LEDR(5)  <= '0'; 
+		LEDR(3)  <= SW(3); --para comprobar visualmente que el switch está activado
+		LEDR(4)  <= SW(4); --para comprobar visualmente que el switch está activado
+		LEDR(5)  <= SW(5); --para comprobar visualmente que el switch está activado 
 		LEDR(6)  <= '0'; 
 		LEDR(7)  <= '0';  
 		LEDR(8)  <= '0'; 
@@ -207,6 +222,12 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			DIAG => DIAG,
 			TRIAN => TRIAN,
 			MIRROR => MIRROR,
+			EQUIL => EQUIL,
+			ROMBO => ROMBO,
+			ROMBOIDE  => ROMBOIDE,
+			TRAP => TRAP,
+			PATRON => PATRON,
+			
 			DONE_CURSOR => DONE_CURSOR,
 			DONE_COLOUR =>  DONE_COLOUR,
 			COLOUR_CODE => COLOUR_CODE,
