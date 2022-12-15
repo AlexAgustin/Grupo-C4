@@ -8,6 +8,11 @@ use IEEE.numeric_std.all;
 entity uart is
 	port(
 		CLK, RESET_L: in std_logic;
+		Rx: in std_logic;
+		VEL: in std_logic_vector(1 downto 0);
+		RTS: in std_logic;
+		DATARECV: out std_logic_vector (7 downto 0);
+		CTS: out std_logic
 	);
 end uart;
 
@@ -15,7 +20,7 @@ end uart;
 architecture arq_uart of uart is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (DAT1, WAITD1, DAT2, WAITD2, OP, CLOP, WAITOP, DAT3, WAIT3, ESTOP, WSTOP);
+	type estados is (WTDATA,STARTBIT, LDDATA,ADDLEFT,PREWAIT,WAITDATA,DELDATA,SAVEDATA,WAITEND1,WAITEND2);
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
@@ -34,7 +39,7 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, ALL_PIX, HORIZ, VERT, DIAG, MIRROR, TRIAN, ISHORIZ, ISVERT, ISDIAG, ISTRIAN,ISMIRROR, NOTMIRROR) begin
+	SWSTATE: process (EP, WTDATA,STARTBIT, LDDATA,ADDLEFT,PREWAIT,WAITDATA,DELDATA,SAVEDATA,WAITEND1,WAITEND2) begin
 		case EP is
 			when DAT1 => 		if DEL_SCREEN = '1' then ES <= DELCURSOR;
 								elsif (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1') then ES <= DRAWCURSOR;
@@ -60,7 +65,7 @@ architecture arq_uart of uart is
 	
 	-- Activacion de signals de control: asignaciones combinacionales
 
-
+	LD_WAIT <= '1' when EP=WTDATA and 
 
 
 
