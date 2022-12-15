@@ -13,8 +13,8 @@ architecture arq_tb_uart of tb_uart is
 
 	component uart
 	port(
-		CLK, RESET_L: in std_logic;
-
+		CLK, RESET_L, RTS, Rx: in std_logic;
+		CTS: out std_logic;
 
 	);
 	end component;
@@ -22,6 +22,8 @@ architecture arq_tb_uart of tb_uart is
 
     signal CLK : std_logic := '0';
     signal RESET_L : std_logic := '0';
+    signal RTS : std_logic := '0';
+    signal Rx : std_logic := '1';
 
 
 	begin
@@ -46,7 +48,31 @@ architecture arq_tb_uart of tb_uart is
 		RESET_L <= '1';	
 
 	-------------------------------------------------
-		--prueba  x
+		--prueba trama 1
+		wait for 20 ns;
+		RTS <= '1';
+		
+		wait for 20 ns;
+		Rx <= '0';
+
+		wait for 40 ns;
+		RTS <= '0';
+		Rx <='1'
+		wait for 1000 ns;
+	
+	-------------------------------------------------
+		--prueba trama 2
+		wait for 20 ns;
+		RTS <= '1';
+		
+		wait for 20 ns;
+		Rx <= '0';
+
+		wait for 40 ns;
+		RTS <= '0';
+		Rx <='1'
+		
+		wait for 1000 ns;
 	
 	-------------------------------------------------
 
