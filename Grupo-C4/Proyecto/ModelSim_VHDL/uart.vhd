@@ -20,7 +20,7 @@ end uart;
 architecture arq_uart of uart is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (WTDATA,STARTBIT, LDDATA,ADDLEFT,PREWAIT,WAITDATA,DELDATA,SAVEDATA,WAITEND1,WAITEND2);
+	type estados is (WTRTS,WTDATA,STARTBIT, LDDATA,ADDLEFT,PREWAIT,WAITDATA,DELDATA,SAVEDATA,WAITEND1,WAITEND2);
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
@@ -39,15 +39,37 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, WTDATA,STARTBIT, LDDATA,ADDLEFT,PREWAIT,WAITDATA,DELDATA,SAVEDATA,WAITEND1,WAITEND2) begin
+	SWSTATE: process (EP, WTRTS,WTDATA,STARTBIT, LDDATA,ADDLEFT,PREWAIT,WAITDATA,DELDATA,SAVEDATA,WAITEND1,WAITEND2) begin
 		case EP is
-			when DAT1 => 		if DEL_SCREEN = '1' then ES <= DELCURSOR;
-								elsif (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1') then ES <= DRAWCURSOR;
-								else ES <= INICIO;
-								end if;
+			when WTRTS => 		if RTS='1' then ES<=WTDATA;
+						else ES<=WTRTS;
+						end if;
 
+			when WTDATA =>		if Rx='1' then ES<=STARTBIT;
+						else ES<=WTDATA;
+						end if;
 
-			when others =>  	ES <= INICIO; -- inalcanzable
+			when STARTBIT =>	if WAITED='1' then ES<=LDDATA;
+						else ES<=STARTBIT;
+						end if;
+
+			when LDDATA =>		
+
+			when ADDLEFT =>		
+
+			when PREWAIT =>		
+
+			when WAITDATA =>	
+
+			when DELDATA =>		
+
+			when SAVEDATA =>	
+
+			when WAITEND1 =>	
+
+			when WAITEND2 =>	
+
+			--when others =>  	ES <= INICIO; -- inalcanzable
 		end case;
 	end process SWSTATE;
 
@@ -65,11 +87,16 @@ architecture arq_uart of uart is
 	
 	-- Activacion de signals de control: asignaciones combinacionales
 
-	LD_WAIT <= '1' when EP=WTDATA and 
-
-
-
-
+	LD_WAIT <= '1' when (EP=WTDATA and Rx='0') or EP=PREWAIT or  or (EP=WAITEND and WAITED='1') else '0';
+	DEC	<= '1' when EP=STARTBIT or EP=WAITDATA or EP=WAITEND1 or EP=WAITEND2 else '0';
+	LD_ITE	<= '1' when EP=STARTBIT and WAITED='1' else '0';
+	LD_DATO	<= '1' when EP=LDDATA or  or  or (EP=WAITEND1 and WAITED='1') else '0';
+	LD_OP	<= '1' when EP=ADDLEFT else '0';
+	CL_OP	<= '1' when EP=PREWAIT else '0';
+	DEC_ITE	<= '1' when EP=WAITDATA and WAITED='1' and ALL='0' else '0';
+	CL_DATO	<= '1' when EP=DELDATA else '0';
+	LD_DRECV<= '1' when EP=SAVEDATA else '0';
+	CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
 
 	-- #######################
 	-- ## UNIDAD DE PROCESO ##
