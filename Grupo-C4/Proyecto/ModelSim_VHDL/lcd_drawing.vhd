@@ -152,7 +152,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	
 	INC_Y <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' else '0';
 	
-	UPX <= '1' when EP = DOWNROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ((ISDIAG = '1' and NOTJUMP = '0') or (ISDIAG = '0' ISEQUIL = '0' and 
+	UPX <= '1' when EP = DOWNROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ((ISDIAG = '1' and NOTJUMP = '0') or (ISDIAG = '0' and ISEQUIL = '0' and 
 		ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '1')));
 	
 	-- Relacionadas con el número de píxeles y lineas
@@ -224,10 +224,10 @@ architecture arq_lcd_drawing of lcd_drawing is
 					HORIZ = '0' and VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and (TRIAN = '1' or (TRIAN = '0' and 
 					EQUIL = '0' and ROMBO = '0' and (ROMBOIDE = '1' or (ROMBOIDE = '0' and TRAP = '1')))))))) else
 				"10" when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '1' else
-				"11" when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and (DIAG = '1' or (DIAG = '0' and MIRROR = '0' and TRIAN = '0' and EQUIL = '1' or (EQUIL = '0' and ROMBO = '1')) ))) else
+				"11" when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and (DIAG = '1' or (DIAG = '0' and MIRROR = '0' and TRIAN = '0' and (EQUIL = '1' or (EQUIL = '0' and ROMBO = '1'))) ))) else
 				"00"; -- inalcanzable
 	
-	SEL_LINES = '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '1')) else '0';
+	SEL_LINES <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '1')) else '0';
 	--NOTMIRROR <= '1' when NOTMIRX or NOTMIRY else '0';
 	
 	---- operaciones
