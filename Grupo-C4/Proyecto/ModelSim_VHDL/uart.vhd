@@ -12,7 +12,7 @@ entity uart is
 		VEL: in std_logic_vector(1 downto 0);
 		RTS: in std_logic;
 		DATARECV: out std_logic_vector (7 downto 0);
-		CTS: out std_logic
+		CTS,LED: out std_logic
 	);
 end uart;
 
@@ -20,17 +20,19 @@ end uart;
 architecture arq_uart of uart is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (WTRTS,WTDATA,STARTBIT,LDDATA,ADDLEFT,PREWAIT,WAITDATA,USEDATA,WAITEND1,WAITEND2,WAITERR);
+	type estados is (WTRTS, WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, USEDATA, WAITEND1, WAITEND2, WAITERR);
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_DATO, LD_WAIT, DEC, LD_OP, CL_OP, LFT, PRELEFT: std_logic := '0';
-	signal WAITED, ALL_ITE, STOP: std_logic :='0';
+	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
+	signal WAITED, ALL_ITE, STOP, OK: std_logic :='0';
+	signal PARITY, RPARITY, UP_CTS, DOWN_CTS: std_logic;
 
 	signal cnt_CITE: unsigned(3 downto 0);
 	signal cnt_CWAIT: unsigned(12 downto 0);
 	signal RDATO: unsigned(7 downto 0);
 	signal OP: unsigned(1 downto 0);
+	signal WAITC: unsigned (12 downto 0);
 
 	begin
 
@@ -39,9 +41,9 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP,WTRTS,WTDATA,STARTBIT,LDDATA,ADDLEFT,PREWAIT,WAITDATA,USEDATA,WAITEND1,WAITEND2,WAITERR) begin
+	SWSTATE: process (EP, WTRTS, WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, USEDATA, WAITEND1, WAITEND2, WAITERR) begin
 		case EP is
-			when WTRTS => 		if RTS='1' then ES<=WTDATA;
+ 			when WTRTS => 		if RTS='1' then ES<=WTDATA;
 						else ES<=WTRTS;
 						end if;
 
@@ -79,7 +81,7 @@ architecture arq_uart of uart is
 						else ES<=WTRTS;
 						end if;
 	
-			--when others =>  	ES <= INICIO; -- inalcanzable
+			when others =>  	ES <= WTRTS; -- inalcanzable
 		end case;
 	end process SWSTATE;
 
@@ -99,12 +101,11 @@ architecture arq_uart of uart is
 
 	UP_CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
 
-	LD_WAIT <= '1' when (EP=WTDATA and Rx='0') or EP=PREWAIT or EP=USEDATA or (EP=WAITEND1 and WAITED='1') 
-				or (EP=WAITED2 and WAITED='1' and STOP='0') else '0';
+	LD_WAIT <= '1' when (EP=WTDATA and Rx='0') or EP=PREWAIT or EP=USEDATA or (EP=WAITEND1 and WAITED='1') or (EP=WAITEND2 and WAITED='1' and STOP='0') else '0';
 
-	DEC	<= '1' when EP=STARTBIT or EP=WAITDATA or EP=WAITEND1 or EP=WAITEND2 or EP=WAITERR else '0';
+	DEC_WAIT<= '1' when EP=STARTBIT or EP=WAITDATA or EP=WAITEND1 or EP=WAITEND2 or EP=WAITERR else '0';
 	LD_ITE	<= '1' when EP=STARTBIT and WAITED='1' else '0';
-	LD_DATO	<= '1' when EP=LDDATA or USEDATA or (EP=WAITEND1 and WAITED='1') else '0';
+	LD_DATO	<= '1' when EP=LDDATA or EP=USEDATA or (EP=WAITEND1 and WAITED='1') else '0';
 	LD_OP	<= '1' when EP=ADDLEFT else '0';
 	CL_OP	<= '1' when EP=PREWAIT else '0';
 	DEC_ITE	<= '1' when EP=WAITDATA and WAITED='1' and ALL_ITE='0' else '0';
@@ -142,7 +143,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then OP <= "00";
 		elsif CLK'event and CLK='1' then
 			if LD_OP = '1' then OP <= "10";
-			if CL_OP = '1' then OP <= "00";
+			elsif CL_OP = '1' then OP <= "00";
 			end if;
 		end if;
 	end process ROP;
@@ -150,10 +151,10 @@ architecture arq_uart of uart is
 	-- REG DESPLAZADOR: SUART
 	SUART : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then RDATO <= '0';
+		if RESET_L = '0' then RDATO <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if OP = "10" then RDATO <= RDATO(6 down to 0) & LEFT;
-			elif CL_DATO = '1' then RDATO <= (others =>'0')
+			if OP = "10" then RDATO <= LFT & RDATO(6 downto 0);
+			elsif CL_DATO = '1' then RDATO <= (others =>'0');
 			end if;
 		end if;
 	end process SUART;
@@ -164,7 +165,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then cnt_CWAIT <= (others =>'0'); WAITED <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_WAIT = '1' then
-				cnt_CWAIT <= WAIT;
+				cnt_CWAIT <= WAITC;
 				WAITED <= '0';
 			elsif DEC_WAIT='1' and cnt_CWAIT="0000000000001" then 
 				cnt_CWAIT<= cnt_CWAIT-1;
@@ -200,8 +201,53 @@ architecture arq_uart of uart is
 		end if;
 	end process CITE;
 
-	--Comparador CMPLEFT
+	--Comparador CMPSTOP
 	STOP <= '1' when PRELEFT= '0' and LFT = '0' else
 			'0';
+
+	--Comparador CPARITY
+	OK	<= '1' when RPARITY = LFT else '0';
+
+	--Sumador
+	PARITY	<= LFT + RPARITY;
+
+	--Registro REGPARITY
+	REGPARITY : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then RPARITY <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_DATO = '1' then RPARITY <= PARITY;
+			end if;
+		end if;
+	end process REGPARITY;
+
+	--Multiplexor MUXWAIT
+	WAITC	<= "1010001011001" when VEL = "00" else
+		   "0010100010111" when VEL = "01" else
+		   "0000110110011" when VEL = "10" else
+		   "0000000110111";
+
+	--Registro RCTS
+	RCTS : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then CTS <= '0';
+		elsif CLK'event and CLK='1' then
+			if UP_CTS = '1' then CTS <= '1';
+			elsif DOWN_CTS = '1' then CTS <='0';
+			end if;
+		end if;
+	end process RCTS;
+
+	--Registro RDATA
+	RDATA : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then DATARECV <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if LD_DRECV = '1' then DATARECV <= STD_LOGIC_VECTOR(RDATO);
+			elsif CL_DATO = '1' then DATARECV <= (others => '0');
+			end if;
+		end if;
+	end process RDATA;
+
 
 end arq_uart; 
