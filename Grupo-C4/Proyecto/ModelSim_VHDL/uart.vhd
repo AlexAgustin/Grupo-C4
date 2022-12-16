@@ -47,7 +47,7 @@ architecture arq_uart of uart is
 						else ES<=WTRTS;
 						end if;
 
-			when WTDATA =>		if Rx='1' then ES<=STARTBIT;
+			when WTDATA =>		if Rx='0' then ES<=STARTBIT;
 						else ES<=WTDATA;
 						end if;
 
@@ -153,7 +153,7 @@ architecture arq_uart of uart is
 	begin
 		if RESET_L = '0' then RDATO <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if OP = "10" then RDATO <= LFT & RDATO(6 downto 0);
+			if OP = "10" then RDATO <= LFT & RDATO(7 downto 1);
 			elsif CL_DATO = '1' then RDATO <= (others =>'0');
 			end if;
 		end if;
@@ -222,10 +222,10 @@ architecture arq_uart of uart is
 	end process REGPARITY;
 
 	--Multiplexor MUXWAIT
-	WAITC	<= "1010001011001" when VEL = "00" else
-		   "0010100010111" when VEL = "01" else
-		   "0000110110011" when VEL = "10" else
-		   "0000000110111";
+	WAITC	<= "0000000000110" when VEL = "00" else
+		   "0000000000101" when VEL = "01" else
+		   "0000000000100" when VEL = "10" else
+		   "0000000000011";
 
 	--Registro RCTS
 	RCTS : process(CLK, RESET_L)
