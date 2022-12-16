@@ -41,7 +41,7 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, WTRTS, WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, USEDATA, WAITEND1, WAITEND2, WAITERR) begin
+	SWSTATE: process (EP, RTS, Rx, WAITED, ALL_ITE, STOP) begin
 		case EP is
  			when WTRTS => 		if RTS='1' then ES<=WTDATA;
 						else ES<=WTRTS;
@@ -209,7 +209,7 @@ architecture arq_uart of uart is
 	OK	<= '1' when RPARITY = LFT else '0';
 
 	--Sumador
-	PARITY	<= LFT + RPARITY;
+	PARITY	<= LFT xor RPARITY;
 
 	--Registro REGPARITY
 	REGPARITY : process(CLK, RESET_L)
