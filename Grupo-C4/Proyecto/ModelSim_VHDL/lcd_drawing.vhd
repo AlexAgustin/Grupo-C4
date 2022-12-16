@@ -91,7 +91,11 @@ architecture arq_lcd_drawing of lcd_drawing is
 								else ES <= DRAWREPEAT;
 								end if;
 
-			when DRAWREPEAT => 	if ALL_PIX = '0'  then ES <= DRAWCURSOR;
+			when DRAWREPEAT => 	if ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and ISROMBO = '1' and DROMB = '0' then ES <= UPROMB;
+								elsif ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and ISROMBO = '1' and DROMB = '1' then ES <= DOWNROMB;
+								elsif ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISTRAP = '1' then ES <= TRAPEC;
+								elsif ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '1' then ES <= EQUILAT;
+								elsif ALL_PIX = '0'  then ES <= DRAWCURSOR;
 								elsif MIRROR = '1' and NOTMIRROR = '0' then ES <= DRAWCURSOR;
 								else ES <= DRAWWAIT;
 								end if;
@@ -109,7 +113,12 @@ architecture arq_lcd_drawing of lcd_drawing is
 								elsif ISMIRROR = '1' and MIRROR = '0' then ES <= DRAWCURSOR;
 								elsif ISDIAG = '1' and DIAG = '1' then ES <= DRAWWAIT;
 								elsif ISVERT = '1' and VERT = '1' then ES <= DRAWWAIT;
-								elsif ISTRIAN = '1' and TRIAN = '1' then ES <= DRAWWAIT;								
+								elsif ISTRIAN = '1' and TRIAN = '1' then ES <= DRAWWAIT;		
+								elsif ISEQUIL = '1' and EQUIL = '1' then ES <= DRAWWAIT;		
+								elsif ISROMBO = '1' and ROMBO = '1' then ES <= DRAWWAIT;		
+								elsif ISROMBOIDE = '1' and ROMBOIDE = '1' then ES <= DRAWWAIT;		
+								elsif ISTRAP = '1' and TRAP = '1' then ES <= DRAWWAIT;			
+								elsif ISPATRON = '1' and PATRON = '1' then ES <= DRAWWAIT;								
 								elsif DRAW_FIG = '1' then ES <= DRAWWAIT;
 								else ES <= INICIO;
 								end if;
@@ -134,13 +143,13 @@ architecture arq_lcd_drawing of lcd_drawing is
 	---- Relacionadas con XCOL e YROW 
 	LD_X <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and 
 		HORIZ = '0' and (VERT = '1' or (VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and (TRIAN = '1' or (TRIAN = '0' and 
-		(EQUIL = '1' or (EQUIL = '0' and (ROMBO = '1' or (ROMBO = '0' and (ROMBOIDE = '1' or (ROMBOIDE = '0' and (TRAP = '1' ))))))))))))))))	 	or
+		(EQUIL = '1' or (EQUIL = '0' and (ROMBO = '1' or (ROMBO = '0' and (ROMBOIDE = '1' or (ROMBOIDE = '0' and TRAP = '1' )))))))))))))))	 	or
 		SELREV='1' else '0';
 	
 	LD_Y <= '1' when (EP = INICIO and DEL_SCREEN = '0' and (DRAW_FIG = '1' or  (DRAW_FIG = '0' and 
 		(HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '0' and (MIRROR = '1' or (MIRROR = '0' and (TRIAN = '1' or (TRIAN = '0' and 
-		(EQUIL = '1' or (EQUIL = '0' and (ROMBO = '1' or (ROMBO = '0' and 
-		(ROMBOIDE = '1' or (ROMBOIDE = '0' and (TRAP = '1' ))))))))))))))))	 	or	 SELREV='1' else '0';	
+		(EQUIL = '1' or (EQUIL = '0' and (ROMBO = '1' or (ROMBO = '0' and 	(ROMBOIDE = '1' or (ROMBOIDE = '0' and (TRAP = '1' ))))))))))))))))	 	or	 
+		SELREV='1' else '0';	
 	
 	CL_X <= '1' when EP = INICIO and (DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '0' and 
 		(HORIZ = '1' or (HORIZ = '0' and VERT = '0' and DIAG = '1')))) else '0';
@@ -299,9 +308,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	
 	
 	-- Multiplexor para MUX_LINES   
-	MUX_LINES <= '0'&x"0000" when SEL_DATA = "00" else
-		    '0'&x"0064" when SEL_DATA = "01" else
-		    '0'&x"0000" when SEL_DATA = "10" else
+	MUX_LINES <= '0'&x"0064" when SEL_LINES = '0' else
 		    '0'&x"0140";
 
 	-- Contador NUM_PIX : CLINES
