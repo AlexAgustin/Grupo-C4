@@ -144,7 +144,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	---- Relacionadas con XCOL e YROW 
 	LD_X <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
 		LD_VERT = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or
-		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1'
+		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or
 		SELREV='1' else '0';
 	
 	LD_Y <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 	
@@ -153,7 +153,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 		SELREV='1' else '0';	
 	
 	CL_X <= '1' when (EP = INICIO and DEL_SCREEN = '1')  or 
-		LD_HORIZ = '1' and LD_DIAG = '1' or 
+		LD_HORIZ = '1' or LD_DIAG = '1' or 
 		LD_PATRON = '1' else '0';
 	
 	CL_Y <= '1' when (EP = INICIO and DEL_SCREEN = '1') or 
