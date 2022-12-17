@@ -86,10 +86,10 @@ set_location_assignment PIN_AD12 -to SW[5]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[5]
 # set_location_assignment PIN_AE11 -to SW[6]
 # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[6]
-# set_location_assignment PIN_AC9 -to SW[7]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[7]
-# set_location_assignment PIN_AD10 -to SW[8]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[8]
+set_location_assignment PIN_AC9 -to SW[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[7]
+set_location_assignment PIN_AD10 -to SW[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[8]
 # set_location_assignment PIN_AE12 -to SW[9]
 # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[9]
 
@@ -702,6 +702,8 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIP
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id auto_signaltap_0
 
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT storage_enable -to "lcd_drawing:O2_LCDDRAW|OP_SETCURSOR" -section_id auto_signaltap_0
+
+set_global_assignment -name VHDL_FILE uart.vhd
 set_global_assignment -name VHDL_FILE lcd_drawing.vhd
 set_global_assignment -name VHDL_FILE lcd_ctrl.vhd
 set_global_assignment -name VHDL_FILE LCD_SetUp/romsinc.vhd
