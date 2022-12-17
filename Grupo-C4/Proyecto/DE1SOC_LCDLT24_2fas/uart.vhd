@@ -40,14 +40,14 @@ architecture arq_uart of uart is
 	-- ## UNIDAD DE CONTROL ## 
 	-- #######################
 
-	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
+	-- TransiciÃÂÃÂ³n de estados (cÃÂÃÂ¡lculo de estado siguiente)
 	SWSTATE: process (EP, RTS, Rx, WAITED, ALL_ITE, STOP) begin
 		case EP is
  			when WTRTS => 		if RTS='1' then ES<=WTDATA;
 						else ES<=WTRTS;
 						end if;
 
-			when WTDATA =>		if Rx='1' then ES<=STARTBIT;
+			when WTDATA =>		if Rx='0' then ES<=STARTBIT;
 						else ES<=WTDATA;
 						end if;
 
@@ -63,7 +63,13 @@ architecture arq_uart of uart is
 
 			when WAITDATA =>	if WAITED='0' then ES<=WAITDATA;
 						elsif WAITED='1' and ALL_ITE='0' then ES<=LDDATA;
-						elsif WAITED='1' and ALL_ITE='1' then ES<=USEDATA;
+						elsif WAITED='1' and ALL_ITE='1' then ES<=PARITYBIT;
+						end if;
+
+			when PARITYBIT =>	ES<=WAITPARITY;
+
+			when WAITPARITY =>	if WAITED='0' then ES<=WAITPARITY;
+						elsif WAITED='1' then ES<=USEDATA;
 						end if;
 
 			when USEDATA =>		ES<=WAITEND1;
@@ -101,17 +107,18 @@ architecture arq_uart of uart is
 
 	UP_CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
 
-	LD_WAIT <= '1' when (EP=WTDATA and Rx='0') or EP=PREWAIT or EP=USEDATA or (EP=WAITEND1 and WAITED='1') or (EP=WAITEND2 and WAITED='1' and STOP='0') else '0';
+	LD_WAIT <= '1' when (EP=WTDATA and Rx='0') or EP=PREWAIT or EP=USEDATA or (EP=WAITEND1 and WAITED='1') or (EP=WAITEND2 and WAITED='1' and STOP='0') OR EP=PARITYBIT else '0';
 
-	DEC_WAIT<= '1' when EP=STARTBIT or EP=WAITDATA or EP=WAITEND1 or EP=WAITEND2 or EP=WAITERR else '0';
+	DEC_WAIT<= '1' when EP=STARTBIT or EP=WAITDATA or EP=WAITEND1 or EP=WAITEND2 or EP=WAITERR OR EP=WAITPARITY else '0';
 	LD_ITE	<= '1' when EP=STARTBIT and WAITED='1' else '0';
-	LD_DATO	<= '1' when EP=LDDATA or EP=USEDATA or (EP=WAITEND1 and WAITED='1') else '0';
+	LD_DATO	<= '1' when EP=LDDATA or EP=USEDATA or (EP=WAITEND1 and WAITED='1') OR EP=PARITYBIT else '0';
 	LD_OP	<= '1' when EP=ADDLEFT else '0';
 	CL_OP	<= '1' when EP=PREWAIT else '0';
 	DEC_ITE	<= '1' when EP=WAITDATA and WAITED='1' and ALL_ITE='0' else '0';
-	LD_DRECV<= '1' when EP=WAITDATA and WAITED='1' and ALL_ITE='1' and OK='0' else '0';
-	CL_DATO	<= '1' when EP=WAITDATA and WAITED='1' and ALL_ITE='1' and OK='1' else '0';
+	LD_DRECV<= '1' when EP=WAITPARITY and WAITED='1' and OK='1' else '0';
+	CL_DATO	<= '1' when EP=WAITPARITY and WAITED='1' and OK='0' else '0';
 	LED	<= '1' when EP=WAITERR else '0';
+
 
 	-- #######################
 	-- ## UNIDAD DE PROCESO ##

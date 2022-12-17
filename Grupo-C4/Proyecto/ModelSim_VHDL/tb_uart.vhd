@@ -104,7 +104,7 @@ architecture arq_tb_uart of tb_uart is
 
 		Rx <='1'; --parity
 
-		wait for 140 ns; --procesa parity
+		wait for 100 ns; --procesa parity
 
 		Rx <= '0'; 
 
