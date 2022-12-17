@@ -160,7 +160,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 		LD_VERT = '1' or LD_DIAG = '1' or LD_PATRON = '1' else '0';
 	
 	E_X <= '1' when EP = UPROMB or UPX = '1' or EP = EQUILAT or EP = TRAPEC or 
-	(EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '0' and ISPATRON = '1')else '0';
+		(EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '0' and ISPATRON = '1') 
+		else '0';
 	
 	INC_Y <= '1' when EP = DRAWREPEAT and ALL_PIX = '0' else '0';
 	
@@ -168,18 +169,24 @@ architecture arq_lcd_drawing of lcd_drawing is
 		ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '1'))) else '0';
 	
 	-- Relacionadas con el número de píxeles y lineas
-	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or LD_VERT = '1' or LD_DIAG = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or 
-		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or SELREV = '1' else '0';
+	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
+		LD_VERT = '1' or LD_DIAG = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or 
+		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or LD_PATRON or 
+		SELREV = '1' else '0';
 	
 	LD_CN <= '1' when EP = INICIO and (DEL_SCREEN = '1' or DRAW_FIG = '1' or 
 		HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or 
-		EQUIL = '1' or ROMBO = '1' or ROMBOIDE = '1' or TRAP = '1' or PATRON = '1') else '0';
+		EQUIL = '1' or ROMBO = '1' or ROMBOIDE = '1' or TRAP = '1' or PATRON = '1') 
+		else '0';
 	
 	DEC_LINES <= '1' when EP = DRAWCOLOUR and DONE_COLOUR = '1' else '0';
 	
-	E_NUMPIX <= '1' when UPNPIX = '1' or EP = DOWNROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and (ISTRIAN = '1' or (ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and ISROMBO = '1' and DROMB = '1'))) else '0';
+	E_NUMPIX <= '1' when UPNPIX = '1' or EP = DOWNROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and 
+		(ISTRIAN = '1' or (ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and ISROMBO = '1' and DROMB = '1'))) 
+		else '0';
 	
-	UPNPIX <= '1' when EP = EQUILAT or EP = TRAPEC or EP = UPROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0'  and ISDIAG = '0' and 
+	UPNPIX <= '1' when EP = EQUILAT or EP = TRAPEC or EP = UPROMB or 
+		(EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0'  and ISDIAG = '0' and 
 		(ISEQUIL = '1' or (ISEQUIL = '0' and ((ISROMBO = '1' and DROMB = '0') or (ISROMBO = '0' and ISTRAP = '1'))))) else '0';
 
 	---- Salto de linea
@@ -502,7 +509,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 		end if;
 	end process RTRAP;
 	
-	-- REG PATRON: RPATR
+	-- REG PATRON: RPATRON
 	RPATRON : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then ISPATRON <= '0';
