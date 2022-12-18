@@ -63,7 +63,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- #######################
 
 	-- Transicipn de estados (calculo de estado siguiente)
-	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, ALL_PIX, HORIZ, VERT, DIAG, MIRROR, TRIAN, ISHORIZ, ISVERT, ISDIAG, ISTRIAN,ISMIRROR, NOTMIRROR) begin
+	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, ALL_PIX, HORIZ, VERT, DIAG, MIRROR, TRIAN, ISHORIZ, ISVERT, ISDIAG, ISTRIAN,
+							ISMIRROR, NOTMIRROR, ISEQUIL, ISROMBO, DROMB, ISTRAP, EQUIL, ISROMBOIDE, ROMBO, ROMBOIDE, TRAP, ISPATRON, PATRON) begin
 		case EP is
 			when INICIO => 		if DEL_SCREEN = '1' then ES <= DELCURSOR;
 								elsif (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1') then ES <= DRAWCURSOR;
@@ -171,7 +172,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- Relacionadas con el número de píxeles y lineas
 	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
 		LD_VERT = '1' or LD_DIAG = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or 
-		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or LD_PATRON or 
+		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or LD_PATRON = '1' or 
 		SELREV = '1' else '0';
 	
 	LD_CN <= '1' when EP = INICIO and (DEL_SCREEN = '1' or DRAW_FIG = '1' or 

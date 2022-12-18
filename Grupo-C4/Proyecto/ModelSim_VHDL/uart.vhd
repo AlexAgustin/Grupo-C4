@@ -26,7 +26,7 @@ architecture arq_uart of uart is
 	-- Declaracion de senales de control
 	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
 	signal WAITED, ALL_ITE, STOP, OK: std_logic :='0';
-	signal PARITY, RPARITY, UP_CTS, DOWN_CTS: std_logic;
+	signal PARITY, RPARITY, UP_CTS: std_logic; --, DOWN_CTS
 
 	signal cnt_CITE: unsigned(3 downto 0);
 	signal cnt_CWAIT: unsigned(12 downto 0);
@@ -239,7 +239,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then CTS <= '0';
 		elsif CLK'event and CLK='1' then
 			if UP_CTS = '1' then CTS <= '1';
-			elsif DOWN_CTS = '1' then CTS <='0';
+			--elsif DOWN_CTS = '1' then CTS <='0';
 			end if;
 		end if;
 	end process RCTS;

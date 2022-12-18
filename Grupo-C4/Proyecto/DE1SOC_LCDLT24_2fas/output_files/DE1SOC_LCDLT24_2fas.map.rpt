@@ -1,5 +1,5 @@
 Analysis & Synthesis report for DE1SOC_LCDLT24_2fas
-Mon Dec 05 01:00:23 2022
+Sun Dec 18 16:58:23 2022
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
 
 
@@ -15,27 +15,29 @@ Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
   7. Analysis & Synthesis Resource Utilization by Entity
   8. Analysis & Synthesis RAM Summary
   9. Analysis & Synthesis IP Cores Summary
- 10. State Machine - |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|EP
- 11. State Machine - |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|EP
- 12. State Machine - |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|ep3
- 13. State Machine - |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|ep2
- 14. State Machine - |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|ep
- 15. Registers Protected by Synthesis
- 16. Registers Removed During Synthesis
- 17. General Register Statistics
- 18. Inverted Register Statistics
- 19. Multiplexer Restructuring Statistics (Restructuring Performed)
- 20. Source assignments for LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET
- 21. Source assignments for sld_signaltap:auto_signaltap_0
- 22. Parameter Settings for Inferred Entity Instance: sld_signaltap:auto_signaltap_0
- 23. Port Connectivity Checks: "lcd_drawing:O2_LCDDRAW"
- 24. Port Connectivity Checks: "LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|romsinc:DUT_ROM"
- 25. Port Connectivity Checks: "LT24Setup:O1_SETUP"
- 26. Signal Tap Logic Analyzer Settings
- 27. Post-Synthesis Netlist Statistics for Top Partition
- 28. Elapsed Time Per Partition
- 29. Connections to In-System Debugging Instance "auto_signaltap_0"
- 30. Analysis & Synthesis Messages
+ 10. State Machine - |DE1SOC_LCDLT24_2fas|uart:O4_LCDUART|EP
+ 11. State Machine - |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|EP
+ 12. State Machine - |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|EP
+ 13. State Machine - |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|ep3
+ 14. State Machine - |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|ep2
+ 15. State Machine - |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|ep
+ 16. Registers Protected by Synthesis
+ 17. Registers Removed During Synthesis
+ 18. Removed Registers Triggering Further Register Optimizations
+ 19. General Register Statistics
+ 20. Inverted Register Statistics
+ 21. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 22. Source assignments for LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET
+ 23. Source assignments for sld_signaltap:auto_signaltap_0
+ 24. Parameter Settings for Inferred Entity Instance: sld_signaltap:auto_signaltap_0
+ 25. Port Connectivity Checks: "uart:O4_LCDUART"
+ 26. Port Connectivity Checks: "LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|romsinc:DUT_ROM"
+ 27. Port Connectivity Checks: "LT24Setup:O1_SETUP"
+ 28. Signal Tap Logic Analyzer Settings
+ 29. Post-Synthesis Netlist Statistics for Top Partition
+ 30. Elapsed Time Per Partition
+ 31. Connections to In-System Debugging Instance "auto_signaltap_0"
+ 32. Analysis & Synthesis Messages
 
 
 
@@ -61,14 +63,14 @@ refer to the applicable agreement for further details.
 +-------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                  ;
 +---------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status     ; Successful - Mon Dec 05 01:00:23 2022       ;
+; Analysis & Synthesis Status     ; Successful - Sun Dec 18 16:58:23 2022       ;
 ; Quartus Prime Version           ; 18.1.0 Build 625 09/12/2018 SJ Lite Edition ;
 ; Revision Name                   ; DE1SOC_LCDLT24_2fas                         ;
 ; Top-level Entity Name           ; DE1SOC_LCDLT24_2fas                         ;
 ; Family                          ; Cyclone V                                   ;
 ; Logic utilization (in ALMs)     ; N/A                                         ;
-; Total registers                 ; 1321                                        ;
-; Total pins                      ; 42                                          ;
+; Total registers                 ; 1331                                        ;
+; Total pins                      ; 46                                          ;
 ; Total virtual pins              ; 0                                           ;
 ; Total block memory bits         ; 33,792                                      ;
 ; Total DSP Blocks                ; 0                                           ;
@@ -173,89 +175,92 @@ refer to the applicable agreement for further details.
 +----------------------------+-------------+
 ; Processors                 ; Number      ;
 +----------------------------+-------------+
-; Number detected on machine ; 16          ;
-; Maximum allowed            ; 16          ;
+; Number detected on machine ; 8           ;
+; Maximum allowed            ; 4           ;
 ;                            ;             ;
 ; Average used               ; 1.00        ;
-; Maximum used               ; 16          ;
+; Maximum used               ; 4           ;
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processors 2-16        ;   0.0%      ;
+;     Processor 2            ;   0.0%      ;
+;     Processor 3            ;   0.0%      ;
+;     Processor 4            ;   0.0%      ;
 +----------------------------+-------------+
 
 
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Source Files Read                                                                                                                                                                                                                                               ;
-+--------------------------------------------------------------------+-----------------+----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+-------------+
-; File Name with User-Entered Path                                   ; Used in Netlist ; File Type                                    ; File Name with Absolute Path                                                                                                     ; Library     ;
-+--------------------------------------------------------------------+-----------------+----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+-------------+
-; lcd_drawing.vhd                                                    ; yes             ; User VHDL File                               ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/lcd_drawing.vhd                                                    ;             ;
-; lcd_ctrl.vhd                                                       ; yes             ; User VHDL File                               ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/lcd_ctrl.vhd                                                       ;             ;
-; LCD_SetUp/romsinc.vhd                                              ; yes             ; User VHDL File                               ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/romsinc.vhd                                              ;             ;
-; LCD_SetUp/LT24SetUp.vhd                                            ; yes             ; User VHDL File                               ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24SetUp.vhd                                            ;             ;
-; LCD_SetUp/LT24InitReset.vhd                                        ; yes             ; User VHDL File                               ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24InitReset.vhd                                        ;             ;
-; LCD_SetUp/LT24InitLCD.vhd                                          ; yes             ; User VHDL File                               ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24InitLCD.vhd                                          ;             ;
-; LCD_SetUp/Init128rom_pkg.vhd                                       ; yes             ; User VHDL File                               ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/Init128rom_pkg.vhd                                       ;             ;
-; DE1SOC_LCDLT24_2fas.vhd                                            ; yes             ; User VHDL File                               ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd                                            ;             ;
-; sld_signaltap.vhd                                                  ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_signaltap.vhd                                                         ;             ;
-; sld_signaltap_impl.vhd                                             ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_signaltap_impl.vhd                                                    ;             ;
-; sld_ela_control.vhd                                                ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_ela_control.vhd                                                       ;             ;
-; lpm_shiftreg.tdf                                                   ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_shiftreg.tdf                                                          ;             ;
-; lpm_constant.inc                                                   ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_constant.inc                                                          ;             ;
-; dffeea.inc                                                         ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/dffeea.inc                                                                ;             ;
-; aglobal181.inc                                                     ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/aglobal181.inc                                                            ;             ;
-; sld_mbpmg.vhd                                                      ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_mbpmg.vhd                                                             ;             ;
-; sld_ela_trigger_flow_mgr.vhd                                       ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_ela_trigger_flow_mgr.vhd                                              ;             ;
-; sld_buffer_manager.vhd                                             ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_buffer_manager.vhd                                                    ;             ;
-; sld_gap_detector.vhd                                               ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_gap_detector.vhd                                                      ;             ;
-; altsyncram.tdf                                                     ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/altsyncram.tdf                                                            ;             ;
-; stratix_ram_block.inc                                              ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/stratix_ram_block.inc                                                     ;             ;
-; lpm_mux.inc                                                        ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_mux.inc                                                               ;             ;
-; lpm_decode.inc                                                     ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_decode.inc                                                            ;             ;
-; a_rdenreg.inc                                                      ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/a_rdenreg.inc                                                             ;             ;
-; altrom.inc                                                         ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/altrom.inc                                                                ;             ;
-; altram.inc                                                         ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/altram.inc                                                                ;             ;
-; altdpram.inc                                                       ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/altdpram.inc                                                              ;             ;
-; db/altsyncram_ug84.tdf                                             ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/altsyncram_ug84.tdf                                             ;             ;
-; altdpram.tdf                                                       ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/altdpram.tdf                                                              ;             ;
-; memmodes.inc                                                       ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/others/maxplus2/memmodes.inc                                                            ;             ;
-; a_hdffe.inc                                                        ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/a_hdffe.inc                                                               ;             ;
-; alt_le_rden_reg.inc                                                ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/alt_le_rden_reg.inc                                                       ;             ;
-; altsyncram.inc                                                     ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/altsyncram.inc                                                            ;             ;
-; lpm_mux.tdf                                                        ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_mux.tdf                                                               ;             ;
-; muxlut.inc                                                         ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/muxlut.inc                                                                ;             ;
-; bypassff.inc                                                       ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/bypassff.inc                                                              ;             ;
-; altshift.inc                                                       ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/altshift.inc                                                              ;             ;
-; db/mux_blc.tdf                                                     ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/mux_blc.tdf                                                     ;             ;
-; lpm_decode.tdf                                                     ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_decode.tdf                                                            ;             ;
-; declut.inc                                                         ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/declut.inc                                                                ;             ;
-; lpm_compare.inc                                                    ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_compare.inc                                                           ;             ;
-; db/decode_vnf.tdf                                                  ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/decode_vnf.tdf                                                  ;             ;
-; lpm_counter.tdf                                                    ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_counter.tdf                                                           ;             ;
-; lpm_add_sub.inc                                                    ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_add_sub.inc                                                           ;             ;
-; cmpconst.inc                                                       ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/cmpconst.inc                                                              ;             ;
-; lpm_counter.inc                                                    ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/lpm_counter.inc                                                           ;             ;
-; alt_counter_stratix.inc                                            ; yes             ; Megafunction                                 ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/alt_counter_stratix.inc                                                   ;             ;
-; db/cntr_29i.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cntr_29i.tdf                                                    ;             ;
-; db/cmpr_e9c.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cmpr_e9c.tdf                                                    ;             ;
-; db/cntr_q1j.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cntr_q1j.tdf                                                    ;             ;
-; db/cntr_u8i.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cntr_u8i.tdf                                                    ;             ;
-; db/cmpr_d9c.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cmpr_d9c.tdf                                                    ;             ;
-; db/cntr_kri.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cntr_kri.tdf                                                    ;             ;
-; db/cmpr_99c.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cmpr_99c.tdf                                                    ;             ;
-; sld_rom_sr.vhd                                                     ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_rom_sr.vhd                                                            ;             ;
-; sld_jtag_endpoint_adapter.vhd                                      ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_jtag_endpoint_adapter.vhd                                             ;             ;
-; sld_jtag_endpoint_adapter_impl.sv                                  ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_jtag_endpoint_adapter_impl.sv                                         ;             ;
-; sld_hub.vhd                                                        ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_hub.vhd                                                               ; altera_sld  ;
-; db/ip/sldaa8a7c86/alt_sld_fab.v                                    ; yes             ; Encrypted Auto-Found Verilog HDL File        ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/alt_sld_fab.v                                    ; alt_sld_fab ;
-; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab.v             ; yes             ; Encrypted Auto-Found Verilog HDL File        ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab.v             ; alt_sld_fab ;
-; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_ident.sv      ; yes             ; Auto-Found SystemVerilog HDL File            ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_ident.sv      ; alt_sld_fab ;
-; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_presplit.sv   ; yes             ; Encrypted Auto-Found SystemVerilog HDL File  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_presplit.sv   ; alt_sld_fab ;
-; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_sldfabric.vhd ; yes             ; Encrypted Auto-Found VHDL File               ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_sldfabric.vhd ; alt_sld_fab ;
-; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_splitter.sv   ; yes             ; Encrypted Auto-Found SystemVerilog HDL File  ; C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_splitter.sv   ; alt_sld_fab ;
-; sld_jtag_hub.vhd                                                   ; yes             ; Encrypted Megafunction                       ; c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/sld_jtag_hub.vhd                                                          ;             ;
-+--------------------------------------------------------------------+-----------------+----------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------+-------------+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                                                                                                                                                                                                 ;
++--------------------------------------------------------------------+-----------------+----------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+; File Name with User-Entered Path                                   ; Used in Netlist ; File Type                                    ; File Name with Absolute Path                                                                                                                                       ; Library     ;
++--------------------------------------------------------------------+-----------------+----------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+; uart.vhd                                                           ; yes             ; User VHDL File                               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd                                                           ;             ;
+; lcd_drawing.vhd                                                    ; yes             ; User VHDL File                               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/lcd_drawing.vhd                                                    ;             ;
+; lcd_ctrl.vhd                                                       ; yes             ; User VHDL File                               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/lcd_ctrl.vhd                                                       ;             ;
+; LCD_SetUp/romsinc.vhd                                              ; yes             ; User VHDL File                               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/romsinc.vhd                                              ;             ;
+; LCD_SetUp/LT24SetUp.vhd                                            ; yes             ; User VHDL File                               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24SetUp.vhd                                            ;             ;
+; LCD_SetUp/LT24InitReset.vhd                                        ; yes             ; User VHDL File                               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24InitReset.vhd                                        ;             ;
+; LCD_SetUp/LT24InitLCD.vhd                                          ; yes             ; User VHDL File                               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24InitLCD.vhd                                          ;             ;
+; LCD_SetUp/Init128rom_pkg.vhd                                       ; yes             ; User VHDL File                               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/Init128rom_pkg.vhd                                       ;             ;
+; DE1SOC_LCDLT24_2fas.vhd                                            ; yes             ; User VHDL File                               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd                                            ;             ;
+; sld_signaltap.vhd                                                  ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_signaltap.vhd                                                         ;             ;
+; sld_signaltap_impl.vhd                                             ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_signaltap_impl.vhd                                                    ;             ;
+; sld_ela_control.vhd                                                ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_ela_control.vhd                                                       ;             ;
+; lpm_shiftreg.tdf                                                   ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_shiftreg.tdf                                                          ;             ;
+; lpm_constant.inc                                                   ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_constant.inc                                                          ;             ;
+; dffeea.inc                                                         ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/dffeea.inc                                                                ;             ;
+; aglobal181.inc                                                     ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/aglobal181.inc                                                            ;             ;
+; sld_mbpmg.vhd                                                      ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_mbpmg.vhd                                                             ;             ;
+; sld_ela_trigger_flow_mgr.vhd                                       ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_ela_trigger_flow_mgr.vhd                                              ;             ;
+; sld_buffer_manager.vhd                                             ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_buffer_manager.vhd                                                    ;             ;
+; sld_gap_detector.vhd                                               ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_gap_detector.vhd                                                      ;             ;
+; altsyncram.tdf                                                     ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/altsyncram.tdf                                                            ;             ;
+; stratix_ram_block.inc                                              ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/stratix_ram_block.inc                                                     ;             ;
+; lpm_mux.inc                                                        ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_mux.inc                                                               ;             ;
+; lpm_decode.inc                                                     ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_decode.inc                                                            ;             ;
+; a_rdenreg.inc                                                      ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/a_rdenreg.inc                                                             ;             ;
+; altrom.inc                                                         ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/altrom.inc                                                                ;             ;
+; altram.inc                                                         ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/altram.inc                                                                ;             ;
+; altdpram.inc                                                       ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/altdpram.inc                                                              ;             ;
+; db/altsyncram_ug84.tdf                                             ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/altsyncram_ug84.tdf                                             ;             ;
+; altdpram.tdf                                                       ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/altdpram.tdf                                                              ;             ;
+; memmodes.inc                                                       ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/others/maxplus2/memmodes.inc                                                            ;             ;
+; a_hdffe.inc                                                        ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/a_hdffe.inc                                                               ;             ;
+; alt_le_rden_reg.inc                                                ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/alt_le_rden_reg.inc                                                       ;             ;
+; altsyncram.inc                                                     ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/altsyncram.inc                                                            ;             ;
+; lpm_mux.tdf                                                        ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_mux.tdf                                                               ;             ;
+; muxlut.inc                                                         ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/muxlut.inc                                                                ;             ;
+; bypassff.inc                                                       ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/bypassff.inc                                                              ;             ;
+; altshift.inc                                                       ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/altshift.inc                                                              ;             ;
+; db/mux_blc.tdf                                                     ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/mux_blc.tdf                                                     ;             ;
+; lpm_decode.tdf                                                     ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_decode.tdf                                                            ;             ;
+; declut.inc                                                         ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/declut.inc                                                                ;             ;
+; lpm_compare.inc                                                    ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_compare.inc                                                           ;             ;
+; db/decode_vnf.tdf                                                  ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/decode_vnf.tdf                                                  ;             ;
+; lpm_counter.tdf                                                    ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_counter.tdf                                                           ;             ;
+; lpm_add_sub.inc                                                    ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_add_sub.inc                                                           ;             ;
+; cmpconst.inc                                                       ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/cmpconst.inc                                                              ;             ;
+; lpm_counter.inc                                                    ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/lpm_counter.inc                                                           ;             ;
+; alt_counter_stratix.inc                                            ; yes             ; Megafunction                                 ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/alt_counter_stratix.inc                                                   ;             ;
+; db/cntr_29i.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cntr_29i.tdf                                                    ;             ;
+; db/cmpr_e9c.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cmpr_e9c.tdf                                                    ;             ;
+; db/cntr_q1j.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cntr_q1j.tdf                                                    ;             ;
+; db/cntr_u8i.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cntr_u8i.tdf                                                    ;             ;
+; db/cmpr_d9c.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cmpr_d9c.tdf                                                    ;             ;
+; db/cntr_kri.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cntr_kri.tdf                                                    ;             ;
+; db/cmpr_99c.tdf                                                    ; yes             ; Auto-Generated Megafunction                  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cmpr_99c.tdf                                                    ;             ;
+; sld_rom_sr.vhd                                                     ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_rom_sr.vhd                                                            ;             ;
+; sld_jtag_endpoint_adapter.vhd                                      ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_jtag_endpoint_adapter.vhd                                             ;             ;
+; sld_jtag_endpoint_adapter_impl.sv                                  ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_jtag_endpoint_adapter_impl.sv                                         ;             ;
+; sld_hub.vhd                                                        ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_hub.vhd                                                               ; altera_sld  ;
+; db/ip/sldaa8a7c86/alt_sld_fab.v                                    ; yes             ; Encrypted Auto-Found Verilog HDL File        ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/alt_sld_fab.v                                    ; alt_sld_fab ;
+; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab.v             ; yes             ; Encrypted Auto-Found Verilog HDL File        ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab.v             ; alt_sld_fab ;
+; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_ident.sv      ; yes             ; Auto-Found SystemVerilog HDL File            ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_ident.sv      ; alt_sld_fab ;
+; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_presplit.sv   ; yes             ; Encrypted Auto-Found SystemVerilog HDL File  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_presplit.sv   ; alt_sld_fab ;
+; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_sldfabric.vhd ; yes             ; Encrypted Auto-Found VHDL File               ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_sldfabric.vhd ; alt_sld_fab ;
+; db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_splitter.sv   ; yes             ; Encrypted Auto-Found SystemVerilog HDL File  ; C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_splitter.sv   ; alt_sld_fab ;
+; sld_jtag_hub.vhd                                                   ; yes             ; Encrypted Megafunction                       ; c:/users/xelab/documents/uni/curso3/cuatri1/dcsd/quartus/quartus/libraries/megafunctions/sld_jtag_hub.vhd                                                          ;             ;
++--------------------------------------------------------------------+-----------------+----------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
 
 
 +--------------------------------------------------------------+
@@ -263,27 +268,27 @@ refer to the applicable agreement for further details.
 +---------------------------------------------+----------------+
 ; Resource                                    ; Usage          ;
 +---------------------------------------------+----------------+
-; Estimate of Logic utilization (ALMs needed) ; 764            ;
+; Estimate of Logic utilization (ALMs needed) ; 782            ;
 ;                                             ;                ;
-; Combinational ALUT usage for logic          ; 767            ;
+; Combinational ALUT usage for logic          ; 814            ;
 ;     -- 7 input functions                    ; 1              ;
-;     -- 6 input functions                    ; 148            ;
-;     -- 5 input functions                    ; 140            ;
-;     -- 4 input functions                    ; 92             ;
-;     -- <=3 input functions                  ; 386            ;
+;     -- 6 input functions                    ; 157            ;
+;     -- 5 input functions                    ; 154            ;
+;     -- 4 input functions                    ; 97             ;
+;     -- <=3 input functions                  ; 405            ;
 ;                                             ;                ;
-; Dedicated logic registers                   ; 1321           ;
+; Dedicated logic registers                   ; 1331           ;
 ;                                             ;                ;
-; I/O pins                                    ; 42             ;
+; I/O pins                                    ; 46             ;
 ; Total MLAB memory bits                      ; 0              ;
 ; Total block memory bits                     ; 33792          ;
 ;                                             ;                ;
 ; Total DSP Blocks                            ; 0              ;
 ;                                             ;                ;
 ; Maximum fan-out node                        ; CLOCK_50~input ;
-; Maximum fan-out                             ; 935            ;
-; Total fan-out                               ; 7934           ;
-; Average fan-out                             ; 3.58           ;
+; Maximum fan-out                             ; 945            ;
+; Total fan-out                               ; 8175           ;
+; Average fan-out                             ; 3.59           ;
 +---------------------------------------------+----------------+
 
 
@@ -292,13 +297,13 @@ refer to the applicable agreement for further details.
 +-----------------------------------------------------------------------------------------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------+--------------+
 ; Compilation Hierarchy Node                                                                                                              ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                                                                                                                                                                                                                                                                                             ; Entity Name                       ; Library Name ;
 +-----------------------------------------------------------------------------------------------------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------+--------------+
-; |DE1SOC_LCDLT24_2fas                                                                                                                    ; 767 (7)             ; 1321 (0)                  ; 33792             ; 0          ; 42   ; 0            ; |DE1SOC_LCDLT24_2fas                                                                                                                                                                                                                                                                                                                                            ; DE1SOC_LCDLT24_2fas               ; work         ;
-;    |LT24Setup:O1_SETUP|                                                                                                                 ; 185 (51)            ; 135 (19)                  ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP                                                                                                                                                                                                                                                                                                                         ; LT24Setup                         ; work         ;
-;       |LT24InitLCD:DUT_InitLCD|                                                                                                         ; 29 (23)             ; 31 (24)                   ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD                                                                                                                                                                                                                                                                                                 ; LT24InitLCD                       ; work         ;
-;          |romsinc:DUT_ROM|                                                                                                              ; 6 (6)               ; 7 (7)                     ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|romsinc:DUT_ROM                                                                                                                                                                                                                                                                                 ; romsinc                           ; work         ;
-;       |LT24InitReset:DUT_RESET|                                                                                                         ; 105 (105)           ; 85 (85)                   ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET                                                                                                                                                                                                                                                                                                 ; LT24InitReset                     ; work         ;
-;    |lcd_ctrl:O3_LCDCONT|                                                                                                                ; 43 (43)             ; 64 (64)                   ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT                                                                                                                                                                                                                                                                                                                        ; lcd_ctrl                          ; work         ;
-;    |lcd_drawing:O2_LCDDRAW|                                                                                                             ; 177 (177)           ; 80 (80)                   ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW                                                                                                                                                                                                                                                                                                                     ; lcd_drawing                       ; work         ;
+; |DE1SOC_LCDLT24_2fas                                                                                                                    ; 814 (11)            ; 1331 (0)                  ; 33792             ; 0          ; 46   ; 0            ; |DE1SOC_LCDLT24_2fas                                                                                                                                                                                                                                                                                                                                            ; DE1SOC_LCDLT24_2fas               ; work         ;
+;    |LT24Setup:O1_SETUP|                                                                                                                 ; 187 (49)            ; 135 (19)                  ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP                                                                                                                                                                                                                                                                                                                         ; LT24Setup                         ; work         ;
+;       |LT24InitLCD:DUT_InitLCD|                                                                                                         ; 32 (24)             ; 31 (24)                   ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD                                                                                                                                                                                                                                                                                                 ; LT24InitLCD                       ; work         ;
+;          |romsinc:DUT_ROM|                                                                                                              ; 8 (8)               ; 7 (7)                     ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|romsinc:DUT_ROM                                                                                                                                                                                                                                                                                 ; romsinc                           ; work         ;
+;       |LT24InitReset:DUT_RESET|                                                                                                         ; 106 (106)           ; 85 (85)                   ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET                                                                                                                                                                                                                                                                                                 ; LT24InitReset                     ; work         ;
+;    |lcd_ctrl:O3_LCDCONT|                                                                                                                ; 44 (44)             ; 64 (64)                   ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT                                                                                                                                                                                                                                                                                                                        ; lcd_ctrl                          ; work         ;
+;    |lcd_drawing:O2_LCDDRAW|                                                                                                             ; 217 (217)           ; 90 (90)                   ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW                                                                                                                                                                                                                                                                                                                     ; lcd_drawing                       ; work         ;
 ;    |sld_hub:auto_hub|                                                                                                                   ; 92 (1)              ; 91 (0)                    ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|sld_hub:auto_hub                                                                                                                                                                                                                                                                                                                           ; sld_hub                           ; altera_sld   ;
 ;       |alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric| ; 91 (0)              ; 91 (0)                    ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|sld_hub:auto_hub|alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric                                                                                                                                                                                           ; alt_sld_fab_with_jtag_input       ; altera_sld   ;
 ;          |alt_sld_fab:instrumentation_fabric|                                                                                           ; 91 (0)              ; 91 (0)                    ; 0                 ; 0          ; 0    ; 0            ; |DE1SOC_LCDLT24_2fas|sld_hub:auto_hub|alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric|alt_sld_fab:instrumentation_fabric                                                                                                                                                        ; alt_sld_fab                       ; alt_sld_fab  ;
@@ -400,42 +405,68 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 
 
 Encoding Type:  One-Hot
-+-------------------------------------------------------------------------------------------------------------------+
-; State Machine - |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|EP                                                       ;
-+--------+--------+--------+--------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+
-; Name   ; EP.E12 ; EP.E11 ; EP.E10 ; EP.E9 ; EP.E8 ; EP.E7 ; EP.E6 ; EP.E5 ; EP.E4 ; EP.E3 ; EP.E2 ; EP.E1 ; EP.E0 ;
-+--------+--------+--------+--------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+
-; EP.E0  ; 0      ; 0      ; 0      ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ;
-; EP.E1  ; 0      ; 0      ; 0      ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ; 1     ;
-; EP.E2  ; 0      ; 0      ; 0      ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ; 0     ; 1     ;
-; EP.E3  ; 0      ; 0      ; 0      ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ; 0     ; 0     ; 1     ;
-; EP.E4  ; 0      ; 0      ; 0      ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ; 0     ; 0     ; 0     ; 1     ;
-; EP.E5  ; 0      ; 0      ; 0      ; 0     ; 0     ; 0     ; 0     ; 1     ; 0     ; 0     ; 0     ; 0     ; 1     ;
-; EP.E6  ; 0      ; 0      ; 0      ; 0     ; 0     ; 0     ; 1     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ;
-; EP.E7  ; 0      ; 0      ; 0      ; 0     ; 0     ; 1     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ;
-; EP.E8  ; 0      ; 0      ; 0      ; 0     ; 1     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ;
-; EP.E9  ; 0      ; 0      ; 0      ; 1     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ;
-; EP.E10 ; 0      ; 0      ; 1      ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ;
-; EP.E11 ; 0      ; 1      ; 0      ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ;
-; EP.E12 ; 1      ; 0      ; 0      ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 0     ; 1     ;
-+--------+--------+--------+--------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |DE1SOC_LCDLT24_2fas|uart:O4_LCDUART|EP                                                                                                                                     ;
++---------------+------------+-------------+-------------+------------+---------------+--------------+-------------+------------+------------+-----------+-------------+-----------+----------+
+; Name          ; EP.WAITERR ; EP.WAITEND2 ; EP.WAITEND1 ; EP.USEDATA ; EP.WAITPARITY ; EP.PARITYBIT ; EP.WAITDATA ; EP.PREWAIT ; EP.ADDLEFT ; EP.LDDATA ; EP.STARTBIT ; EP.WTDATA ; EP.WTRTS ;
++---------------+------------+-------------+-------------+------------+---------------+--------------+-------------+------------+------------+-----------+-------------+-----------+----------+
+; EP.WTRTS      ; 0          ; 0           ; 0           ; 0          ; 0             ; 0            ; 0           ; 0          ; 0          ; 0         ; 0           ; 0         ; 0        ;
+; EP.WTDATA     ; 0          ; 0           ; 0           ; 0          ; 0             ; 0            ; 0           ; 0          ; 0          ; 0         ; 0           ; 1         ; 1        ;
+; EP.STARTBIT   ; 0          ; 0           ; 0           ; 0          ; 0             ; 0            ; 0           ; 0          ; 0          ; 0         ; 1           ; 0         ; 1        ;
+; EP.LDDATA     ; 0          ; 0           ; 0           ; 0          ; 0             ; 0            ; 0           ; 0          ; 0          ; 1         ; 0           ; 0         ; 1        ;
+; EP.ADDLEFT    ; 0          ; 0           ; 0           ; 0          ; 0             ; 0            ; 0           ; 0          ; 1          ; 0         ; 0           ; 0         ; 1        ;
+; EP.PREWAIT    ; 0          ; 0           ; 0           ; 0          ; 0             ; 0            ; 0           ; 1          ; 0          ; 0         ; 0           ; 0         ; 1        ;
+; EP.WAITDATA   ; 0          ; 0           ; 0           ; 0          ; 0             ; 0            ; 1           ; 0          ; 0          ; 0         ; 0           ; 0         ; 1        ;
+; EP.PARITYBIT  ; 0          ; 0           ; 0           ; 0          ; 0             ; 1            ; 0           ; 0          ; 0          ; 0         ; 0           ; 0         ; 1        ;
+; EP.WAITPARITY ; 0          ; 0           ; 0           ; 0          ; 1             ; 0            ; 0           ; 0          ; 0          ; 0         ; 0           ; 0         ; 1        ;
+; EP.USEDATA    ; 0          ; 0           ; 0           ; 1          ; 0             ; 0            ; 0           ; 0          ; 0          ; 0         ; 0           ; 0         ; 1        ;
+; EP.WAITEND1   ; 0          ; 0           ; 1           ; 0          ; 0             ; 0            ; 0           ; 0          ; 0          ; 0         ; 0           ; 0         ; 1        ;
+; EP.WAITEND2   ; 0          ; 1           ; 0           ; 0          ; 0             ; 0            ; 0           ; 0          ; 0          ; 0         ; 0           ; 0         ; 1        ;
+; EP.WAITERR    ; 1          ; 0           ; 0           ; 0          ; 0             ; 0            ; 0           ; 0          ; 0          ; 0         ; 0           ; 0         ; 1        ;
++---------------+------------+-------------+-------------+------------+---------------+--------------+-------------+------------+------------+-----------+-------------+-----------+----------+
 
 
 Encoding Type:  One-Hot
-+------------------------------------------------------------------------------------------------------------------------------------+
-; State Machine - |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|EP                                                                     ;
-+---------------+-------------+---------------+---------------+---------------+------------+--------------+--------------+-----------+
-; Name          ; EP.DRAWWAIT ; EP.DRAWREPEAT ; EP.DRAWCOLOUR ; EP.DRAWCURSOR ; EP.DELWAIT ; EP.DELCOLOUR ; EP.DELCURSOR ; EP.INICIO ;
-+---------------+-------------+---------------+---------------+---------------+------------+--------------+--------------+-----------+
-; EP.INICIO     ; 0           ; 0             ; 0             ; 0             ; 0          ; 0            ; 0            ; 0         ;
-; EP.DELCURSOR  ; 0           ; 0             ; 0             ; 0             ; 0          ; 0            ; 1            ; 1         ;
-; EP.DELCOLOUR  ; 0           ; 0             ; 0             ; 0             ; 0          ; 1            ; 0            ; 1         ;
-; EP.DELWAIT    ; 0           ; 0             ; 0             ; 0             ; 1          ; 0            ; 0            ; 1         ;
-; EP.DRAWCURSOR ; 0           ; 0             ; 0             ; 1             ; 0          ; 0            ; 0            ; 1         ;
-; EP.DRAWCOLOUR ; 0           ; 0             ; 1             ; 0             ; 0          ; 0            ; 0            ; 1         ;
-; EP.DRAWREPEAT ; 0           ; 1             ; 0             ; 0             ; 0          ; 0            ; 0            ; 1         ;
-; EP.DRAWWAIT   ; 1           ; 0             ; 0             ; 0             ; 0          ; 0            ; 0            ; 1         ;
-+---------------+-------------+---------------+---------------+---------------+------------+--------------+--------------+-----------+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|EP                                                                                               ;
++------------+-----------+--------+--------+-----------+----------+-----------+-----------+---------+----------+-----------+-------+------------+-----------+
+; Name       ; EP.INITDR ; EP.DAT ; EP.COM ; EP.FINCUR ; EP.FINDR ; EP.REPEAT ; EP.DECPIX ; EP.DRWR ; EP.DRDAT ; EP.CHOICE ; EP.WR ; EP.INITCUR ; EP.INICIO ;
++------------+-----------+--------+--------+-----------+----------+-----------+-----------+---------+----------+-----------+-------+------------+-----------+
+; EP.INICIO  ; 0         ; 0      ; 0      ; 0         ; 0        ; 0         ; 0         ; 0       ; 0        ; 0         ; 0     ; 0          ; 0         ;
+; EP.INITCUR ; 0         ; 0      ; 0      ; 0         ; 0        ; 0         ; 0         ; 0       ; 0        ; 0         ; 0     ; 1          ; 1         ;
+; EP.WR      ; 0         ; 0      ; 0      ; 0         ; 0        ; 0         ; 0         ; 0       ; 0        ; 0         ; 1     ; 0          ; 1         ;
+; EP.CHOICE  ; 0         ; 0      ; 0      ; 0         ; 0        ; 0         ; 0         ; 0       ; 0        ; 1         ; 0     ; 0          ; 1         ;
+; EP.DRDAT   ; 0         ; 0      ; 0      ; 0         ; 0        ; 0         ; 0         ; 0       ; 1        ; 0         ; 0     ; 0          ; 1         ;
+; EP.DRWR    ; 0         ; 0      ; 0      ; 0         ; 0        ; 0         ; 0         ; 1       ; 0        ; 0         ; 0     ; 0          ; 1         ;
+; EP.DECPIX  ; 0         ; 0      ; 0      ; 0         ; 0        ; 0         ; 1         ; 0       ; 0        ; 0         ; 0     ; 0          ; 1         ;
+; EP.REPEAT  ; 0         ; 0      ; 0      ; 0         ; 0        ; 1         ; 0         ; 0       ; 0        ; 0         ; 0     ; 0          ; 1         ;
+; EP.FINDR   ; 0         ; 0      ; 0      ; 0         ; 1        ; 0         ; 0         ; 0       ; 0        ; 0         ; 0     ; 0          ; 1         ;
+; EP.FINCUR  ; 0         ; 0      ; 0      ; 1         ; 0        ; 0         ; 0         ; 0       ; 0        ; 0         ; 0     ; 0          ; 1         ;
+; EP.COM     ; 0         ; 0      ; 1      ; 0         ; 0        ; 0         ; 0         ; 0       ; 0        ; 0         ; 0     ; 0          ; 1         ;
+; EP.DAT     ; 0         ; 1      ; 0      ; 0         ; 0        ; 0         ; 0         ; 0       ; 0        ; 0         ; 0     ; 0          ; 1         ;
+; EP.INITDR  ; 1         ; 0      ; 0      ; 0         ; 0        ; 0         ; 0         ; 0       ; 0        ; 0         ; 0     ; 0          ; 1         ;
++------------+-----------+--------+--------+-----------+----------+-----------+-----------+---------+----------+-----------+-------+------------+-----------+
+
+
+Encoding Type:  One-Hot
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|EP                                                                                                                        ;
++---------------+------------+-----------+-------------+-----------+-------------+---------------+---------------+---------------+------------+--------------+--------------+-----------+
+; Name          ; EP.EQUILAT ; EP.TRAPEC ; EP.DOWNROMB ; EP.UPROMB ; EP.DRAWWAIT ; EP.DRAWREPEAT ; EP.DRAWCOLOUR ; EP.DRAWCURSOR ; EP.DELWAIT ; EP.DELCOLOUR ; EP.DELCURSOR ; EP.INICIO ;
++---------------+------------+-----------+-------------+-----------+-------------+---------------+---------------+---------------+------------+--------------+--------------+-----------+
+; EP.INICIO     ; 0          ; 0         ; 0           ; 0         ; 0           ; 0             ; 0             ; 0             ; 0          ; 0            ; 0            ; 0         ;
+; EP.DELCURSOR  ; 0          ; 0         ; 0           ; 0         ; 0           ; 0             ; 0             ; 0             ; 0          ; 0            ; 1            ; 1         ;
+; EP.DELCOLOUR  ; 0          ; 0         ; 0           ; 0         ; 0           ; 0             ; 0             ; 0             ; 0          ; 1            ; 0            ; 1         ;
+; EP.DELWAIT    ; 0          ; 0         ; 0           ; 0         ; 0           ; 0             ; 0             ; 0             ; 1          ; 0            ; 0            ; 1         ;
+; EP.DRAWCURSOR ; 0          ; 0         ; 0           ; 0         ; 0           ; 0             ; 0             ; 1             ; 0          ; 0            ; 0            ; 1         ;
+; EP.DRAWCOLOUR ; 0          ; 0         ; 0           ; 0         ; 0           ; 0             ; 1             ; 0             ; 0          ; 0            ; 0            ; 1         ;
+; EP.DRAWREPEAT ; 0          ; 0         ; 0           ; 0         ; 0           ; 1             ; 0             ; 0             ; 0          ; 0            ; 0            ; 1         ;
+; EP.DRAWWAIT   ; 0          ; 0         ; 0           ; 0         ; 1           ; 0             ; 0             ; 0             ; 0          ; 0            ; 0            ; 1         ;
+; EP.UPROMB     ; 0          ; 0         ; 0           ; 1         ; 0           ; 0             ; 0             ; 0             ; 0          ; 0            ; 0            ; 1         ;
+; EP.DOWNROMB   ; 0          ; 0         ; 1           ; 0         ; 0           ; 0             ; 0             ; 0             ; 0          ; 0            ; 0            ; 1         ;
+; EP.TRAPEC     ; 0          ; 1         ; 0           ; 0         ; 0           ; 0             ; 0             ; 0             ; 0          ; 0            ; 0            ; 1         ;
+; EP.EQUILAT    ; 1          ; 0         ; 0           ; 0         ; 0           ; 0             ; 0             ; 0             ; 0          ; 0            ; 0            ; 1         ;
++---------------+------------+-----------+-------------+-----------+-------------+---------------+---------------+---------------+------------+--------------+--------------+-----------+
 
 
 Encoding Type:  One-Hot
@@ -501,20 +532,62 @@ Encoding Type:  One-Hot
 +------------------------------------------------------+------------------------------------------------------------------+--------------------------------------------+
 
 
-+------------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                                 ;
-+---------------------------------------+--------------------------------------------+
-; Register name                         ; Reason for Removal                         ;
-+---------------------------------------+--------------------------------------------+
-; LT24Setup:O1_SETUP|LT24_RD_N          ; Stuck at VCC due to stuck port data_in     ;
-; lcd_ctrl:O3_LCDCONT|RRGB[6]           ; Merged with lcd_ctrl:O3_LCDCONT|RRGB[1]    ;
-; lcd_ctrl:O3_LCDCONT|RRGB[7,13]        ; Merged with lcd_ctrl:O3_LCDCONT|RRGB[12]   ;
-; lcd_ctrl:O3_LCDCONT|RRGB[15]          ; Merged with lcd_ctrl:O3_LCDCONT|RRGB[11]   ;
-; lcd_drawing:O2_LCDDRAW|RGB[6]         ; Merged with lcd_drawing:O2_LCDDRAW|RGB[1]  ;
-; lcd_drawing:O2_LCDDRAW|RGB[7,13]      ; Merged with lcd_drawing:O2_LCDDRAW|RGB[12] ;
-; lcd_drawing:O2_LCDDRAW|RGB[15]        ; Merged with lcd_drawing:O2_LCDDRAW|RGB[11] ;
-; Total Number of Removed Registers = 9 ;                                            ;
-+---------------------------------------+--------------------------------------------+
++--------------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                                   ;
++----------------------------------------+---------------------------------------------+
+; Register name                          ; Reason for Removal                          ;
++----------------------------------------+---------------------------------------------+
+; lcd_drawing:O2_LCDDRAW|PREVY[0,4,7,8]  ; Stuck at GND due to stuck port data_in      ;
+; LT24Setup:O1_SETUP|LT24_RD_N           ; Stuck at VCC due to stuck port data_in      ;
+; lcd_ctrl:O3_LCDCONT|RRGB[6]            ; Merged with lcd_ctrl:O3_LCDCONT|RRGB[1]     ;
+; lcd_ctrl:O3_LCDCONT|RRGB[7,13]         ; Merged with lcd_ctrl:O3_LCDCONT|RRGB[12]    ;
+; lcd_ctrl:O3_LCDCONT|RRGB[15]           ; Merged with lcd_ctrl:O3_LCDCONT|RRGB[11]    ;
+; lcd_drawing:O2_LCDDRAW|PREVY[2,3,5,6]  ; Merged with lcd_drawing:O2_LCDDRAW|PREVY[1] ;
+; lcd_drawing:O2_LCDDRAW|RGB[6]          ; Merged with lcd_drawing:O2_LCDDRAW|RGB[1]   ;
+; lcd_drawing:O2_LCDDRAW|RGB[7,13]       ; Merged with lcd_drawing:O2_LCDDRAW|RGB[12]  ;
+; lcd_drawing:O2_LCDDRAW|RGB[15]         ; Merged with lcd_drawing:O2_LCDDRAW|RGB[11]  ;
+; uart:O4_LCDUART|PRELEFT                ; Stuck at GND due to stuck port data_in      ;
+; uart:O4_LCDUART|LFT                    ; Stuck at GND due to stuck port data_in      ;
+; uart:O4_LCDUART|EP.WTDATA              ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.WTRTS               ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.WAITERR             ; Stuck at GND due to stuck port data_in      ;
+; uart:O4_LCDUART|EP.STARTBIT            ; Stuck at GND due to stuck port data_in      ;
+; uart:O4_LCDUART|WAITED                 ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.WAITDATA            ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.WAITPARITY          ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.WAITEND1            ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.WAITEND2            ; Lost fanout                                 ;
+; uart:O4_LCDUART|cnt_CWAIT[0..12]       ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.PREWAIT             ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.PARITYBIT           ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.USEDATA             ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.ADDLEFT             ; Lost fanout                                 ;
+; uart:O4_LCDUART|ALL_ITE                ; Lost fanout                                 ;
+; uart:O4_LCDUART|EP.LDDATA              ; Lost fanout                                 ;
+; uart:O4_LCDUART|cnt_CITE[0..3]         ; Lost fanout                                 ;
+; Total Number of Removed Registers = 51 ;                                             ;
++----------------------------------------+---------------------------------------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------+
+; Removed Registers Triggering Further Register Optimizations                                                                                     ;
++-----------------------------+---------------------------+---------------------------------------------------------------------------------------+
+; Register name               ; Reason for Removal        ; Registers Removed due to This Register                                                ;
++-----------------------------+---------------------------+---------------------------------------------------------------------------------------+
+; uart:O4_LCDUART|EP.WAITERR  ; Stuck at GND              ; uart:O4_LCDUART|EP.WAITDATA, uart:O4_LCDUART|EP.WAITPARITY,                           ;
+;                             ; due to stuck port data_in ; uart:O4_LCDUART|EP.WAITEND1, uart:O4_LCDUART|EP.WAITEND2,                             ;
+;                             ;                           ; uart:O4_LCDUART|cnt_CWAIT[10], uart:O4_LCDUART|cnt_CWAIT[9],                          ;
+;                             ;                           ; uart:O4_LCDUART|cnt_CWAIT[8], uart:O4_LCDUART|cnt_CWAIT[7],                           ;
+;                             ;                           ; uart:O4_LCDUART|cnt_CWAIT[6], uart:O4_LCDUART|cnt_CWAIT[5],                           ;
+;                             ;                           ; uart:O4_LCDUART|cnt_CWAIT[4], uart:O4_LCDUART|EP.PREWAIT,                             ;
+;                             ;                           ; uart:O4_LCDUART|EP.PARITYBIT, uart:O4_LCDUART|EP.USEDATA, uart:O4_LCDUART|EP.ADDLEFT, ;
+;                             ;                           ; uart:O4_LCDUART|EP.LDDATA                                                             ;
+; uart:O4_LCDUART|PRELEFT     ; Stuck at GND              ; uart:O4_LCDUART|WAITED, uart:O4_LCDUART|cnt_CWAIT[12], uart:O4_LCDUART|cnt_CWAIT[11], ;
+;                             ; due to stuck port data_in ; uart:O4_LCDUART|cnt_CWAIT[3], uart:O4_LCDUART|cnt_CWAIT[2],                           ;
+;                             ;                           ; uart:O4_LCDUART|cnt_CWAIT[1], uart:O4_LCDUART|cnt_CWAIT[0]                            ;
+; uart:O4_LCDUART|EP.STARTBIT ; Stuck at GND              ; uart:O4_LCDUART|ALL_ITE, uart:O4_LCDUART|cnt_CITE[3], uart:O4_LCDUART|cnt_CITE[2],    ;
+;                             ; due to stuck port data_in ; uart:O4_LCDUART|cnt_CITE[1], uart:O4_LCDUART|cnt_CITE[0]                              ;
++-----------------------------+---------------------------+---------------------------------------------------------------------------------------+
 
 
 +------------------------------------------------------+
@@ -522,12 +595,12 @@ Encoding Type:  One-Hot
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 1321  ;
-; Number of registers using Synchronous Clear  ; 199   ;
+; Total registers                              ; 1331  ;
+; Number of registers using Synchronous Clear  ; 187   ;
 ; Number of registers using Synchronous Load   ; 180   ;
-; Number of registers using Asynchronous Clear ; 557   ;
+; Number of registers using Asynchronous Clear ; 567   ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 523   ;
+; Number of registers using Clock Enable       ; 524   ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
@@ -561,27 +634,35 @@ Encoding Type:  One-Hot
 ; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output                                                       ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------------------------------------------------+
 ; 3:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24_D[9]                                ;
-; 3:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|cont_15usec[4]   ;
-; 3:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|cont_10usec[5]   ;
+; 3:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|cont_15usec[5]   ;
+; 3:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|cont_10usec[0]   ;
 ; 3:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|cont_5msec[0]    ;
-; 3:1                ; 32 bits   ; 64 LEs        ; 0 LEs                ; 64 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|NumTicsXmSec[20] ;
-; 3:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|RGB[12]                              ;
-; 3:1                ; 10 bits   ; 20 LEs        ; 10 LEs               ; 10 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_NPIX[0]                          ;
+; 3:1                ; 32 bits   ; 64 LEs        ; 0 LEs                ; 64 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|NumTicsXmSec[17] ;
+; 3:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|RGB[11]                              ;
+; 3:1                ; 8 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_NPIX[11]                         ;
 ; 3:1                ; 6 bits    ; 12 LEs        ; 6 LEs                ; 6 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_NPIX[1]                          ;
-; 3:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|NumTicsXuSec[7]  ;
-; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|DDAT[1]                                 ;
-; 4:1                ; 8 bits    ; 16 LEs        ; 8 LEs                ; 8 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_XCOL[0]                          ;
-; 4:1                ; 9 bits    ; 18 LEs        ; 9 LEs                ; 9 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_YROW[4]                          ;
-; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|RGB[8]                               ;
-; 5:1                ; 17 bits   ; 51 LEs        ; 34 LEs               ; 17 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|Q_PIX[5]                                ;
-; 5:1                ; 3 bits    ; 9 LEs         ; 6 LEs                ; 3 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_LINES[2]                         ;
-; 5:1                ; 13 bits   ; 39 LEs        ; 13 LEs               ; 26 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_LINES[3]                         ;
+; 3:1                ; 8 bits    ; 16 LEs        ; 0 LEs                ; 16 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET|NumTicsXuSec[3]  ;
+; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|DDAT[2]                                 ;
+; 4:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_YROW[3]                          ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_YROW[4]                          ;
+; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_YROW[0]                          ;
+; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|RGB[1]                               ;
+; 5:1                ; 17 bits   ; 51 LEs        ; 34 LEs               ; 17 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|Q_PIX[3]                                ;
+; 5:1                ; 2 bits    ; 6 LEs         ; 4 LEs                ; 2 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|uart:O4_LCDUART|cnt_CWAIT[0]                                ;
+; 5:1                ; 4 bits    ; 12 LEs        ; 8 LEs                ; 4 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|uart:O4_LCDUART|cnt_CWAIT[1]                                ;
+; 5:1                ; 2 bits    ; 6 LEs         ; 4 LEs                ; 2 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|uart:O4_LCDUART|cnt_CWAIT[9]                                ;
+; 5:1                ; 3 bits    ; 9 LEs         ; 6 LEs                ; 3 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|uart:O4_LCDUART|cnt_CITE[2]                                 ;
+; 5:1                ; 8 bits    ; 24 LEs        ; 8 LEs                ; 16 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_XCOL[0]                          ;
+; 5:1                ; 5 bits    ; 15 LEs        ; 10 LEs               ; 5 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_LINES[3]                         ;
+; 5:1                ; 10 bits   ; 30 LEs        ; 10 LEs               ; 20 LEs                 ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_LINES[0]                         ;
 ; 5:1                ; 3 bits    ; 9 LEs         ; 9 LEs                ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|RGB[3]                               ;
-; 10:1               ; 5 bits    ; 30 LEs        ; 30 LEs               ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24_D[2]                                ;
-; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|ES.E10                                  ;
+; 5:1                ; 2 bits    ; 6 LEs         ; 4 LEs                ; 2 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|cnt_NPIX[0]                          ;
+; 10:1               ; 5 bits    ; 30 LEs        ; 30 LEs               ; 0 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24_D[4]                                ;
+; 6:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|uart:O4_LCDUART|cnt_CWAIT[5]                                ;
+; 7:1                ; 3 bits    ; 12 LEs        ; 9 LEs                ; 3 LEs                  ; Yes        ; |DE1SOC_LCDLT24_2fas|uart:O4_LCDUART|cnt_CWAIT[2]                                ;
+; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |DE1SOC_LCDLT24_2fas|lcd_ctrl:O3_LCDCONT|ES.FINCUR                               ;
 ; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |DE1SOC_LCDLT24_2fas|LT24Setup:O1_SETUP|LT24_D                                   ;
-; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|MUX_LINES[8]                         ;
-; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|SEL_DATA[0]                          ;
+; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |DE1SOC_LCDLT24_2fas|lcd_drawing:O2_LCDDRAW|SEL_DATA[1]                          ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------------------------------------------------+
 
 
@@ -686,13 +767,14 @@ Encoding Type:  One-Hot
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Port Connectivity Checks: "lcd_drawing:O2_LCDDRAW"                                                                                                                       ;
-+--------+-------+----------+----------------------------------------------------------------------------------------------------------------------------------------------+
-; Port   ; Type  ; Severity ; Details                                                                                                                                      ;
-+--------+-------+----------+----------------------------------------------------------------------------------------------------------------------------------------------+
-; patron ; Input ; Warning  ; Declared by entity but not connected by instance. If a default value exists, it will be used.  Otherwise, the port will be connected to GND. ;
-+--------+-------+----------+----------------------------------------------------------------------------------------------------------------------------------------------+
++--------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "uart:O4_LCDUART"                                                                        ;
++----------+--------+----------+-------------------------------------------------------------------------------------+
+; Port     ; Type   ; Severity ; Details                                                                             ;
++----------+--------+----------+-------------------------------------------------------------------------------------+
+; datarecv ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
+; cts      ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
++----------+--------+----------+-------------------------------------------------------------------------------------+
 
 
 +-------------------------------------------------------------------------------------------------------------------------+
@@ -727,35 +809,35 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; arriav_ff             ; 279                         ;
-;     CLR               ; 87                          ;
+; arriav_ff             ; 289                         ;
+;     CLR               ; 96                          ;
 ;     CLR SCLR          ; 64                          ;
 ;     CLR SLD           ; 2                           ;
 ;     ENA               ; 1                           ;
-;     ENA CLR           ; 71                          ;
-;     ENA CLR SCLR      ; 30                          ;
+;     ENA CLR           ; 84                          ;
+;     ENA CLR SCLR      ; 18                          ;
 ;     ENA CLR SLD       ; 17                          ;
 ;     plain             ; 7                           ;
-; arriav_lcell_comb     ; 412                         ;
+; arriav_lcell_comb     ; 459                         ;
 ;     arith             ; 146                         ;
-;         1 data inputs ; 123                         ;
-;         2 data inputs ; 6                           ;
-;         4 data inputs ; 13                          ;
-;         5 data inputs ; 4                           ;
+;         1 data inputs ; 116                         ;
+;         2 data inputs ; 7                           ;
+;         3 data inputs ; 16                          ;
+;         5 data inputs ; 7                           ;
 ;     extend            ; 1                           ;
 ;         7 data inputs ; 1                           ;
-;     normal            ; 265                         ;
+;     normal            ; 312                         ;
 ;         0 data inputs ; 2                           ;
 ;         1 data inputs ; 8                           ;
-;         2 data inputs ; 44                          ;
-;         3 data inputs ; 49                          ;
-;         4 data inputs ; 39                          ;
-;         5 data inputs ; 54                          ;
-;         6 data inputs ; 69                          ;
-; boundary_port         ; 47                          ;
+;         2 data inputs ; 43                          ;
+;         3 data inputs ; 59                          ;
+;         4 data inputs ; 57                          ;
+;         5 data inputs ; 65                          ;
+;         6 data inputs ; 78                          ;
+; boundary_port         ; 51                          ;
 ;                       ;                             ;
-; Max LUT depth         ; 5.60                        ;
-; Average LUT depth     ; 2.48                        ;
+; Max LUT depth         ; 6.50                        ;
+; Average LUT depth     ; 2.95                        ;
 +-----------------------+-----------------------------+
 
 
@@ -811,10 +893,10 @@ Note: In order to hide this table in the UI and the text report file, please set
 ; LT24_RS                              ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; LT24Setup:O1_SETUP|LT24_RS~_wirecell                        ; N/A                                                                                                                                                            ;
 ; LT24_WR_N                            ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; LT24Setup:O1_SETUP|LT24_WR_N~_wirecell                      ; N/A                                                                                                                                                            ;
 ; LT24_WR_N                            ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; LT24Setup:O1_SETUP|LT24_WR_N~_wirecell                      ; N/A                                                                                                                                                            ;
-; lcd_drawing:O2_LCDDRAW|DONE_COLOUR   ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; lcd_ctrl:O3_LCDCONT|EP.E8                                   ; N/A                                                                                                                                                            ;
-; lcd_drawing:O2_LCDDRAW|DONE_COLOUR   ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; lcd_ctrl:O3_LCDCONT|EP.E8                                   ; N/A                                                                                                                                                            ;
-; lcd_drawing:O2_LCDDRAW|DONE_CURSOR   ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; lcd_ctrl:O3_LCDCONT|EP.E9                                   ; N/A                                                                                                                                                            ;
-; lcd_drawing:O2_LCDDRAW|DONE_CURSOR   ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; lcd_ctrl:O3_LCDCONT|EP.E9                                   ; N/A                                                                                                                                                            ;
+; lcd_drawing:O2_LCDDRAW|DONE_COLOUR   ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; lcd_ctrl:O3_LCDCONT|EP.FINDR                                ; N/A                                                                                                                                                            ;
+; lcd_drawing:O2_LCDDRAW|DONE_COLOUR   ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; lcd_ctrl:O3_LCDCONT|EP.FINDR                                ; N/A                                                                                                                                                            ;
+; lcd_drawing:O2_LCDDRAW|DONE_CURSOR   ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; lcd_ctrl:O3_LCDCONT|EP.FINCUR                               ; N/A                                                                                                                                                            ;
+; lcd_drawing:O2_LCDDRAW|DONE_CURSOR   ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; lcd_ctrl:O3_LCDCONT|EP.FINCUR                               ; N/A                                                                                                                                                            ;
 ; lcd_drawing:O2_LCDDRAW|DRAW_FIG      ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; DRAW_FIG~_wirecell                                          ; N/A                                                                                                                                                            ;
 ; lcd_drawing:O2_LCDDRAW|DRAW_FIG      ; pre-synthesis ; connected ; Top                            ; post-synthesis    ; DRAW_FIG~_wirecell                                          ; N/A                                                                                                                                                            ;
 ; lcd_drawing:O2_LCDDRAW|EP.E0         ; pre-synthesis ; missing   ; Top                            ; post-synthesis    ; GND                                                         ; The name does not exist in your design or refers to an invalid hierarchy or bus element.  You may have modified your design after creating the debug instance. ;
@@ -880,64 +962,86 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
-    Info: Processing started: Mon Dec 05 00:59:37 2022
+    Info: Processing started: Sun Dec 18 16:57:46 2022
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off DE1SOC_LCDLT24_2fas -c DE1SOC_LCDLT24_2fas
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
-Info (20030): Parallel compilation is enabled and will use 16 of the 16 processors detected
+Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
+Info (12021): Found 2 design units, including 1 entities, in source file uart.vhd
+    Info (12022): Found design unit 1: uart-arq_uart File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 20
+    Info (12023): Found entity 1: uart File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 8
 Info (12021): Found 2 design units, including 1 entities, in source file lcd_drawing.vhd
-    Info (12022): Found design unit 1: lcd_drawing-arq_lcd_drawing File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/lcd_drawing.vhd Line: 21
-    Info (12023): Found entity 1: lcd_drawing File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/lcd_drawing.vhd Line: 5
+    Info (12022): Found design unit 1: lcd_drawing-arq_lcd_drawing File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/lcd_drawing.vhd Line: 24
+    Info (12023): Found entity 1: lcd_drawing File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/lcd_drawing.vhd Line: 8
 Info (12021): Found 2 design units, including 1 entities, in source file lcd_ctrl.vhd
-    Info (12022): Found design unit 1: lcd_ctrl-arq_lcd_ctrl File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/lcd_ctrl.vhd Line: 17
-    Info (12023): Found entity 1: lcd_ctrl File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/lcd_ctrl.vhd Line: 5
+    Info (12022): Found design unit 1: lcd_ctrl-arq_lcd_ctrl File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/lcd_ctrl.vhd Line: 17
+    Info (12023): Found entity 1: lcd_ctrl File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/lcd_ctrl.vhd Line: 5
 Info (12021): Found 2 design units, including 1 entities, in source file lcd_setup/romsinc.vhd
-    Info (12022): Found design unit 1: romsinc-a File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/romsinc.vhd Line: 14
-    Info (12023): Found entity 1: romsinc File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/romsinc.vhd Line: 6
+    Info (12022): Found design unit 1: romsinc-a File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/romsinc.vhd Line: 14
+    Info (12023): Found entity 1: romsinc File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/romsinc.vhd Line: 6
 Info (12021): Found 2 design units, including 1 entities, in source file lcd_setup/lt24setup.vhd
-    Info (12022): Found design unit 1: LT24Setup-rtl_0 File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24SetUp.vhd Line: 47
-    Info (12023): Found entity 1: LT24Setup File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24SetUp.vhd Line: 23
+    Info (12022): Found design unit 1: LT24Setup-rtl_0 File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24SetUp.vhd Line: 47
+    Info (12023): Found entity 1: LT24Setup File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24SetUp.vhd Line: 23
 Info (12021): Found 2 design units, including 1 entities, in source file lcd_setup/lt24initreset.vhd
-    Info (12022): Found design unit 1: LT24InitReset-a File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24InitReset.vhd Line: 34
-    Info (12023): Found entity 1: LT24InitReset File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24InitReset.vhd Line: 21
+    Info (12022): Found design unit 1: LT24InitReset-a File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24InitReset.vhd Line: 34
+    Info (12023): Found entity 1: LT24InitReset File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24InitReset.vhd Line: 21
 Info (12021): Found 2 design units, including 1 entities, in source file lcd_setup/lt24initlcd.vhd
-    Info (12022): Found design unit 1: LT24InitLCD-a File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24InitLCD.vhd Line: 40
-    Info (12023): Found entity 1: LT24InitLCD File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24InitLCD.vhd Line: 23
+    Info (12022): Found design unit 1: LT24InitLCD-a File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24InitLCD.vhd Line: 40
+    Info (12023): Found entity 1: LT24InitLCD File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24InitLCD.vhd Line: 23
 Info (12021): Found 2 design units, including 0 entities, in source file lcd_setup/init128rom_pkg.vhd
-    Info (12022): Found design unit 1: romData_pkg File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/Init128rom_pkg.vhd Line: 5
-    Info (12022): Found design unit 2: romData_pkg-body File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/Init128rom_pkg.vhd Line: 14
+    Info (12022): Found design unit 1: romData_pkg File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/Init128rom_pkg.vhd Line: 5
+    Info (12022): Found design unit 2: romData_pkg-body File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/Init128rom_pkg.vhd Line: 14
 Info (12021): Found 2 design units, including 1 entities, in source file de1soc_lcdlt24_2fas.vhd
-    Info (12022): Found design unit 1: DE1SOC_LCDLT24_2fas-str File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 50
-    Info (12023): Found entity 1: DE1SOC_LCDLT24_2fas File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 9
+    Info (12022): Found design unit 1: DE1SOC_LCDLT24_2fas-str File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 50
+    Info (12023): Found entity 1: DE1SOC_LCDLT24_2fas File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 9
 Info (12127): Elaborating entity "DE1SOC_LCDLT24_2fas" for the top level hierarchy
-Info (12128): Elaborating entity "LT24Setup" for hierarchy "LT24Setup:O1_SETUP" File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 171
-Info (12128): Elaborating entity "LT24InitReset" for hierarchy "LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET" File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24SetUp.vhd Line: 108
-Info (12128): Elaborating entity "LT24InitLCD" for hierarchy "LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD" File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24SetUp.vhd Line: 122
-Info (12128): Elaborating entity "romsinc" for hierarchy "LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|romsinc:DUT_ROM" File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/LT24InitLCD.vhd Line: 88
-Info (12128): Elaborating entity "lcd_drawing" for hierarchy "lcd_drawing:O2_LCDDRAW" File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 197
-Info (12128): Elaborating entity "lcd_ctrl" for hierarchy "lcd_ctrl:O3_LCDCONT" File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 223
+Warning (10541): VHDL Signal Declaration warning at DE1SOC_LCDLT24_2fas.vhd(160): used implicit default value for signal "Rx" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 160
+Warning (10541): VHDL Signal Declaration warning at DE1SOC_LCDLT24_2fas.vhd(162): used implicit default value for signal "RTS" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 162
+Warning (10036): Verilog HDL or VHDL warning at DE1SOC_LCDLT24_2fas.vhd(163): object "DATARECV" assigned a value but never read File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 163
+Warning (10036): Verilog HDL or VHDL warning at DE1SOC_LCDLT24_2fas.vhd(164): object "CTS" assigned a value but never read File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 164
+Info (12128): Elaborating entity "LT24Setup" for hierarchy "LT24Setup:O1_SETUP" File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 207
+Info (12128): Elaborating entity "LT24InitReset" for hierarchy "LT24Setup:O1_SETUP|LT24InitReset:DUT_RESET" File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24SetUp.vhd Line: 108
+Info (12128): Elaborating entity "LT24InitLCD" for hierarchy "LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD" File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24SetUp.vhd Line: 122
+Info (12128): Elaborating entity "romsinc" for hierarchy "LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|romsinc:DUT_ROM" File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/LT24InitLCD.vhd Line: 88
+Info (12128): Elaborating entity "lcd_drawing" for hierarchy "lcd_drawing:O2_LCDDRAW" File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 233
+Info (12128): Elaborating entity "lcd_ctrl" for hierarchy "lcd_ctrl:O3_LCDCONT" File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 265
+Info (12128): Elaborating entity "uart" for hierarchy "uart:O4_LCDUART" File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 288
+Warning (10631): VHDL Process Statement warning at uart.vhd(44): inferring latch(es) for signal or variable "ES", which holds its previous value in one or more paths through the process File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.WAITERR" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.WAITEND2" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.WAITEND1" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.USEDATA" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.WAITPARITY" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.PARITYBIT" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.WAITDATA" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.PREWAIT" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.ADDLEFT" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.LDDATA" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.STARTBIT" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.WTDATA" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Info (10041): Inferred latch for "ES.WTRTS" at uart.vhd(44) File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
 Info (12021): Found 1 design units, including 1 entities, in source file db/altsyncram_ug84.tdf
-    Info (12023): Found entity 1: altsyncram_ug84 File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/altsyncram_ug84.tdf Line: 27
+    Info (12023): Found entity 1: altsyncram_ug84 File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/altsyncram_ug84.tdf Line: 27
 Info (12021): Found 1 design units, including 1 entities, in source file db/mux_blc.tdf
-    Info (12023): Found entity 1: mux_blc File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/mux_blc.tdf Line: 22
+    Info (12023): Found entity 1: mux_blc File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/mux_blc.tdf Line: 22
 Info (12021): Found 1 design units, including 1 entities, in source file db/decode_vnf.tdf
-    Info (12023): Found entity 1: decode_vnf File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/decode_vnf.tdf Line: 22
+    Info (12023): Found entity 1: decode_vnf File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/decode_vnf.tdf Line: 22
 Info (12021): Found 1 design units, including 1 entities, in source file db/cntr_29i.tdf
-    Info (12023): Found entity 1: cntr_29i File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cntr_29i.tdf Line: 27
+    Info (12023): Found entity 1: cntr_29i File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cntr_29i.tdf Line: 27
 Info (12021): Found 1 design units, including 1 entities, in source file db/cmpr_e9c.tdf
-    Info (12023): Found entity 1: cmpr_e9c File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cmpr_e9c.tdf Line: 22
+    Info (12023): Found entity 1: cmpr_e9c File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cmpr_e9c.tdf Line: 22
 Info (12021): Found 1 design units, including 1 entities, in source file db/cntr_q1j.tdf
-    Info (12023): Found entity 1: cntr_q1j File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cntr_q1j.tdf Line: 25
+    Info (12023): Found entity 1: cntr_q1j File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cntr_q1j.tdf Line: 25
 Info (12021): Found 1 design units, including 1 entities, in source file db/cntr_u8i.tdf
-    Info (12023): Found entity 1: cntr_u8i File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cntr_u8i.tdf Line: 27
+    Info (12023): Found entity 1: cntr_u8i File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cntr_u8i.tdf Line: 27
 Info (12021): Found 1 design units, including 1 entities, in source file db/cmpr_d9c.tdf
-    Info (12023): Found entity 1: cmpr_d9c File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cmpr_d9c.tdf Line: 22
+    Info (12023): Found entity 1: cmpr_d9c File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cmpr_d9c.tdf Line: 22
 Info (12021): Found 1 design units, including 1 entities, in source file db/cntr_kri.tdf
-    Info (12023): Found entity 1: cntr_kri File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cntr_kri.tdf Line: 27
+    Info (12023): Found entity 1: cntr_kri File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cntr_kri.tdf Line: 27
 Info (12021): Found 1 design units, including 1 entities, in source file db/cmpr_99c.tdf
-    Info (12023): Found entity 1: cmpr_99c File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/cmpr_99c.tdf Line: 22
+    Info (12023): Found entity 1: cmpr_99c File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/cmpr_99c.tdf Line: 22
 Info (12033): Analysis and Synthesis generated Signal Tap or debug node instance "auto_signaltap_0"
 Info (11170): Starting IP generation for the debug fabric: alt_sld_fab.
-Info (11172): 2022.12.05.01:00:07 Progress: Loading sldaa8a7c86/alt_sld_fab_wrapper_hw.tcl
+Info (11172): 2022.12.18.16:58:08 Progress: Loading sldaa8a7c86/alt_sld_fab_wrapper_hw.tcl
 Info (11172): Alt_sld_fab.alt_sld_fab: SLD fabric agents which did not specify prefer_host were connected to JTAG
 Info (11172): Alt_sld_fab: Generating alt_sld_fab "alt_sld_fab" for QUARTUS_SYNTH
 Info (11172): Alt_sld_fab: "alt_sld_fab" instantiated alt_sld_fab "alt_sld_fab"
@@ -948,41 +1052,52 @@ Info (11172): Ident: "alt_sld_fab" instantiated altera_connection_identification
 Info (11172): Alt_sld_fab: Done "alt_sld_fab" with 6 modules, 6 files
 Info (11171): Finished IP generation for the debug fabric: alt_sld_fab.
 Info (12021): Found 1 design units, including 1 entities, in source file db/ip/sldaa8a7c86/alt_sld_fab.v
-    Info (12023): Found entity 1: alt_sld_fab File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/alt_sld_fab.v Line: 9
+    Info (12023): Found entity 1: alt_sld_fab File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/alt_sld_fab.v Line: 9
 Info (12021): Found 1 design units, including 1 entities, in source file db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab.v
-    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab.v Line: 9
+    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab.v Line: 9
 Info (12021): Found 1 design units, including 1 entities, in source file db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_ident.sv
-    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab_ident File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_ident.sv Line: 33
+    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab_ident File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_ident.sv Line: 33
 Info (12021): Found 1 design units, including 1 entities, in source file db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_presplit.sv
-    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab_presplit File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_presplit.sv Line: 3
+    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab_presplit File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_presplit.sv Line: 3
 Info (12021): Found 2 design units, including 1 entities, in source file db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_sldfabric.vhd
-    Info (12022): Found design unit 1: alt_sld_fab_alt_sld_fab_sldfabric-rtl File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_sldfabric.vhd Line: 102
-    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab_sldfabric File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_sldfabric.vhd Line: 11
+    Info (12022): Found design unit 1: alt_sld_fab_alt_sld_fab_sldfabric-rtl File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_sldfabric.vhd Line: 102
+    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab_sldfabric File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_sldfabric.vhd Line: 11
 Info (12021): Found 1 design units, including 1 entities, in source file db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_splitter.sv
-    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab_splitter File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_splitter.sv Line: 3
+    Info (12023): Found entity 1: alt_sld_fab_alt_sld_fab_splitter File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/db/ip/sldaa8a7c86/submodules/alt_sld_fab_alt_sld_fab_splitter.sv Line: 3
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.PARITYBIT_1151" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.WAITEND2_1067" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.WAITEND1_1088" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.USEDATA_1109" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.WAITPARITY_1130" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.WAITDATA_1172" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.PREWAIT_1193" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.ADDLEFT_1214" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.LDDATA_1235" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.STARTBIT_1256" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.WTRTS_1298" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
+Warning (14026): LATCH primitive "uart:O4_LCDUART|ES.WAITERR_1046" is permanently enabled File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/uart.vhd Line: 44
 Info (276014): Found 1 instances of uninferred RAM logic
-    Info (276004): RAM logic "LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|romsinc:DUT_ROM|rom" is uninferred due to inappropriate RAM size File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/LCD_SetUp/romsinc.vhd Line: 16
-Warning (12241): 1 hierarchies have connectivity warnings - see the Connectivity Checks report folder
+    Info (276004): RAM logic "LT24Setup:O1_SETUP|LT24InitLCD:DUT_InitLCD|romsinc:DUT_ROM|rom" is uninferred due to inappropriate RAM size File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/LCD_SetUp/romsinc.vhd Line: 16
 Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "LEDR[5]" is stuck at GND File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 25
-    Warning (13410): Pin "LEDR[6]" is stuck at GND File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 25
-    Warning (13410): Pin "LEDR[7]" is stuck at GND File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 25
-    Warning (13410): Pin "LEDR[8]" is stuck at GND File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 25
-    Warning (13410): Pin "LT24_LCD_ON" is stuck at VCC File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 28
-    Warning (13410): Pin "LT24_RD_N" is stuck at VCC File: C:/Users/Andy/Downloads/Nueva carpeta (2)/DE1SOC_LCDLT24_1fas/DE1SOC_LCDLT24_2fas.vhd Line: 31
+    Warning (13410): Pin "LEDR[6]" is stuck at GND File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 25
+    Warning (13410): Pin "LT24_LCD_ON" is stuck at VCC File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 28
+    Warning (13410): Pin "LT24_RD_N" is stuck at VCC File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 31
 Info (286031): Timing-Driven Synthesis is running on partition "Top"
+Info (17049): 30 registers lost all their fanouts during netlist optimizations.
 Critical Warning (35025): Partially connected in-system debug instance "auto_signaltap_0" to 82 of its 98 required data inputs, trigger inputs, acquisition clocks, and dynamic pins.  There were 0 illegal, 0 inaccessible, and 16 missing sources or connections.
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 9 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 1734 device resources after synthesis - the final resource count might be different
-    Info (21058): Implemented 13 input pins
+Warning (21074): Design contains 1 input pin(s) that do not drive logic
+    Warning (15610): No output dependent on input pin "SW[6]" File: C:/Users/xelab/Documents/Uni/Curso3/Cuatri1/DCSD/Grupo-C4/Grupo-C4/Proyecto/DE1SOC_LCDLT24_2fas/DE1SOC_LCDLT24_2fas.vhd Line: 21
+Info (21057): Implemented 1786 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 17 input pins
     Info (21059): Implemented 33 output pins
-    Info (21061): Implemented 1654 logic cells
+    Info (21061): Implemented 1702 logic cells
     Info (21064): Implemented 33 RAM segments
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 10 warnings
-    Info: Peak virtual memory: 4978 megabytes
-    Info: Processing ended: Mon Dec 05 01:00:23 2022
-    Info: Elapsed time: 00:00:46
-    Info: Total CPU time (on all processors): 00:01:22
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 25 warnings
+    Info: Peak virtual memory: 4919 megabytes
+    Info: Processing ended: Sun Dec 18 16:58:23 2022
+    Info: Elapsed time: 00:00:37
+    Info: Total CPU time (on all processors): 00:01:06
 
 

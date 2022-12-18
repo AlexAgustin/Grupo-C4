@@ -18,7 +18,7 @@ entity DE1SOC_LCDLT24_2fas is
 		KEY 		: in	std_logic_vector(3 downto 0);
 
 		-- SW ----------------
-		SW 			: in	std_logic_vector(5 downto 0);
+		SW 			: in	std_logic_vector(8 downto 0);
 	--	SW 			: in	std_logic_vector(9 downto 0);
 
 		-- LEDR ----------------
@@ -197,7 +197,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 		LEDR(3)  <= SW(3); --para comprobar visualmente que el switch está activado
 		LEDR(4)  <= SW(4); --para comprobar visualmente que el switch está activado
 		LEDR(5)  <= SW(5); --para comprobar visualmente que el switch está activado 
-		LEDR(6)  <= '0';
+		LEDR(6)  <= LED;
 		LEDR(7)  <= SW(7); --para comprobar visualmente que el switch está activado 
 		LEDR(8)  <= SW(8); --para comprobar visualmente que el switch está activado 
 		LEDR(9)  <= LT24_Init_Done; --para comprobar visualmente que funciona

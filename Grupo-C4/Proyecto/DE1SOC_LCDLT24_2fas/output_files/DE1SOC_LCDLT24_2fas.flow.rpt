@@ -1,5 +1,5 @@
 Flow report for DE1SOC_LCDLT24_2fas
-Mon Dec 05 01:02:52 2022
+Sun Dec 18 16:59:52 2022
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
 
 
@@ -40,16 +40,16 @@ refer to the applicable agreement for further details.
 +-------------------------------------------------------------------------------+
 ; Flow Summary                                                                  ;
 +---------------------------------+---------------------------------------------+
-; Flow Status                     ; Successful - Mon Dec 05 01:02:36 2022       ;
+; Flow Status                     ; Successful - Sun Dec 18 16:59:38 2022       ;
 ; Quartus Prime Version           ; 18.1.0 Build 625 09/12/2018 SJ Lite Edition ;
 ; Revision Name                   ; DE1SOC_LCDLT24_2fas                         ;
 ; Top-level Entity Name           ; DE1SOC_LCDLT24_2fas                         ;
 ; Family                          ; Cyclone V                                   ;
 ; Device                          ; 5CSEMA5F31C6                                ;
 ; Timing Models                   ; Final                                       ;
-; Logic utilization (in ALMs)     ; 622 / 32,070 ( 2 % )                        ;
-; Total registers                 ; 1373                                        ;
-; Total pins                      ; 42 / 457 ( 9 % )                            ;
+; Logic utilization (in ALMs)     ; 638 / 32,070 ( 2 % )                        ;
+; Total registers                 ; 1383                                        ;
+; Total pins                      ; 46 / 457 ( 10 % )                           ;
 ; Total virtual pins              ; 0                                           ;
 ; Total block memory bits         ; 33,792 / 4,065,280 ( < 1 % )                ;
 ; Total DSP Blocks                ; 0 / 87 ( 0 % )                              ;
@@ -67,7 +67,7 @@ refer to the applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 12/05/2022 00:59:39 ;
+; Start date & time ; 12/18/2022 16:57:47 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; DE1SOC_LCDLT24_2fas ;
 +-------------------+---------------------+
@@ -78,7 +78,7 @@ refer to the applicable agreement for further details.
 +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------+---------------+-------------+------------------+
 ; Assignment Name                     ; Value                                                                                                                                        ; Default Value ; Entity Name ; Section Id       ;
 +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------+---------------+-------------+------------------+
-; COMPILER_SIGNATURE_ID               ; 136411535988718.167019837802956                                                                                                              ; --            ; --          ; --               ;
+; COMPILER_SIGNATURE_ID               ; 220837867777785.167137906614548                                                                                                              ; --            ; --          ; --               ;
 ; ENABLE_SIGNALTAP                    ; On                                                                                                                                           ; --            ; --          ; --               ;
 ; MAX_CORE_JUNCTION_TEMP              ; 85                                                                                                                                           ; --            ; --          ; --               ;
 ; MIN_CORE_JUNCTION_TEMP              ; 0                                                                                                                                            ; --            ; --          ; --               ;
@@ -131,11 +131,11 @@ refer to the applicable agreement for further details.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:44     ; 1.0                     ; 4978 MB             ; 00:01:19                           ;
-; Fitter               ; 00:01:56     ; 1.1                     ; 7905 MB             ; 00:09:39                           ;
-; Assembler            ; 00:00:13     ; 1.0                     ; 4840 MB             ; 00:00:14                           ;
-; Timing Analyzer      ; 00:00:14     ; 1.7                     ; 5336 MB             ; 00:00:18                           ;
-; Total                ; 00:03:07     ; --                      ; --                  ; 00:11:30                           ;
+; Analysis & Synthesis ; 00:00:35     ; 1.0                     ; 4919 MB             ; 00:01:04                           ;
+; Fitter               ; 00:01:00     ; 1.1                     ; 6706 MB             ; 00:02:15                           ;
+; Assembler            ; 00:00:11     ; 1.0                     ; 4840 MB             ; 00:00:12                           ;
+; Timing Analyzer      ; 00:00:13     ; 1.4                     ; 5195 MB             ; 00:00:16                           ;
+; Total                ; 00:01:59     ; --                      ; --                  ; 00:03:47                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
@@ -144,10 +144,10 @@ refer to the applicable agreement for further details.
 +----------------------+------------------+------------+------------+----------------+
 ; Module Name          ; Machine Hostname ; OS Name    ; OS Version ; Processor type ;
 +----------------------+------------------+------------+------------+----------------+
-; Analysis & Synthesis ; DESKTOP-PAMI41V  ; Windows 10 ; 10.0       ; x86_64         ;
-; Fitter               ; DESKTOP-PAMI41V  ; Windows 10 ; 10.0       ; x86_64         ;
-; Assembler            ; DESKTOP-PAMI41V  ; Windows 10 ; 10.0       ; x86_64         ;
-; Timing Analyzer      ; DESKTOP-PAMI41V  ; Windows 10 ; 10.0       ; x86_64         ;
+; Analysis & Synthesis ; LAPTOP-DU2S2TVN  ; Windows 10 ; 10.0       ; x86_64         ;
+; Fitter               ; LAPTOP-DU2S2TVN  ; Windows 10 ; 10.0       ; x86_64         ;
+; Assembler            ; LAPTOP-DU2S2TVN  ; Windows 10 ; 10.0       ; x86_64         ;
+; Timing Analyzer      ; LAPTOP-DU2S2TVN  ; Windows 10 ; 10.0       ; x86_64         ;
 +----------------------+------------------+------------+------------+----------------+
 
 
