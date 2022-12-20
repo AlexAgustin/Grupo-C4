@@ -132,7 +132,7 @@ architecture arq_uart of uart is
 	LD_FIG	<= '1' when EP=SIGNALS and ISFIG='1' else '0';
 	LD_DEL	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='1' else '0';
 	LD_COLOUR<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and ISCOLOUR='1' else '0';
-	CL_SIGS	<= '1' when EP=WTDATA and Rx='0' else '0';
+	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
 
 	-- #######################
 	-- ## UNIDAD DE PROCESO ##
