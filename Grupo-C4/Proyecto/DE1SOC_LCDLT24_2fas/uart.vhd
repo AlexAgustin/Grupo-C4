@@ -10,7 +10,7 @@ entity uart is
 		CLK, RESET_L: in std_logic;
 		Rx: in std_logic;
 		VEL: in std_logic_vector(1 downto 0);
-		RTS: in std_logic;
+		RTS,DONE_ORDER: in std_logic;
 		CTS,LED,DRAW_FIG,DEL_SCREEN: out std_logic;
 		COLOUR_CODE: out std_logic_vector(2 downto 0)
 	);
@@ -21,7 +21,7 @@ architecture arq_uart of uart is
 
 	-- DeclaraciÃÂ³n de estados
 	type estados is (WTRTS, WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, PARITYBIT, WAITPARITY, SIGNALS, USEDATA, 
-			WAITEND1, WAITEND2, WAITERR);
+			WAITEND1, WAITEND2, WAITERR,WTORDER);
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
@@ -44,7 +44,7 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, RTS, Rx, WAITED, ALL_ITE, STOP, OK) begin
+	SWSTATE: process (EP, RTS, Rx, WAITED, ALL_ITE, STOP, OK, DONE_ORDER) begin
 		case EP is
  			when WTRTS => 			if RTS='1' then ES<=WTDATA;
 											else ES<=WTRTS;
@@ -72,11 +72,10 @@ architecture arq_uart of uart is
 			when PARITYBIT =>		ES<=WAITPARITY;
 
 			when WAITPARITY =>	if WAITED='0' then ES<=WAITPARITY;
-											elsif WAITED='1' and OK='0'then ES<=USEDATA;
-											else ES<=SIGNALS;
+											else ES<=USEDATA;
 											end if;
 
-			when SIGNALS =>		ES<=USEDATA;
+			
 
 			when USEDATA =>		ES<=WAITEND1;
 
@@ -86,7 +85,13 @@ architecture arq_uart of uart is
 
 			when WAITEND2 =>		if WAITED='0' then ES<=WAITEND2;
 											elsif WAITED='1' and STOP='0' then ES<=WAITERR;
-											else ES<=WTDATA;
+											else ES<=SIGNALS;
+											end if;
+
+			when SIGNALS =>		ES<=WTORDER;
+	
+			when WTORDER =>		if DONE_ORDER='1' then ES<=WTDATA;
+											else ES<=WTORDER;
 											end if;
 
 			when WAITERR =>		if WAITED='0' then ES<=WAITERR;
@@ -218,7 +223,7 @@ architecture arq_uart of uart is
 	end process CITE;
 
 	--Comparador CMPSTOP
-	STOP <= '1' when PRELEFT= '0' and LFT = '0' else
+	STOP <= '1' when PRELEFT= '1' and LFT = '1' else
 			'0';
 
 	--Comparador CPARITY
@@ -238,10 +243,10 @@ architecture arq_uart of uart is
 	end process REGPARITY;
 
 	--Multiplexor MUXWAIT
-	WAITC	<= "0000000000110" when VEL = "00" else
-		   "0000000000101" when VEL = "01" else
-		   "0000000000100" when VEL = "10" else
-		   "0000000000011";
+	WAITC	<= "1010001011001" when VEL = "00" else
+		   "0010100010111" when VEL = "01" else
+		   "0000110110011" when VEL = "10" else
+		   "0000000110111";
 
 	--Registro RCTS
 	RCTS : process(CLK, RESET_L)
