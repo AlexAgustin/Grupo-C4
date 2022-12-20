@@ -11,8 +11,8 @@ entity uart is
 		Rx: in std_logic;
 		VEL: in std_logic_vector(1 downto 0);
 		RTS: in std_logic;
-		DATARECV: out std_logic_vector (7 downto 0);
-		CTS,LED: out std_logic
+		CTS,LED,DRAW_FIG,DEL_SCREEN: out std_logic;
+		COLOUR_CODE: out std_logic_vector(2 downto 0)
 	);
 end uart;
 
@@ -24,9 +24,11 @@ architecture arq_uart of uart is
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
+	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_COLOUR, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
 	signal WAITED, ALL_ITE, STOP, OK: std_logic :='0';
 	signal PARITY, RPARITY, UP_CTS: std_logic; --, DOWN_CTS
+	signal DATARECV: unsigned (7 downto 0);
+	signal ISCOLOUR,ISDEL,ISFIG,CL_SIGS: std_logic;
 
 	signal cnt_CITE: unsigned(3 downto 0);
 	signal cnt_CWAIT: unsigned(12 downto 0);
@@ -40,7 +42,7 @@ architecture arq_uart of uart is
 	-- ## UNIDAD DE CONTROL ## 
 	-- #######################
 
-	-- TransiciÃÂÃÂ³n de estados (cÃÂÃÂ¡lculo de estado siguiente)
+	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
 	SWSTATE: process (EP, RTS, Rx, WAITED, ALL_ITE, STOP) begin
 		case EP is
  			when WTRTS => 		if RTS='1' then ES<=WTDATA;
@@ -69,8 +71,10 @@ architecture arq_uart of uart is
 			when PARITYBIT =>	ES<=WAITPARITY;
 
 			when WAITPARITY =>	if WAITED='0' then ES<=WAITPARITY;
-						elsif WAITED='1' then ES<=USEDATA;
+						elsif WAITED='1' and OK='0'then ES<=USEDATA;
 						end if;
+
+			
 
 			when USEDATA =>		ES<=WAITEND1;
 
@@ -118,7 +122,10 @@ architecture arq_uart of uart is
 	LD_DRECV<= '1' when EP=WAITPARITY and WAITED='1' and OK='1' else '0';
 	CL_DATO	<= '1' when EP=WAITPARITY and WAITED='1' and OK='0' else '0';
 	LED	<= '1' when EP=WAITERR else '0';
-
+	LD_FIG	<= '1' when EP=SIGNALS else '0';
+	LD_DEL	<= '1' when EP=SIGNALS else '0';
+	LD_COLOUR<= '1' when EP=SIGNALS else '0';
+	CL_SIGS	<= '1' when EP=WTDATA and Rx='0' else '0';
 
 	-- #######################
 	-- ## UNIDAD DE PROCESO ##
@@ -160,7 +167,7 @@ architecture arq_uart of uart is
 	begin
 		if RESET_L = '0' then RDATO <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if OP = "10" then RDATO <= LFT & RDATO(6 downto 0);
+			if OP = "10" then RDATO <= LFT & RDATO(7 downto 1);
 			elsif CL_DATO = '1' then RDATO <= (others =>'0');
 			end if;
 		end if;
@@ -229,10 +236,10 @@ architecture arq_uart of uart is
 	end process REGPARITY;
 
 	--Multiplexor MUXWAIT
-	WAITC	<= "1010001011001" when VEL = "00" else
-		   "0010100010111" when VEL = "01" else
-		   "0000110110011" when VEL = "10" else
-		   "0000000110111";
+	WAITC	<= "0000000000110" when VEL = "00" else
+		   "0000000000101" when VEL = "01" else
+		   "0000000000100" when VEL = "10" else
+		   "0000000000011";
 
 	--Registro RCTS
 	RCTS : process(CLK, RESET_L)
@@ -250,11 +257,52 @@ architecture arq_uart of uart is
 	begin
 		if RESET_L = '0' then DATARECV <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if LD_DRECV = '1' then DATARECV <= STD_LOGIC_VECTOR(RDATO);
+			if LD_DRECV = '1' then DATARECV <= RDATO;
 			elsif CL_DATO = '1' then DATARECV <= (others => '0');
 			end if;
 		end if;
 	end process RDATA;
 
+	--Comparador DEL_SCREEN
+	ISDEL <= '1' when DATARECV = x"62" else '0';
+
+	--Registro RDEL
+	RDEL : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then DEL_SCREEN <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_DEL = '1' then DEL_SCREEN <= '1';
+			elsif CL_SIGS = '1' then DEL_SCREEN <='0';
+			end if;
+		end if;
+	end process RDEL;
+
+	--Comparador DRAW_FIG
+	ISFIG <= '1' when DATARECV = x"66" else '0';
+
+	--Registro RFIG
+	RCTS : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then DRAW_FIG <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_FIG = '1' then DRAW_FIG <= '1';
+			elsif CL_SIGS = '1' then DRAW_FIG <='0';
+			end if;
+		end if;
+	end process RCTS;
+
+	--Comparador Ceros, para comprobar que es un codigo de color
+	ISCOLOUR <= '1' when DATARECV(7 downto 3) = "00000" else '0';
+	
+	--Registro COLOUR_CODE
+	RCOLOUR : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then COLOUR_CODE <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_COLOUR = '1' then COLOUR_CODE <= DATARECV(2 downto 0);
+			elsif CL_SIGS = '1' then COLOUR_CODE <= "000";
+			end if;
+		end if;
+	end process RCOLOUR;
 
 end arq_uart; 

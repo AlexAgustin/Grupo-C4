@@ -110,20 +110,20 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			Rx: in std_logic;
 			VEL: in std_logic_vector(1 downto 0);
 			RTS: in std_logic;
-			DATARECV: out std_logic_vector (7 downto 0);
-			CTS,LED: out std_logic
+			CTS,LED,DRAW_FIG,DEL_SCREEN: out std_logic;
+			COLOUR_CODE: out std_logic_vector(2 downto 0)
 		);
 	end component;
 	  
-	signal clk,reset,reset_l 		:  std_logic;
+	signal clk,reset,reset_l 		:	std_logic;
 
 	-- setup
 	signal 		LT24_Init_Done		: 	std_logic;
-	signal  	LT24_CS_N_Int		:  std_logic;
-	signal  	LT24_RS_Int			:  std_logic;
-	signal  	LT24_WR_N_Int		:  std_logic;
-	signal  	LT24_RD_N_Int		:  std_logic;
-	signal  	LT24_D_Int			:  std_logic_vector(15 downto 0);
+	signal  	LT24_CS_N_Int		:	std_logic;
+	signal  	LT24_RS_Int			:	std_logic;
+	signal  	LT24_WR_N_Int		:	std_logic;
+	signal  	LT24_RD_N_Int		:	std_logic;
+	signal  	LT24_D_Int			:	std_logic_vector(15 downto 0);
   
   
 	-- ctrl
@@ -138,13 +138,10 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	signal 	LCD_CS_N 				:  std_logic;
 	signal	LCD_RS 					:  std_logic;
 	signal	LCD_WR_N 				:  std_logic;
-	signal	LCD_DATA					: 	std_logic_vector(15 downto 0);
+	signal	LCD_DATA				: 	std_logic_vector(15 downto 0);
 	signal	LCD_Init_Done 			:  std_logic;
   
 	-- drawing
-	signal	COLOUR_CODE 			:  std_logic_vector(2 downto 0);
-	signal 	DEL_SCREEN 				: 	std_logic;
-	signal 	DRAW_FIG 				: 	std_logic;
 	signal 	HORIZ 					: 	std_logic;
 	signal 	VERT 					: 	std_logic;
 	signal 	DIAG 					: 	std_logic;
@@ -157,12 +154,15 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	signal 	PATRON 					: 	std_logic;
 	
 	-- uart
-	signal Rx						:  std_logic;
-	signal VEL						:  std_logic_vector(1 downto 0);
-	signal RTS						:  std_logic;
-	signal DATARECV					:  std_logic_vector (7 downto 0);
-	signal CTS						:  std_logic;
-	signal LED						:  std_logic;
+	signal	COLOUR_CODE 			:  std_logic_vector(2 downto 0);
+	signal 	DEL_SCREEN 				: 	std_logic;
+	signal 	DRAW_FIG 				: 	std_logic;
+	signal 	Rx						:  std_logic;
+	signal 	VEL						:  std_logic_vector(1 downto 0);
+	signal 	RTS						:  std_logic;
+	signal 	DATARECV					:  std_logic_vector (7 downto 0);
+	signal 	CTS						:  std_logic;
+	signal 	LED						:  std_logic;
 	
 	begin 
 		clk <= CLOCK_50;
@@ -171,8 +171,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 
 		reset_l	<=		KEY(0);
 
-		DEL_SCREEN <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
-		DRAW_FIG <= 	not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
+--		DEL_SCREEN <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
+--		DRAW_FIG <= 	not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
 		MIRROR <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
 		
 		HORIZ <= 		not(KEY(1)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
@@ -188,7 +188,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 		PATRON <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
 		
 		
-		COLOUR_CODE <= SW(2 downto 0);
+--		COLOUR_CODE <= SW(2 downto 0);
 		VEL <= SW(8 downto 7);
 		
 		LEDR(0)  <= SW(0); --para comprobar visualmente que el switch está activado
@@ -202,7 +202,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 		LEDR(8)  <= SW(8); --para comprobar visualmente que el switch está activado 
 		LEDR(9)  <= LT24_Init_Done; --para comprobar visualmente que funciona
 		
-		-- Osagaien elkarketa        --------------    
+		-- Union de componentes        --------------    
 		--    señal de entrada del componente     => señal a la que se va ha enlazar
 		O1_SETUP:LT24Setup 
 		port map(
@@ -295,9 +295,10 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			RTS => RTS,
 			
 			-- salidas
-			DATARECV => DATARECV,
 			CTS => CTS,
-			LED => LED
+			LED => LED,
+			DRAW_FIG => DRAW_FIG,
+			DEL_SCREEN => DEL_SCREEN,
+			COLOUR_CODE => COLOUR_CODE,
 		);
-	  
 END str;
