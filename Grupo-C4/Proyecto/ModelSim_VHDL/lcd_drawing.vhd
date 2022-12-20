@@ -304,10 +304,10 @@ architecture arq_lcd_drawing of lcd_drawing is
 	
 	
 	-- Multiplexor para MUX_NPIX   (MUXNPIX)
-	MUX_NPIX <= '1'&x"0005" when SEL_DATA = "00" else
-		    '0'&x"0004" when SEL_DATA = "01" else
-		    '0'&x"0003" when SEL_DATA = "10" else
-		    '0'&x"0002";
+	MUX_NPIX <= '1'&x"0005" when SEL_DATA = "00" else -- 76800
+		    '0'&x"0002" when SEL_DATA = "01" else -- 100
+		    '0'&x"0004" when SEL_DATA = "10" else -- 820
+		    '0'&x"0003"; -- 5
 
 	-- Contador NUM_PIX : CNPIX
 	CNPIX : process(CLK, RESET_L)
