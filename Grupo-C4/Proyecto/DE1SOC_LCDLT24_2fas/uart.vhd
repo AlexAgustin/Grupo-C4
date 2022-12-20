@@ -44,55 +44,56 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, RTS, Rx, WAITED, ALL_ITE, STOP) begin
+	SWSTATE: process (EP, RTS, Rx, WAITED, ALL_ITE, STOP, OK) begin
 		case EP is
- 			when WTRTS => 		if RTS='1' then ES<=WTDATA;
-						else ES<=WTRTS;
-						end if;
+ 			when WTRTS => 			if RTS='1' then ES<=WTDATA;
+											else ES<=WTRTS;
+											end if;
 
-			when WTDATA =>		if Rx='0' then ES<=STARTBIT;
-						else ES<=WTDATA;
-						end if;
+			when WTDATA =>			if Rx='0' then ES<=STARTBIT;
+											else ES<=WTDATA;
+											end if;
 
-			when STARTBIT =>	if WAITED='1' then ES<=LDDATA;
-						else ES<=STARTBIT;
-						end if;
+			when STARTBIT =>		if WAITED='1' then ES<=LDDATA;
+											else ES<=STARTBIT;
+											end if;
 
-			when LDDATA =>		ES<=ADDLEFT;
+			when LDDATA =>			ES<=ADDLEFT;
 
 			when ADDLEFT =>		ES<=PREWAIT;
 
 			when PREWAIT =>		ES<=WAITDATA;
 
-			when WAITDATA =>	if WAITED='0' then ES<=WAITDATA;
-						elsif WAITED='1' and ALL_ITE='0' then ES<=LDDATA;
-						elsif WAITED='1' and ALL_ITE='1' then ES<=PARITYBIT;
-						end if;
+			when WAITDATA =>		if WAITED='0' then ES<=WAITDATA;
+											elsif WAITED='1' and ALL_ITE='0' then ES<=LDDATA;
+											else ES<=PARITYBIT;
+											end if;
 
-			when PARITYBIT =>	ES<=WAITPARITY;
+			when PARITYBIT =>		ES<=WAITPARITY;
 
 			when WAITPARITY =>	if WAITED='0' then ES<=WAITPARITY;
-						elsif WAITED='1' and OK='0'then ES<=USEDATA;
-						end if;
+											elsif WAITED='1' and OK='0'then ES<=USEDATA;
+											else ES<=SIGNALS;
+											end if;
 
 			when SIGNALS =>		ES<=USEDATA;
 
 			when USEDATA =>		ES<=WAITEND1;
 
-			when WAITEND1 =>	if WAITED='0' then ES<=WAITEND1;
-						else ES<=WAITEND2;
-						end if;
+			when WAITEND1 =>		if WAITED='0' then ES<=WAITEND1;
+											else ES<=WAITEND2;
+											end if;
 
-			when WAITEND2 =>	if WAITED='0' then ES<=WAITEND2;
-						elsif WAITED='1' and STOP='0' then ES<=WAITERR;
-						elsif WAITED='1' and STOP='1' then ES<=WTRTS;
-						end if;
+			when WAITEND2 =>		if WAITED='0' then ES<=WAITEND2;
+											elsif WAITED='1' and STOP='0' then ES<=WAITERR;
+											else ES<=WTDATA;
+											end if;
 
 			when WAITERR =>		if WAITED='0' then ES<=WAITERR;
-						else ES<=WTDATA;
-						end if;
+											else ES<=WTDATA;
+											end if;
 	
-			when others =>  	ES <= WTDATA; -- inalcanzable
+			when others =>  		ES <= WTDATA; -- inalcanzable
 		end case;
 	end process SWSTATE;
 
