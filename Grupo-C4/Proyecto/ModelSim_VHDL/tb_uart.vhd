@@ -72,11 +72,11 @@ architecture arq_tb_uart of tb_uart is
 		wait for 80 ns;
 
 		RTS <= '0';
-		Rx <='0'; --dato 1
+		Rx <='1'; --dato 1
 
 		wait for 140 ns; --procesa dato 1
 
-		Rx <='1'; --dato 2
+		Rx <='0'; --dato 2
 
 		wait for 140 ns; --procesa dato 2
 
@@ -92,11 +92,11 @@ architecture arq_tb_uart of tb_uart is
 
 		wait for 140 ns; --procesa dato 5
 
-		Rx <='1'; --dato 6
+		Rx <='0'; --dato 6
 
 		wait for 140 ns; --procesa dato 6
 
-		Rx <='1'; --dato 7
+		Rx <='0'; --dato 7
 
 		wait for 140 ns; --procesa dato 7
 
