@@ -88,7 +88,7 @@ architecture arq_uart of uart is
 											else ES<=SIGNALS;
 											end if;
 
-			when SIGNALS =>		if ISFIG='0' and ISDEL='0' ans ISCOLOUR='1' then ES<=WTDATA;
+			when SIGNALS =>		if ISCOLOUR='1' then ES<=WTDATA;
 											else ES<=WTORDER;
 											end if;
 	
@@ -309,7 +309,6 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then COLOUR_CODE <= (others => '0');
 		elsif CLK'event and CLK='1' then
 			if LD_COLOUR = '1' then COLOUR_CODE <= std_logic_vector(DATARECV(2 downto 0));
-			elsif CL_SIGS = '1' then COLOUR_CODE <= "000";
 			end if;
 		end if;
 	end process RCOLOUR;
