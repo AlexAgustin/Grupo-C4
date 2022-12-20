@@ -84,14 +84,35 @@ set_location_assignment PIN_AD11 -to SW[4]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[4]
 set_location_assignment PIN_AD12 -to SW[5]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[5]
-# set_location_assignment PIN_AE11 -to SW[6]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[6]
-# set_location_assignment PIN_AC9 -to SW[7]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[7]
-# set_location_assignment PIN_AD10 -to SW[8]
-# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[8]
+set_location_assignment PIN_AE11 -to SW[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[6]
+set_location_assignment PIN_AC9 -to SW[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[7]
+set_location_assignment PIN_AD10 -to SW[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[8]
 # set_location_assignment PIN_AE12 -to SW[9]
 # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[9]
+
+
+
+#============================================================
+# GPIO_0, UART RX, TX, CTS_L and RTS_L
+#
+# UART_CTS_L -> GPIO_0[1]
+# UART_TX -> GPIO_0[3]
+# UART_RX -> GPIO_0[5]
+# UART_RTS_L -> GPIO_0[9]
+#
+#============================================================
+set_location_assignment PIN_Y17 -to RTS
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to RTS
+# set_location_assignment PIN_Y18 -to UART_TX
+# set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to UART_TX
+set_location_assignment PIN_AK18 -to Rx
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Rx
+set_location_assignment PIN_AJ16 -to CTS
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CTS
+
 
 #============================================================
 # GPIO_0, GPIO_0 connect to GPIO Default
@@ -702,6 +723,8 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIP
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id auto_signaltap_0
 
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT storage_enable -to "lcd_drawing:O2_LCDDRAW|OP_SETCURSOR" -section_id auto_signaltap_0
+
+set_global_assignment -name VHDL_FILE uart.vhd
 set_global_assignment -name VHDL_FILE lcd_drawing.vhd
 set_global_assignment -name VHDL_FILE lcd_ctrl.vhd
 set_global_assignment -name VHDL_FILE LCD_SetUp/romsinc.vhd
@@ -713,5 +736,6 @@ set_global_assignment -name SDC_FILE DE1SOC_LCDLT24_2fas.sdc
 set_global_assignment -name VHDL_FILE DE1SOC_LCDLT24_2fas.vhd
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_global_assignment -name SOURCE_FILE DE1SOC_LCDLT24_2fas.qsf
+
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

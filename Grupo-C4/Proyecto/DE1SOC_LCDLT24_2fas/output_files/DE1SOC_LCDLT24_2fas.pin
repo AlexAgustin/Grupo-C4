@@ -174,7 +174,7 @@ altera_reserved_tck          : AC5       : input  : 3.3-V LVTTL       :         
 GND                          : AC6       : gnd    :                   :         :           :                
 AS_DATA3, DATA3              : AC7       :        :                   :         : 3A        :                
 GND                          : AC8       : gnd    :                   :         :           :                
-RESERVED_INPUT               : AC9       :        :                   :         : 3A        :                
+SW[7]                        : AC9       : input  : 3.3-V LVTTL       :         : 3A        : Y              
 VCCPD3A                      : AC10      : power  :                   : 3.3V    : 3A        :                
 VCCIO3A                      : AC11      : power  :                   : 3.3V    : 3A        :                
 SW[1]                        : AC12      : input  : 3.3-V LVTTL       :         : 3A        : Y              
@@ -205,9 +205,9 @@ VREFB3AN0                    : AD6       : power  :                   :         
 RESERVED_INPUT               : AD7       :        :                   :         : 3A        :                
 VCCIO3A                      : AD8       : power  :                   : 3.3V    : 3A        :                
 RESERVED_INPUT               : AD9       :        :                   :         : 3A        :                
-RESERVED_INPUT               : AD10      :        :                   :         : 3A        :                
+SW[8]                        : AD10      : input  : 3.3-V LVTTL       :         : 3A        : Y              
 SW[4]                        : AD11      : input  : 3.3-V LVTTL       :         : 3A        : Y              
-RESERVED_INPUT               : AD12      :        :                   :         : 3A        :                
+SW[5]                        : AD12      : input  : 3.3-V LVTTL       :         : 3A        : Y              
 VCCIO3B                      : AD13      : power  :                   : 3.3V    : 3B        :                
 RESERVED_INPUT               : AD14      :        :                   :         : 3B        :                
 DNU                          : AD15      :        :                   :         :           :                
@@ -561,7 +561,7 @@ GND                          : G4        : gnd    :                   :         
 nCE                          : G5        :        :                   :         : 9A        :                
 MSEL2                        : G6        :        :                   :         : 9A        :                
 RESERVED_INPUT               : G7        :        :                   :         : 8A        :                
-RESERVED_INPUT               : G8        :        :                   :         : 8A        :                
+SW[6]                        : G8        : input  : 2.5 V             :         : 8A        : N              
 VCCIO8A                      : G9        : power  :                   : 2.5V    : 8A        :                
 RESERVED_INPUT               : G10       :        :                   :         : 8A        :                
 RESERVED_INPUT               : G11       :        :                   :         : 8A        :                
