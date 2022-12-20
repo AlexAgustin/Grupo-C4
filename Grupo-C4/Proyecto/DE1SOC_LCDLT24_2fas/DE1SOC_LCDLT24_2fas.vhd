@@ -299,6 +299,6 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			LED => LED,
 			DRAW_FIG => DRAW_FIG,
 			DEL_SCREEN => DEL_SCREEN,
-			COLOUR_CODE => COLOUR_CODE,
+			COLOUR_CODE => COLOUR_CODE
 		);
 END str;
