@@ -20,7 +20,8 @@ end uart;
 architecture arq_uart of uart is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (WTRTS, WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, PARITYBIT, WAITPARITY, USEDATA, WAITEND1, WAITEND2, WAITERR);
+	type estados is (WTRTS, WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, PARITYBIT, WAITPARITY, SIGNALS, USEDATA, 
+			WAITEND1, WAITEND2, WAITERR);
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
@@ -74,7 +75,7 @@ architecture arq_uart of uart is
 						elsif WAITED='1' and OK='0'then ES<=USEDATA;
 						end if;
 
-			
+			when SIGNALS =>		ES<=USEDATA;
 
 			when USEDATA =>		ES<=WAITEND1;
 
@@ -88,10 +89,10 @@ architecture arq_uart of uart is
 						end if;
 
 			when WAITERR =>		if WAITED='0' then ES<=WAITERR;
-						else ES<=WTRTS;
+						else ES<=WTDATA;
 						end if;
 	
-			when others =>  	ES <= WTRTS; -- inalcanzable
+			when others =>  	ES <= WTDATA; -- inalcanzable
 		end case;
 	end process SWSTATE;
 
@@ -122,9 +123,9 @@ architecture arq_uart of uart is
 	LD_DRECV<= '1' when EP=WAITPARITY and WAITED='1' and OK='1' else '0';
 	CL_DATO	<= '1' when EP=WAITPARITY and WAITED='1' and OK='0' else '0';
 	LED	<= '1' when EP=WAITERR else '0';
-	LD_FIG	<= '1' when EP=SIGNALS else '0';
-	LD_DEL	<= '1' when EP=SIGNALS else '0';
-	LD_COLOUR<= '1' when EP=SIGNALS else '0';
+	LD_FIG	<= '1' when EP=SIGNALS and ISFIG='1' else '0';
+	LD_DEL	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='1' else '0';
+	LD_COLOUR<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and ISCOLOUR='1' else '0';
 	CL_SIGS	<= '1' when EP=WTDATA and Rx='0' else '0';
 
 	-- #######################
@@ -281,7 +282,7 @@ architecture arq_uart of uart is
 	ISFIG <= '1' when DATARECV = x"66" else '0';
 
 	--Registro RFIG
-	RCTS : process(CLK, RESET_L)
+	RFIG : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then DRAW_FIG <= '0';
 		elsif CLK'event and CLK='1' then
@@ -289,7 +290,7 @@ architecture arq_uart of uart is
 			elsif CL_SIGS = '1' then DRAW_FIG <='0';
 			end if;
 		end if;
-	end process RCTS;
+	end process RFIG;
 
 	--Comparador Ceros, para comprobar que es un codigo de color
 	ISCOLOUR <= '1' when DATARECV(7 downto 3) = "00000" else '0';
@@ -297,9 +298,9 @@ architecture arq_uart of uart is
 	--Registro COLOUR_CODE
 	RCOLOUR : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then COLOUR_CODE <= '0';
+		if RESET_L = '0' then COLOUR_CODE <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if LD_COLOUR = '1' then COLOUR_CODE <= DATARECV(2 downto 0);
+			if LD_COLOUR = '1' then COLOUR_CODE <= std_logic_vector(DATARECV(2 downto 0));
 			elsif CL_SIGS = '1' then COLOUR_CODE <= "000";
 			end if;
 		end if;
