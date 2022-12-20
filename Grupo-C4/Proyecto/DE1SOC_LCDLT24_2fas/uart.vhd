@@ -88,7 +88,9 @@ architecture arq_uart of uart is
 											else ES<=SIGNALS;
 											end if;
 
-			when SIGNALS =>		ES<=WTORDER;
+			when SIGNALS =>		if ISFIG='0' and ISDEL='0' ans ISCOLOUR='1' then ES<=WTDATA;
+											else ES<=WTORDER;
+											end if;
 	
 			when WTORDER =>		if DONE_ORDER='1' then ES<=WTDATA;
 											else ES<=WTORDER;
