@@ -16,7 +16,8 @@ entity lcd_drawing is
 		XCOL: out std_logic_vector(7 downto 0);
 		YROW: out std_logic_vector(8 downto 0);
 		RGB: out std_logic_vector(15 downto 0);
-		NUM_PIX: out unsigned(16 downto 0)
+		NUM_PIX: out unsigned(16 downto 0);
+		DONE_ORDER: out std_logic
 	);
 end lcd_drawing;
 
@@ -257,7 +258,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	---- operaciones
 	OP_DRAWCOLOUR <= '1' when EP = DELCOLOUR or EP = DRAWCOLOUR else '0';
 	OP_SETCURSOR <= '1' when EP = DELCURSOR or EP = DRAWCURSOR else '0';
-
+	DONE_ORDER <= '1' when EP = DELWAIT or EP = DRAWWAIT else '0';
 
 
 
