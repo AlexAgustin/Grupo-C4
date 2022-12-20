@@ -14,6 +14,12 @@ entity DE1SOC_LCDLT24_2fas is
 	--	CLOCK3_50	: in	std_logic;
 	--	CLOCK4_50	: in	std_logic;
 
+		-- UART----------------
+		Rx : in std_logic;
+		-- UART_TX : out std_logic;
+		CTS : out std_logic;
+		RTS : in std_logic;
+		
 		-- KEY ----------------
 		KEY 		: in	std_logic_vector(3 downto 0);
 
@@ -157,11 +163,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	signal	COLOUR_CODE 			:  std_logic_vector(2 downto 0);
 	signal 	DEL_SCREEN 				: 	std_logic;
 	signal 	DRAW_FIG 				: 	std_logic;
-	signal 	Rx						:  std_logic;
 	signal 	VEL						:  std_logic_vector(1 downto 0);
-	signal 	RTS						:  std_logic;
 	signal 	DATARECV					:  std_logic_vector (7 downto 0);
-	signal 	CTS						:  std_logic;
 	signal 	LED						:  std_logic;
 	
 	begin 
