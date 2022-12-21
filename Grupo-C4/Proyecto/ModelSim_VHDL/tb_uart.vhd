@@ -16,8 +16,8 @@ architecture arq_tb_uart of tb_uart is
 		CLK, RESET_L: in std_logic;
 		Rx,DONE_ORDER: in std_logic;
 		VEL: in std_logic_vector(1 downto 0);
-		RTS: in std_logic;
-		CTS,LED,DRAW_FIG,DEL_SCREEN: out std_logic;
+		--RTS: in std_logic;
+		LED,DRAW_FIG,DEL_SCREEN: out std_logic;--CTS,
 		COLOUR_CODE: out std_logic_vector(2 downto 0)
 	);
 	end component;
@@ -27,7 +27,7 @@ architecture arq_tb_uart of tb_uart is
 	signal RESET_L : std_logic := '0';
 	signal Rx: std_logic := '1';
 	signal VEL: std_logic_vector (1 downto 0);
-	signal RTS,CTS,DRAW_FIG,DEL_SCREEN,DONE_ORDER : std_logic := '0';
+	signal DRAW_FIG,DEL_SCREEN,DONE_ORDER : std_logic := '0';--RTS,CTS,
 	signal LED: std_logic;
 	signal COLOUR_CODE: std_logic_vector(2 downto 0);
 
@@ -38,11 +38,11 @@ architecture arq_tb_uart of tb_uart is
 		RESET_L =>RESET_L,
 		Rx =>Rx,
 		VEL =>VEL,
-		RTS =>RTS,
+		--RTS =>RTS,
 		DRAW_FIG =>DRAW_FIG,
 		DEL_SCREEN =>DEL_SCREEN,
 		COLOUR_CODE =>COLOUR_CODE,
-		CTS =>CTS,
+		--CTS =>CTS,
 		DONE_ORDER=>DONE_ORDER,
 		LED =>LED
 	);
@@ -63,7 +63,7 @@ architecture arq_tb_uart of tb_uart is
 	-------------------------------------------------
 		--prueba trama 1
 		wait for 40 ns;
-		RTS <= '1';
+		--RTS <= '1';
 		
 		wait for 60 ns;
 		
@@ -71,7 +71,7 @@ architecture arq_tb_uart of tb_uart is
 
 		wait for 80 ns;
 
-		RTS <= '0';
+		--RTS <= '0';
 		Rx <='1'; --dato 1
 
 		wait for 140 ns; --procesa dato 1
@@ -122,7 +122,7 @@ architecture arq_tb_uart of tb_uart is
 
 		wait for 80 ns;
 
-		RTS <= '0';
+		--RTS <= '0';
 		Rx <='0'; --dato 1
 
 		wait for 140 ns; --procesa dato 1

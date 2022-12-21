@@ -11,7 +11,7 @@ entity uart is
 		Rx: in std_logic;
 		VEL: in std_logic_vector(1 downto 0);
 		RTS,DONE_ORDER: in std_logic;
-		CTS,LED,DRAW_FIG,DEL_SCREEN: out std_logic;
+		LED,DRAW_FIG,DEL_SCREEN: out std_logic;--CTS,
 		COLOUR_CODE: out std_logic_vector(2 downto 0)
 	);
 end uart;
@@ -20,14 +20,14 @@ end uart;
 architecture arq_uart of uart is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (WTRTS, WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, PARITYBIT, WAITPARITY, SIGNALS, USEDATA, 
-			WAITEND1, WAITEND2, WAITERR,WTORDER);
+	type estados is (WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, PARITYBIT, WAITPARITY, SIGNALS, USEDATA, 
+			WAITEND1, WAITEND2, WAITERR,WTORDER); --WTRTS, 
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
 	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_COLOUR, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
 	signal WAITED, ALL_ITE, STOP, OK: std_logic :='0';
-	signal PARITY, RPARITY, UP_CTS: std_logic; --, DOWN_CTS
+	signal PARITY, RPARITY: std_logic; --, DOWN_CTS, UP_CTS
 	signal DATARECV: unsigned (7 downto 0);
 	signal ISCOLOUR,ISDEL,ISFIG,CL_SIGS: std_logic;
 
@@ -44,11 +44,11 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, RTS, Rx, WAITED, ALL_ITE, STOP, OK, DONE_ORDER) begin
+	SWSTATE: process (EP, RTS, Rx, WAITED, ALL_ITE, STOP, OK, DONE_ORDER, ISCOLOUR) begin
 		case EP is
- 			when WTRTS => 			if RTS='1' then ES<=WTDATA;
-											else ES<=WTRTS;
-											end if;
+ 			--when WTRTS => 			if RTS='1' then ES<=WTDATA;
+			--								else ES<=WTRTS;
+			--								end if;
 
 			when WTDATA =>			if Rx='0' then ES<=STARTBIT;
 											else ES<=WTDATA;
@@ -108,7 +108,7 @@ architecture arq_uart of uart is
 
 	-- Actualizacion de EP en cada flanco de reloj (sequential)
 	SEQ: process (CLK, RESET_L) begin
-		if RESET_L = '0' then EP <= WTRTS; -- reset asincrono
+		if RESET_L = '0' then EP <= WTDATA; -- reset asincrono
 		elsif CLK'event and CLK = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
@@ -118,7 +118,7 @@ architecture arq_uart of uart is
 	
 	-- Activacion de signals de control: asignaciones combinacionales
 
-	UP_CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
+	--UP_CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
 
 	LD_WAIT <= '1' when (EP=WTDATA and Rx='0') or EP=PREWAIT or EP=USEDATA or (EP=WAITEND1 and WAITED='1') or (EP=WAITEND2 and WAITED='1' and STOP='0') OR EP=PARITYBIT else '0';
 
@@ -252,15 +252,15 @@ architecture arq_uart of uart is
 		   "0000000110111";
 
 	--Registro RCTS
-	RCTS : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then CTS <= '0';
-		elsif CLK'event and CLK='1' then
-			if UP_CTS = '1' then CTS <= '1';
+	--RCTS : process(CLK, RESET_L)
+	--begin
+	--	if RESET_L = '0' then CTS <= '0';
+	--	elsif CLK'event and CLK='1' then
+	--		if UP_CTS = '1' then CTS <= '1';
 			--elsif DOWN_CTS = '1' then CTS <='0';
-			end if;
-		end if;
-	end process RCTS;
+	--		end if;
+	--	end if;
+	--end process RCTS;
 
 	--Registro RDATA
 	RDATA : process(CLK, RESET_L)
