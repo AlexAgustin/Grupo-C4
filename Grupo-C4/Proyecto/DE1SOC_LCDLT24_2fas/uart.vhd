@@ -303,6 +303,9 @@ architecture arq_uart of uart is
 		end if;
 	end process RFIG;
 	
+	--Comparador VERT
+	ISVERT <= '1' when DATARECV = x"76" else '0';
+	
 	--Registro RVERT
 	RVERT : process(CLK, RESET_L)
 	begin
@@ -314,6 +317,8 @@ architecture arq_uart of uart is
 		end if;
 	end process RVERT;
 	
+	--Comparador DIAG
+	ISDIAG <= '1' when DATARECV = x"64" else '0';
 	--Registro RDIAG
 	RDIAG : process(CLK, RESET_L)
 	begin
