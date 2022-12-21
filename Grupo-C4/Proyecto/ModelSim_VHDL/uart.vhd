@@ -117,6 +117,7 @@ architecture arq_uart of uart is
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
 	LD_LED	<= '1' when EP=PRELED else '0';
 	DEC_LED	<= '1' when EP=WTLED else '0';
+	CL_LED	<=	'1' when EP=WTLED and DONE_LED = '1' else '0';
 	--LD_PARITY<= '1' when EP=ADDLEFT else '0';
 
 
@@ -184,7 +185,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then cnt_CITE <= (others =>'0'); ALL_ITE <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_ITE = '1' then
-				cnt_CITE <= "1000";
+				cnt_CITE <= "1011";
 				ALL_ITE <= '0';
 			elsif DEC_ITE='1' and cnt_CITE="0001" then 
 				cnt_CITE<= cnt_CITE-1;
