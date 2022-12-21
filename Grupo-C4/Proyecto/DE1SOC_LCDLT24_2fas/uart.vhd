@@ -44,7 +44,7 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, STOP, OK, DONE_ORDER) begin --, RTS
+	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, STOP, OK, DONE_ORDER, ISCOLOUR) begin --, RTS
 		case EP is
  			--when WTRTS => 			if RTS='1' then ES<=WTDATA;
 				--							else ES<=WTRTS;
@@ -252,10 +252,10 @@ architecture arq_uart of uart is
 	end process REGPARITY;
 
 	--Multiplexor MUXWAIT
-	WAITC	<= "0000000000110" when VEL = "00" else
-		   "0000000000101" when VEL = "01" else
-		   "0000000000100" when VEL = "10" else
-		   "0000000000011";
+	WAITC	<= "1010001011001" when VEL = "00" else
+		   "0010100010111" when VEL = "01" else
+		   "0000110110011" when VEL = "10" else
+		   "0000000110111";
 
 	--Registro RCTS
 	--RCTS : process(CLK, RESET_L)
