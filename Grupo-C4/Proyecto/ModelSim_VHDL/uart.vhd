@@ -20,8 +20,7 @@ end uart;
 architecture arq_uart of uart is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, PARITYBIT, WAITPARITY, SIGNALS, USEDATA, 
-			WAITEND1, WAITEND2, WAITERR,WTORDER); --WTRTS, 
+	type estados is (WTTRAMA, MIDVEL, LDDATA, ADDLEFT, PREWAIT, WTDATA, PRELED, WTLED, SIGNALS, WTORDER); 
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
@@ -44,63 +43,43 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, STOP, OK, DONE_ORDER) begin --, RTS
+	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, OK, DONE_ORDER, ISCOLOUR, DONE_LED) begin --, RTS
 		case EP is
- 			--when WTRTS => 			if RTS='1' then ES<=WTDATA;
-				--							else ES<=WTRTS;
-					--						end if;
-
-			when WTDATA =>			if Rx='0' then ES<=STARTBIT;
-											else ES<=WTDATA;
+			when WTTRAMA =>			if Rx='0' then ES<=MIDVEL;
+											else ES<=WTTRAMA;
 											end if;
 
-			when STARTBIT =>		if WAITED='1' then ES<=LDDATA;
-											else ES<=STARTBIT;
-											end if;
+			when MIDVEL =>			if WAITED='1' then ES<=LDDATA;
+											else ES<=MIDVEL;
+											end if; 
 
 			when LDDATA =>			ES<=ADDLEFT;
 
-			when ADDLEFT =>		ES<=PREWAIT;
+			when ADDLEFT =>			ES<=PREWAIT;
 
-			when PREWAIT =>		ES<=WAITDATA;
+			when PREWAIT =>			ES<=WAITDATA;
 
-			when WAITDATA =>		if WAITED='0' then ES<=WAITDATA;
+			when WAITDATA =>		if WAITED='0' then ES<=WTDATA;
 											elsif WAITED='1' and ALL_ITE='0' then ES<=LDDATA;
-											else ES<=PARITYBIT;
+											elsif WAITED='1' and ALL_ITE='1' and OK='0' then ES<=PRELED;
+											else ES<=SIGNALS
 											end if;
 
-			when PARITYBIT =>		ES<=WAITPARITY;
+			when PRELED =>			ES<=WTLED;
 
-			when WAITPARITY =>	if WAITED='0' then ES<=WAITPARITY;
-											else ES<=USEDATA;
+			when WTLED =>			if DONE_LED='1' then ES<=WTTRAMA;
+											else ES<=WTLED;
 											end if;
 
-			
-
-			when USEDATA =>		ES<=WAITEND1;
-
-			when WAITEND1 =>		if WAITED='0' then ES<=WAITEND1;
-											else ES<=WAITEND2;
-											end if;
-
-			when WAITEND2 =>		if WAITED='0' then ES<=WAITEND2;
-											elsif WAITED='1' and STOP='0' then ES<=WAITERR;
-											else ES<=SIGNALS;
-											end if;
-
-			when SIGNALS =>		if ISCOLOUR='1' then ES<=WTDATA;
+			when SIGNALS =>			if ISCOLOUR='1' then ES<=WTTRAMA;
 											else ES<=WTORDER;
 											end if;
 	
-			when WTORDER =>		if DONE_ORDER='1' then ES<=WTDATA;
+			when WTORDER =>			if DONE_ORDER='1' then ES<=WTTRAMA;
 											else ES<=WTORDER;
 											end if;
-
-			when WAITERR =>		if WAITED='0' then ES<=WAITERR;
-											else ES<=WTDATA;
-											end if;
 	
-			when others =>  		ES <= WTDATA; -- inalcanzable
+			when others =>  		ES <= WTTRAMA; -- inalcanzable
 		end case;
 	end process SWSTATE;
 
@@ -108,7 +87,7 @@ architecture arq_uart of uart is
 
 	-- Actualizacion de EP en cada flanco de reloj (sequential)
 	SEQ: process (CLK, RESET_L) begin
-		if RESET_L = '0' then EP <= WTDATA; -- reset asincrono
+		if RESET_L = '0' then EP <= WTTRAMA; -- reset asincrono
 		elsif CLK'event and CLK = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
