@@ -133,9 +133,9 @@ architecture arq_uart of uart is
 	LED	<= '1' when EP=WAITERR else '0';
 	LD_FIG	<= '1' when EP=SIGNALS and ISFIG='1' else '0';
 	LD_DEL	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='1' else '0';
-	LD_VERT	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and IS_VERT = '1' else '0';
-	LD_DIAG	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and IS_VERT = '0' and IS_DIAG = '1' else '0';
-	LD_COLOUR<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and IS_VERT = '0' and IS_DIAG = '0' and ISCOLOUR='1' else '0';
+	LD_VERT	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and ISVERT = '1' else '0';
+	LD_DIAG	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '1' else '0';
+	LD_COLOUR<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISCOLOUR='1' else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
 
 
