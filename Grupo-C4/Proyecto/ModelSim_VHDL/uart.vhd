@@ -24,11 +24,11 @@ architecture arq_uart of uart is
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_VERT, LD_DIAG, LD_COLOUR, LD_PARITY, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
-	signal WAITED, ALL_ITE, STOP, OK: std_logic :='0';
+	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_VERT, LD_DIAG, LD_COLOUR, LD_PARITY, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT: std_logic := '0';--, PRELEFT
+	signal WAITED, ALL_ITE, STOP, OK, SEL: std_logic :='0';
 	signal PARITY, RPARITY: std_logic; --, DOWN_CTS, UP_CTS
 	signal ISCOLOUR,ISDEL,ISFIG, ISVERT, ISDIAG, CL_SIGS: std_logic;
-	signal DONE_LED, LD_LED, DEC_LED, CL_LED, SEL, OKEND, OKSTART: std_logic;
+	signal DONE_LED, LD_LED, DEC_LED, CL_LED, OKEND, OKSTART: std_logic;
 
 	signal cnt_CITE: unsigned(3 downto 0);
 	signal cnt_CWAIT: unsigned(12 downto 0);
@@ -44,7 +44,7 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, OK, DONE_ORDER, ISCOLOUR, DONE_LED) begin --, RTS
+	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, OK, DONE_ORDER, ISCOLOUR, ISFIG,ISDEL,ISDIAG,ISVERT, DONE_LED) begin --, RTS
 		case EP is
 			when WTTRAMA =>			if Rx='0' then ES<=MIDVEL;
 											else ES<=WTTRAMA;
@@ -73,6 +73,7 @@ architecture arq_uart of uart is
 											end if;
 
 			when SIGNALS =>			if ISCOLOUR='1' then ES<=WTTRAMA;
+											elsif ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT='0' and ISDIAG='0' then ES<=WTTRAMA;
 											else ES<=WTORDER;
 											end if;
 	
@@ -100,14 +101,14 @@ architecture arq_uart of uart is
 
 	--UP_CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
 
-	LD_WAIT <= '1' when (EP=WTTRAMA and Rx='1') or (EP=PREWAIT) else '0';
+	LD_WAIT <= '1' when (EP=WTTRAMA and Rx='0') or (EP=PREWAIT) else '0';
 	DEC_WAIT<= '1' when EP=MIDVEL or EP=WTDATA else '0';
 	LD_ITE	<= '1' when EP=MIDVEL and WAITED='1' else '0';
 	LD_DATO	<= '1' when EP=LDDATA else '0';
 	LD_OP	<= '1' when EP=ADDLEFT else '0';
 	CL_OP	<= '1' when EP=PREWAIT else '0';
 	DEC_ITE	<= '1' when EP=WTDATA and WAITED='1' and ALL_ITE='0' else '0';
-	CL_DATO	<= '1' when (EP=WTTRAMA and Rx='0') else '0';
+	CL_DATO	<= '1' when EP=WTTRAMA and Rx='0' else '0';
 	LD_COLOUR<= '1' when EP=SIGNALS and ISCOLOUR='1' else '0';
 	LD_FIG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='1' else '0';
 	LD_DEL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='1' else '0';
@@ -117,6 +118,7 @@ architecture arq_uart of uart is
 	LD_LED	<= '1' when EP=PRELED else '0';
 	DEC_LED	<= '1' when EP=WTLED else '0';
 	CL_LED	<=	'1' when EP=WTLED and DONE_LED = '1' else '0';
+	SEL		<= '1' when EP=WTTRAMA and Rx='0' else '0';
 	--LD_PARITY<= '1' when EP=ADDLEFT else '0';
 
 
@@ -129,7 +131,7 @@ architecture arq_uart of uart is
 	begin
 		if RESET_L = '0' then LFT <= '0';
 		elsif CLK'event and CLK='1' then
-			if LD_DATO = '1' then LFT <= PRELEFT;
+			if LD_DATO = '1' then LFT <= Rx;
 			elsif CL_DATO='1' then LFT<='0';
 			end if;
 		end if;
@@ -184,7 +186,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then cnt_CITE <= (others =>'0'); ALL_ITE <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_ITE = '1' then
-				cnt_CITE <= "1011";
+				cnt_CITE <= "1010";
 				ALL_ITE <= '0';
 			elsif DEC_ITE='1' and cnt_CITE="0001" then 
 				cnt_CITE<= cnt_CITE-1;
@@ -204,19 +206,19 @@ architecture arq_uart of uart is
 	begin
 		if RESET_L = '0' then cnt_LED <= (others =>'0'); DONE_LED <= '0';
 		elsif CLK'event and CLK='1' then
-			if LD_ITE = '1' then
+			if LD_LED = '1' then
 				cnt_LED <= "101111101011110000100000000";
 				DONE_LED <= '0';
 			elsif CL_LED='1' then 
 				cnt_LED<=(others=>'0');
 				DONE_LED <= '0';
-			elsif DEC_ITE='1' and cnt_LED="00000000000000000000000001" then 
+			elsif DEC_LED='1' and cnt_LED="00000000000000000000000001" then 
 				cnt_LED<= cnt_LED-1;
 				DONE_LED <= '1';
-			elsif DEC_ITE='1' and cnt_LED="00000000000000000000000001" then
+			elsif DEC_LED='1' and cnt_LED="00000000000000000000000001" then
 				cnt_LED<= "111111111111111111111111111";
 				DONE_LED <= '0';
-			elsif DEC_ITE = '1' then 
+			elsif DEC_LED = '1' then 
 				cnt_LED <= cnt_LED - 1;
 				DONE_LED <= '0';
 			end if;
@@ -284,6 +286,7 @@ architecture arq_uart of uart is
 	
 	--Comparador DIAG
 	ISDIAG <= '1' when RDATO(8 downto 1) = x"64" else '0';
+	
 	--Registro RDIAG
 	RDIAG : process(CLK, RESET_L)
 	begin
