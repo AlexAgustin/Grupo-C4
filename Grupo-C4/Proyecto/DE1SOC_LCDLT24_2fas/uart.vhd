@@ -11,7 +11,7 @@ entity uart is
 		Rx: in std_logic;
 		VEL: in std_logic_vector(1 downto 0);
 		RTS,DONE_ORDER: in std_logic;
-		LED,DRAW_FIG,DEL_SCREEN: out std_logic;--CTS,
+		LED,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;--CTS,
 		COLOUR_CODE: out std_logic_vector(2 downto 0)
 	);
 end uart;
@@ -25,11 +25,11 @@ architecture arq_uart of uart is
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_COLOUR, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
+	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_VERT, LD_DIAG, LD_COLOUR, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
 	signal WAITED, ALL_ITE, STOP, OK: std_logic :='0';
 	signal PARITY, RPARITY: std_logic; --, DOWN_CTS, UP_CTS
 	signal DATARECV: unsigned (7 downto 0);
-	signal ISCOLOUR,ISDEL,ISFIG,CL_SIGS: std_logic;
+	signal ISCOLOUR,ISDEL,ISFIG, ISVERT, ISDIAG, CL_SIGS: std_logic;
 
 	signal cnt_CITE: unsigned(3 downto 0);
 	signal cnt_CWAIT: unsigned(12 downto 0);
@@ -133,7 +133,9 @@ architecture arq_uart of uart is
 	LED	<= '1' when EP=WAITERR else '0';
 	LD_FIG	<= '1' when EP=SIGNALS and ISFIG='1' else '0';
 	LD_DEL	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='1' else '0';
-	LD_COLOUR<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and ISCOLOUR='1' else '0';
+	LD_VERT	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and IS_VERT = '1' else '0';
+	LD_DIAG	<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and IS_VERT = '0' and IS_DIAG = '1' else '0';
+	LD_COLOUR<= '1' when EP=SIGNALS and ISFIG='0' and ISDEL='0' and IS_VERT = '0' and IS_DIAG = '0' and ISCOLOUR='1' else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
 
 
@@ -300,6 +302,28 @@ architecture arq_uart of uart is
 			end if;
 		end if;
 	end process RFIG;
+	
+	--Registro RVERT
+	RVERT : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then VERT <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_VERT = '1' then VERT <= '1';
+			elsif CL_SIGS = '1' then VERT <='0';
+			end if;
+		end if;
+	end process RVERT;
+	
+	--Registro RDIAG
+	RDIAG : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then DIAG <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_DIAG = '1' then DIAG <= '1';
+			elsif CL_SIGS = '1' then DIAG <='0';
+			end if;
+		end if;
+	end process RDIAG;
 
 	--Comparador Ceros, para comprobar que es un codigo de color
 	ISCOLOUR <= '1' when DATARECV(7 downto 3) = "00000" else '0';
