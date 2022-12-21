@@ -216,9 +216,9 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		wait for 200 ns;
 
 	------------------------------------------------------------------------------
-		--prueba dibujar linea horizontal 1
-		COLOUR_CODE <= "101";
-		HORIZ <= '1';
+		--prueba dibujar diagonal 1
+		COLOUR_CODE <= "001";
+		DIAG <= '1';
 
 		wait for 60 ns;
 		DONE_CURSOR <= '1';
@@ -245,10 +245,11 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		DONE_COLOUR <= '0';
 
 		wait for 20 ns;
-
-		HORIZ <= '0';
-
+		DIAG <= '0';
+		
 		wait for 40 ns;
+		
+		
 
 	-------------------------------------------------
 
@@ -322,79 +323,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		wait for 40 ns;
 		
 	-------------------------------------------------
-
-		--prueba dibujar linea horizontal 2
-		COLOUR_CODE <= "000";
-		HORIZ <= '1';
-
-		wait for 60 ns;
-		DONE_CURSOR <= '1';
-
-		wait for 20 ns;
-		DONE_CURSOR <= '0';
-
-		wait for 60 ns;
-		DONE_COLOUR <= '1';
-
-		wait for 20 ns;
-		DONE_COLOUR <= '0';
-
-		wait for 60 ns;	
-		DONE_CURSOR <= '1';
-
-		wait for 20 ns;
-		DONE_CURSOR <= '0';
-
-		wait for 60 ns;
-		DONE_COLOUR <= '1';
-
-		wait for 20 ns;
-		DONE_COLOUR <= '0';
-
-		wait for 20 ns;
-		HORIZ <= '0';
-		
-		wait for 40 ns;
-		
-		
-	-------------------------------------------------
-
-		--prueba dibujar diagonal 1
-		COLOUR_CODE <= "001";
-		DIAG <= '1';
-
-		wait for 60 ns;
-		DONE_CURSOR <= '1';
-
-		wait for 20 ns;
-		DONE_CURSOR <= '0';
-
-		wait for 60 ns;
-		DONE_COLOUR <= '1';
-
-		wait for 20 ns;
-		DONE_COLOUR <= '0';
-
-		wait for 60 ns;	
-		DONE_CURSOR <= '1';
-
-		wait for 20 ns;
-		DONE_CURSOR <= '0';
-
-		wait for 60 ns;
-		DONE_COLOUR <= '1';
-
-		wait for 20 ns;
-		DONE_COLOUR <= '0';
-
-		wait for 20 ns;
-		DIAG <= '0';
-		
-		wait for 40 ns;
-		
-	-------------------------------------------------
-
-		--prueba dibujar diagonal 2
+	--prueba dibujar diagonal 2
 		COLOUR_CODE <= "010";
 		DIAG <= '1';
 
@@ -428,6 +357,79 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		wait for 40 ns;
 		
 		
+
+		
+	-------------------------------------------------
+	--prueba dibujar linea horizontal 1
+		COLOUR_CODE <= "101";
+		HORIZ <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+
+		HORIZ <= '0';
+
+		wait for 40 ns;
+
+		
+	-------------------------------------------------
+		--prueba dibujar linea horizontal 2
+		COLOUR_CODE <= "000";
+		HORIZ <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		HORIZ <= '0';
+		
+		wait for 40 ns;
+		
+	
 		
 	-------------------------------------------------
 
