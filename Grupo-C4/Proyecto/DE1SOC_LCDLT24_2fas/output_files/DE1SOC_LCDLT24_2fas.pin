@@ -236,7 +236,7 @@ RESERVED_INPUT               : AE7       :        :                   :         
 AS_DATA2, DATA2              : AE8       :        :                   :         : 3A        :                
 RESERVED_INPUT               : AE9       :        :                   :         : 3A        :                
 GND                          : AE10      : gnd    :                   :         :           :                
-RESERVED_INPUT               : AE11      :        :                   :         : 3A        :                
+SW[6]                        : AE11      : input  : 3.3-V LVTTL       :         : 3A        : Y              
 RESERVED_INPUT               : AE12      :        :                   :         : 3A        :                
 RESERVED_INPUT               : AE13      :        :                   :         : 3B        :                
 RESERVED_INPUT               : AE14      :        :                   :         : 3B        :                
@@ -392,7 +392,7 @@ RESERVED_INPUT               : AK14      :        :                   :         
 GND                          : AK15      : gnd    :                   :         :           :                
 RESERVED_INPUT               : AK16      :        :                   :         : 4A        :                
 VREFB4AN0                    : AK17      : power  :                   :         : 4A        :                
-RESERVED_INPUT               : AK18      :        :                   :         : 4A        :                
+Rx                           : AK18      : input  : 3.3-V LVTTL       :         : 4A        : Y              
 RESERVED_INPUT               : AK19      :        :                   :         : 4A        :                
 VCCIO4A                      : AK20      : power  :                   : 3.3V    : 4A        :                
 RESERVED_INPUT               : AK21      :        :                   :         : 4A        :                
@@ -561,7 +561,7 @@ GND                          : G4        : gnd    :                   :         
 nCE                          : G5        :        :                   :         : 9A        :                
 MSEL2                        : G6        :        :                   :         : 9A        :                
 RESERVED_INPUT               : G7        :        :                   :         : 8A        :                
-SW[6]                        : G8        : input  : 2.5 V             :         : 8A        : N              
+RESERVED_INPUT               : G8        :        :                   :         : 8A        :                
 VCCIO8A                      : G9        : power  :                   : 2.5V    : 8A        :                
 RESERVED_INPUT               : G10       :        :                   :         : 8A        :                
 RESERVED_INPUT               : G11       :        :                   :         : 8A        :                

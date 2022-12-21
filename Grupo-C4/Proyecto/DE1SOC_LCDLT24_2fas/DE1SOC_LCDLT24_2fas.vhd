@@ -17,8 +17,8 @@ entity DE1SOC_LCDLT24_2fas is
 		-- UART----------------
 		Rx : in std_logic;
 		-- UART_TX : out std_logic;
-		CTS : out std_logic;
-		RTS : in std_logic;
+		--CTS : out std_logic;
+		--RTS : in std_logic;
 		
 		-- KEY ----------------
 		KEY 		: in	std_logic_vector(3 downto 0);
@@ -92,7 +92,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			XCOL: out std_logic_vector(7 downto 0);
 			YROW: out std_logic_vector(8 downto 0);
 			RGB: out std_logic_vector(15 downto 0);
-			NUM_PIX: out unsigned(16 downto 0)
+			NUM_PIX: out unsigned(16 downto 0);
+			DONE_ORDER: out std_logic
 		);
 	end component;
 
@@ -115,7 +116,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			CLK, RESET_L: in std_logic;
 			Rx: in std_logic;
 			VEL: in std_logic_vector(1 downto 0);
-			RTS,DONE_ORDER: in std_logic;
+			DONE_ORDER: in std_logic;--RTS,
 			LED,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;--CTS,
 			COLOUR_CODE: out std_logic_vector(2 downto 0)
 		);
@@ -166,6 +167,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	signal 	VEL						:  std_logic_vector(1 downto 0);
 	signal 	DATARECV					:  std_logic_vector (7 downto 0);
 	signal 	LED						:  std_logic;
+	signal 	DONE_ORDER				:	std_logic;
 	
 	begin 
 		clk <= CLOCK_50;
@@ -262,7 +264,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			XCOL => XCOL,
 			YROW => YROW,
 			RGB => RGB,
-			NUM_PIX => NUM_PIX
+			NUM_PIX => NUM_PIX,
+			DONE_ORDER=>DONE_ORDER
 		);
 			
 		O3_LCDCONT: LCD_CTRL
@@ -295,10 +298,11 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			CLK	=> clk,
 			Rx => Rx,
 			VEL => VEL,
-			RTS => RTS,
+			DONE_ORDER=>DONE_ORDER,
+			--RTS => RTS,
 			
 			-- salidas
-			CTS => CTS,
+			--CTS => CTS,
 			LED => LED,
 			DRAW_FIG => DRAW_FIG,
 			DEL_SCREEN => DEL_SCREEN,

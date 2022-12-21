@@ -28,6 +28,10 @@
 					"strict" : false
 				},
 				{
+					"name" : "LEDR[6]",
+					"strict" : false
+				},
+				{
 					"name" : "LEDR[7]",
 					"strict" : false
 				},
@@ -152,10 +156,6 @@
 					"strict" : false
 				},
 				{
-					"name" : "KEY[2]",
-					"strict" : false
-				},
-				{
 					"name" : "CLOCK_50",
 					"strict" : false
 				},
@@ -164,11 +164,19 @@
 					"strict" : false
 				},
 				{
+					"name" : "KEY[3]",
+					"strict" : false
+				},
+				{
 					"name" : "KEY[1]",
 					"strict" : false
 				},
 				{
-					"name" : "KEY[3]",
+					"name" : "Rx",
+					"strict" : false
+				},
+				{
+					"name" : "KEY[2]",
 					"strict" : false
 				}
 			]
