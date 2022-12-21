@@ -331,7 +331,7 @@ architecture arq_uart of uart is
 	end process RDIAG;
 
 	--Comparador Ceros, para comprobar que es un codigo de color
-	ISCOLOUR <= '1' when DATARECV(7 downto 3) = "00000" else '0';
+	ISCOLOUR <= '1' when DATARECV(7 downto 3) = "00110" else '0';
 	
 	--Registro COLOUR_CODE
 	RCOLOUR : process(CLK, RESET_L)
