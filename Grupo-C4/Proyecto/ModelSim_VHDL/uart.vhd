@@ -108,7 +108,6 @@ architecture arq_uart of uart is
 	CL_OP	<= '1' when EP=PREWAIT else '0';
 	DEC_ITE	<= '1' when EP=WTDATA and WAITED='1' and ALL_ITE='0' else '0';
 	CL_DATO	<= '1' when (EP=WTTRAMA and Rx='0') else '0';
-	LED	<= '1' when EP=WTLED else '0';
 	LD_COLOUR<= '1' when EP=SIGNALS and ISCOLOUR='1' else '0';
 	LD_FIG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='1' else '0';
 	LD_DEL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='1' else '0';
