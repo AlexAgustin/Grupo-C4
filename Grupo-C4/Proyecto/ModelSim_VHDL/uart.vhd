@@ -26,7 +26,7 @@ architecture arq_uart of uart is
 	-- Declaracion de senales de control
 	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_VERT, LD_DIAG, LD_COLOUR, LD_PARITY, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT: std_logic := '0';--, PRELEFT
 	signal WAITED, ALL_ITE, STOP, OK, SEL: std_logic :='0';
-	signal PARITY, RPARITY: std_logic; --, DOWN_CTS, UP_CTS
+	--signal PARITY, RPARITY: std_logic; --, DOWN_CTS, UP_CTS
 	signal ISCOLOUR,ISDEL,ISFIG, ISVERT, ISDIAG, CL_SIGS: std_logic;
 	signal DONE_LED, LD_LED, DEC_LED, CL_LED, OKEND, OKSTART: std_logic;
 
