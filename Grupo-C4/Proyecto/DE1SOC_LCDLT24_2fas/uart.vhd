@@ -20,22 +20,22 @@ end uart;
 architecture arq_uart of uart is
 
 	-- DeclaraciÃÂ³n de estados
-	type estados is (WTDATA, STARTBIT, LDDATA, ADDLEFT, PREWAIT, WAITDATA, PARITYBIT, WAITPARITY, SIGNALS, USEDATA, 
-			WAITEND1, WAITEND2, WAITERR,WTORDER); --WTRTS, 
+	type estados is (WTTRAMA, MIDVEL, LDDATA, ADDLEFT, PREWAIT, WTDATA, PRELED, WTLED, SIGNALS, WTORDER); 
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
 	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_VERT, LD_DIAG, LD_COLOUR, LD_PARITY, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
 	signal WAITED, ALL_ITE, STOP, OK: std_logic :='0';
 	signal PARITY, RPARITY: std_logic; --, DOWN_CTS, UP_CTS
-	signal DATARECV: unsigned (7 downto 0);
 	signal ISCOLOUR,ISDEL,ISFIG, ISVERT, ISDIAG, CL_SIGS: std_logic;
+	signal DONE_LED, LD_LED, DEC_LED, CL_LED, SEL, OKEND, OKSTART: std_logic;
 
 	signal cnt_CITE: unsigned(3 downto 0);
 	signal cnt_CWAIT: unsigned(12 downto 0);
-	signal RDATO: unsigned(7 downto 0);
+	signal cnt_LED: unsigned (26 downto 0);
+	signal RDATO: std_logic_vector(10 downto 0);
 	signal OP: unsigned(1 downto 0);
-	signal WAITC: unsigned (12 downto 0);
+	signal WAITC1, WAITC2, WAITCNT: unsigned (12 downto 0);
 
 	begin
 
@@ -44,63 +44,43 @@ architecture arq_uart of uart is
 	-- #######################
 
 	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, STOP, OK, DONE_ORDER, ISCOLOUR) begin --, RTS
+	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, OK, DONE_ORDER, ISCOLOUR, DONE_LED) begin --, RTS
 		case EP is
- 			--when WTRTS => 			if RTS='1' then ES<=WTDATA;
-				--							else ES<=WTRTS;
-					--						end if;
-
-			when WTDATA =>			if Rx='0' then ES<=STARTBIT;
-											else ES<=WTDATA;
+			when WTTRAMA =>			if Rx='0' then ES<=MIDVEL;
+											else ES<=WTTRAMA;
 											end if;
 
-			when STARTBIT =>		if WAITED='1' then ES<=LDDATA;
-											else ES<=STARTBIT;
-											end if;
+			when MIDVEL =>			if WAITED='1' then ES<=LDDATA;
+											else ES<=MIDVEL;
+											end if; 
 
 			when LDDATA =>			ES<=ADDLEFT;
 
-			when ADDLEFT =>		ES<=PREWAIT;
+			when ADDLEFT =>			ES<=PREWAIT;
 
-			when PREWAIT =>		ES<=WAITDATA;
+			when PREWAIT =>			ES<=WTDATA;
 
-			when WAITDATA =>		if WAITED='0' then ES<=WAITDATA;
+			when WTDATA =>		if WAITED='0' then ES<=WTDATA;
 											elsif WAITED='1' and ALL_ITE='0' then ES<=LDDATA;
-											else ES<=PARITYBIT;
-											end if;
-
-			when PARITYBIT =>		ES<=WAITPARITY;
-
-			when WAITPARITY =>	if WAITED='0' then ES<=WAITPARITY;
-											else ES<=USEDATA;
-											end if;
-
-			
-
-			when USEDATA =>		ES<=WAITEND1;
-
-			when WAITEND1 =>		if WAITED='0' then ES<=WAITEND1;
-											else ES<=WAITEND2;
-											end if;
-
-			when WAITEND2 =>		if WAITED='0' then ES<=WAITEND2;
-											elsif WAITED='1' and STOP='0' then ES<=WAITERR;
+											elsif WAITED='1' and ALL_ITE='1' and OK='0' then ES<=PRELED;
 											else ES<=SIGNALS;
 											end if;
 
-			when SIGNALS =>		if ISCOLOUR='1' then ES<=WTDATA;
-											else ES<=WTORDER;
-											end if;
-	
-			when WTORDER =>		if DONE_ORDER='1' then ES<=WTDATA;
-											else ES<=WTORDER;
+			when PRELED =>			ES<=WTLED;
+
+			when WTLED =>			if DONE_LED='1' then ES<=WTTRAMA;
+											else ES<=WTLED;
 											end if;
 
-			when WAITERR =>		if WAITED='0' then ES<=WAITERR;
-											else ES<=WTDATA;
+			when SIGNALS =>			if ISCOLOUR='1' then ES<=WTTRAMA;
+											else ES<=WTORDER;
 											end if;
 	
-			when others =>  		ES <= WTDATA; -- inalcanzable
+			when WTORDER =>			if DONE_ORDER='1' then ES<=WTTRAMA;
+											else ES<=WTORDER;
+											end if;
+	
+			when others =>  		ES <= WTTRAMA; -- inalcanzable
 		end case;
 	end process SWSTATE;
 
@@ -108,7 +88,7 @@ architecture arq_uart of uart is
 
 	-- Actualizacion de EP en cada flanco de reloj (sequential)
 	SEQ: process (CLK, RESET_L) begin
-		if RESET_L = '0' then EP <= WTDATA; -- reset asincrono
+		if RESET_L = '0' then EP <= WTTRAMA; -- reset asincrono
 		elsif CLK'event and CLK = '1'  -- flanco de reloj
 			then EP <= ES;             -- Estado Presente = Estado Siguiente
 		end if;
@@ -120,41 +100,31 @@ architecture arq_uart of uart is
 
 	--UP_CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
 
-	LD_WAIT <= '1' when (EP=WTDATA and Rx='0') or EP=PREWAIT or EP=USEDATA or (EP=WAITEND1 and WAITED='1') or (EP=WAITEND2 and WAITED='1' and STOP='0') OR EP=PARITYBIT else '0';
-
-	DEC_WAIT<= '1' when EP=STARTBIT or EP=WAITDATA or EP=WAITEND1 or EP=WAITEND2 or EP=WAITERR OR EP=WAITPARITY else '0';
-	LD_ITE	<= '1' when EP=STARTBIT and WAITED='1' else '0';
-	LD_DATO	<= '1' when EP=LDDATA or EP=USEDATA or (EP=WAITEND1 and WAITED='1') OR EP=PARITYBIT else '0';
+	LD_WAIT <= '1' when (EP=WTTRAMA and Rx='1') or (EP=PREWAIT) else '0';
+	DEC_WAIT<= '1' when EP=MIDVEL or EP=WTDATA else '0';
+	LD_ITE	<= '1' when EP=MIDVEL and WAITED='1' else '0';
+	LD_DATO	<= '1' when EP=LDDATA else '0';
 	LD_OP	<= '1' when EP=ADDLEFT else '0';
 	CL_OP	<= '1' when EP=PREWAIT else '0';
-	DEC_ITE	<= '1' when EP=WAITDATA and WAITED='1' and ALL_ITE='0' else '0';
-	LD_DRECV<= '1' when EP=WAITPARITY and WAITED='1' and OK='1' else '0';
-	CL_DATO	<= '1' when (EP=WTDATA and Rx='0') or (EP=WAITPARITY and WAITED='1' and OK='0') else '0';
-	LED	<= '1' when EP=WAITERR else '0';
+	DEC_ITE	<= '1' when EP=WTDATA and WAITED='1' and ALL_ITE='0' else '0';
+	CL_DATO	<= '1' when (EP=WTTRAMA and Rx='0') else '0';
+	LED	<= '1' when EP=WTLED else '0';
 	LD_COLOUR<= '1' when EP=SIGNALS and ISCOLOUR='1' else '0';
 	LD_FIG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='1' else '0';
 	LD_DEL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='1' else '0';
 	LD_VERT	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '1' else '0';
 	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '1' else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
-	LD_PARITY<= '1' when EP=ADDLEFT else '0';
+	LD_LED	<= '1' when EP=PRELED else '0';
+	DEC_LED	<= '1' when EP=WTLED else '0';
+	CL_LED	<=	'1' when EP=WTLED and DONE_LED = '1' else '0';
+	--LD_PARITY<= '1' when EP=ADDLEFT else '0';
 
 
 	-- #######################
 	-- ## UNIDAD DE PROCESO ##
 	-- #######################
 	
-	-- REG PRELEFT: RPRELEFT
-	RPRELEFT : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then PRELEFT <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_DATO = '1' then PRELEFT <= Rx;
-			elsif CL_DATO='1' then PRELEFT<='0';
-			end if;
-		end if;
-	end process RPRELEFT;
-
 	-- REG LEFT: RLEFT
 	RLEFT : process(CLK, RESET_L)
 	begin
@@ -182,7 +152,7 @@ architecture arq_uart of uart is
 	begin
 		if RESET_L = '0' then RDATO <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if OP = "10" then RDATO <= LFT & RDATO(7 downto 1);
+			if OP = "10" then RDATO <= LFT & RDATO(10 downto 1);
 			elsif CL_DATO = '1' then RDATO <= (others =>'0');
 			end if;
 		end if;
@@ -194,7 +164,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then cnt_CWAIT <= (others =>'0'); WAITED <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_WAIT = '1' then
-				cnt_CWAIT <= WAITC;
+				cnt_CWAIT <= WAITCNT;
 				WAITED <= '0';
 			elsif DEC_WAIT='1' and cnt_CWAIT="0000000000001" then 
 				cnt_CWAIT<= cnt_CWAIT-1;
@@ -215,7 +185,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then cnt_CITE <= (others =>'0'); ALL_ITE <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_ITE = '1' then
-				cnt_CITE <= "1000";
+				cnt_CITE <= "1011";
 				ALL_ITE <= '0';
 			elsif DEC_ITE='1' and cnt_CITE="0001" then 
 				cnt_CITE<= cnt_CITE-1;
@@ -230,57 +200,49 @@ architecture arq_uart of uart is
 		end if;
 	end process CITE;
 
-	--Comparador CMPSTOP
-	STOP <= '1' when PRELEFT= '1' and LFT = '1' else
-			'0';
-
-	--Comparador CPARITY
-	OK	<= '1' when RPARITY = LFT else '0';
-
-	--Sumador
-	PARITY	<= LFT xor RPARITY;
-
-	--Registro REGPARITY
-	REGPARITY : process(CLK, RESET_L)
+	-- Contador  LED: CLED
+	CLED : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then RPARITY <= '0';
+		if RESET_L = '0' then cnt_LED <= (others =>'0'); DONE_LED <= '0';
 		elsif CLK'event and CLK='1' then
-			if LD_PARITY = '1' then RPARITY <= PARITY;
-			elsif CL_DATO='1' then RPARITY<='0';
+			if LD_ITE = '1' then
+				cnt_LED <= "101111101011110000100000000";
+				DONE_LED <= '0';
+			elsif CL_LED='1' then 
+				cnt_LED<=(others=>'0');
+				DONE_LED <= '0';
+			elsif DEC_ITE='1' and cnt_LED="00000000000000000000000001" then 
+				cnt_LED<= cnt_LED-1;
+				DONE_LED <= '1';
+			elsif DEC_ITE='1' and cnt_LED="00000000000000000000000001" then
+				cnt_LED<= "111111111111111111111111111";
+				DONE_LED <= '0';
+			elsif DEC_ITE = '1' then 
+				cnt_LED <= cnt_LED - 1;
+				DONE_LED <= '0';
 			end if;
 		end if;
-	end process REGPARITY;
+	end process CLED;
 
-	--Multiplexor MUXWAIT
-	WAITC	<= "1010001011001" when VEL = "00" else
+
+	--Multiplexor MUXWAIT1
+	WAITC1	<= "1010001011001" when VEL = "00" else
 		   "0010100010111" when VEL = "01" else
 		   "0000110110011" when VEL = "10" else
 		   "0000000110111";
 
-	--Registro RCTS
-	--RCTS : process(CLK, RESET_L)
-	--begin
-		--if RESET_L = '0' then CTS <= '0';
-		--elsif CLK'event and CLK='1' then
-			--if UP_CTS = '1' then CTS <= '1';
-			--elsif DOWN_CTS = '1' then CTS <='0';
-			--end if;
-		--end if;
-	--end process RCTS;
+	--Multiplexor MUXWAIT2
+	WAITC2	<= "0101000101101" when VEL = "00" else
+		   "0001010001100" when VEL = "01" else
+		   "0000011011010" when VEL = "10" else
+		   "0000000011100";
 
-	--Registro RDATA
-	RDATA : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then DATARECV <= (others => '0');
-		elsif CLK'event and CLK='1' then
-			if LD_DRECV = '1' then DATARECV <= RDATO;
-			elsif CL_DATO = '1' then DATARECV <= (others => '0');
-			end if;
-		end if;
-	end process RDATA;
+		--Multiplexor MUXSEL
+	WAITCNT	<= WAITC1 when SEL = '0' else
+		   WAITC2;
 
 	--Comparador DEL_SCREEN
-	ISDEL <= '1' when DATARECV = x"62" else '0';
+	ISDEL <= '1' when RDATO(8 downto 1) = x"62" else '0';
 
 	--Registro RDEL
 	RDEL : process(CLK, RESET_L)
@@ -294,7 +256,7 @@ architecture arq_uart of uart is
 	end process RDEL;
 
 	--Comparador DRAW_FIG
-	ISFIG <= '1' when DATARECV = x"66" else '0';
+	ISFIG <= '1' when RDATO(8 downto 1) = x"66" else '0';
 
 	--Registro RFIG
 	RFIG : process(CLK, RESET_L)
@@ -308,7 +270,7 @@ architecture arq_uart of uart is
 	end process RFIG;
 	
 	--Comparador VERT
-	ISVERT <= '1' when DATARECV = x"76" else '0';
+	ISVERT <= '1' when RDATO(8 downto 1) = x"76" else '0';
 	
 	--Registro RVERT
 	RVERT : process(CLK, RESET_L)
@@ -322,7 +284,7 @@ architecture arq_uart of uart is
 	end process RVERT;
 	
 	--Comparador DIAG
-	ISDIAG <= '1' when DATARECV = x"64" else '0';
+	ISDIAG <= '1' when RDATO(8 downto 1) = x"64" else '0';
 	--Registro RDIAG
 	RDIAG : process(CLK, RESET_L)
 	begin
@@ -335,16 +297,36 @@ architecture arq_uart of uart is
 	end process RDIAG;
 
 	--Comparador Ceros, para comprobar que es un codigo de color
-	ISCOLOUR <= '1' when DATARECV(7 downto 3) = "00110" else '0';
+	ISCOLOUR <= '1' when RDATO(8 downto 4) = "00110" else '0';
 	
 	--Registro COLOUR_CODE
 	RCOLOUR : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then COLOUR_CODE <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if LD_COLOUR = '1' then COLOUR_CODE <= std_logic_vector(DATARECV(2 downto 0));
+			if LD_COLOUR = '1' then COLOUR_CODE <= std_logic_vector(RDATO(3 downto 1));
 			end if;
 		end if;
 	end process RCOLOUR;
+
+	--Comparador CMPEND
+	OKEND <= '1' when RDATO(10 downto 9)="11" else '0';
+
+	--Comparador CMPSTART
+	OKSTART <= '1' when RDATO(0 downto 0)="0" else '0';
+
+	--Puerta AND para el OK
+	OK <= '1' when OKEND='1' and OKSTART='1' else '0';
+	
+	 --Registro LED: RLED
+	RLED : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then LED <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_LED = '1' then LED <= '1';
+			elsif CL_LED = '1' then LED <='0';
+			end if;
+		end if;
+	end process RLED;
 
 end arq_uart; 
