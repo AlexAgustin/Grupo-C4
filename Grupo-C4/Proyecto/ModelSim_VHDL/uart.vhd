@@ -10,7 +10,7 @@ entity uart is
 		CLK, RESET_L: in std_logic;
 		Rx: in std_logic;
 		VEL: in std_logic_vector(1 downto 0);
-		RTS,DONE_ORDER: in std_logic;
+		DONE_ORDER: in std_logic;--RTS,
 		LED,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;--CTS,
 		COLOUR_CODE: out std_logic_vector(2 downto 0)
 	);
@@ -25,7 +25,7 @@ architecture arq_uart of uart is
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_VERT, LD_DIAG, LD_COLOUR, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
+	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_VERT, LD_DIAG, LD_COLOUR, LD_PARITY, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT, PRELEFT: std_logic := '0';
 	signal WAITED, ALL_ITE, STOP, OK: std_logic :='0';
 	signal PARITY, RPARITY: std_logic; --, DOWN_CTS, UP_CTS
 	signal DATARECV: unsigned (7 downto 0);
@@ -129,7 +129,7 @@ architecture arq_uart of uart is
 	CL_OP	<= '1' when EP=PREWAIT else '0';
 	DEC_ITE	<= '1' when EP=WAITDATA and WAITED='1' and ALL_ITE='0' else '0';
 	LD_DRECV<= '1' when EP=WAITPARITY and WAITED='1' and OK='1' else '0';
-	CL_DATO	<= '1' when EP=WAITPARITY and WAITED='1' and OK='0' else '0';
+	CL_DATO	<= '1' when (EP=WTDATA and Rx='0') or (EP=WAITPARITY and WAITED='1' and OK='0') else '0';
 	LED	<= '1' when EP=WAITERR else '0';
 	LD_COLOUR<= '1' when EP=SIGNALS and ISCOLOUR='1' else '0';
 	LD_FIG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='1' else '0';
@@ -137,6 +137,7 @@ architecture arq_uart of uart is
 	LD_VERT	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '1' else '0';
 	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '1' else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
+	LD_PARITY<= '1' when EP=ADDLEFT else '0';
 
 
 	-- #######################
@@ -149,6 +150,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then PRELEFT <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_DATO = '1' then PRELEFT <= Rx;
+			elsif CL_DATO='1' then PRELEFT<='0';
 			end if;
 		end if;
 	end process RPRELEFT;
@@ -159,6 +161,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then LFT <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_DATO = '1' then LFT <= PRELEFT;
+			elsif CL_DATO='1' then LFT<='0';
 			end if;
 		end if;
 	end process RLEFT;
@@ -242,7 +245,8 @@ architecture arq_uart of uart is
 	begin
 		if RESET_L = '0' then RPARITY <= '0';
 		elsif CLK'event and CLK='1' then
-			if LD_DATO = '1' then RPARITY <= PARITY;
+			if LD_PARITY = '1' then RPARITY <= PARITY;
+			elsif CL_DATO='1' then RPARITY<='0';
 			end if;
 		end if;
 	end process REGPARITY;
@@ -331,7 +335,7 @@ architecture arq_uart of uart is
 	end process RDIAG;
 
 	--Comparador Ceros, para comprobar que es un codigo de color
-	ISCOLOUR <= '1' when DATARECV(7 downto 3) = "00000" else '0';
+	ISCOLOUR <= '1' when DATARECV(7 downto 3) = "00110" else '0';
 	
 	--Registro COLOUR_CODE
 	RCOLOUR : process(CLK, RESET_L)
