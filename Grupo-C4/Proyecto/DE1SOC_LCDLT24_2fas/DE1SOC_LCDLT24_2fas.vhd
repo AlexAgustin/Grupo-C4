@@ -115,8 +115,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			CLK, RESET_L: in std_logic;
 			Rx: in std_logic;
 			VEL: in std_logic_vector(1 downto 0);
-			RTS: in std_logic;
-			CTS,LED,DRAW_FIG,DEL_SCREEN: out std_logic;
+			RTS,DONE_ORDER: in std_logic;
+			LED,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;--CTS,
 			COLOUR_CODE: out std_logic_vector(2 downto 0)
 		);
 	end component;
@@ -149,8 +149,6 @@ architecture str of DE1SOC_LCDLT24_2fas is
   
 	-- drawing
 	signal 	HORIZ 					: 	std_logic;
-	signal 	VERT 					: 	std_logic;
-	signal 	DIAG 					: 	std_logic;
 	signal 	TRIAN 					: 	std_logic;
 	signal 	MIRROR 					: 	std_logic;
 	signal 	EQUIL 					: 	std_logic;
@@ -162,6 +160,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	-- uart
 	signal	COLOUR_CODE 			:  std_logic_vector(2 downto 0);
 	signal 	DEL_SCREEN 				: 	std_logic;
+	signal 	VERT 					: 	std_logic;
+	signal 	DIAG 					: 	std_logic;
 	signal 	DRAW_FIG 				: 	std_logic;
 	signal 	VEL						:  std_logic_vector(1 downto 0);
 	signal 	DATARECV					:  std_logic_vector (7 downto 0);
@@ -179,8 +179,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 		MIRROR <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
 		
 		HORIZ <= 		not(KEY(1)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
-		VERT <= 		not(KEY(2)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
-		DIAG <= 		not(KEY(3)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
+--		VERT <= 		not(KEY(2)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
+--		DIAG <= 		not(KEY(3)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
 		
 		TRIAN <= 		not(KEY(1)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
 		EQUIL <= 		not(KEY(2)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
@@ -302,6 +302,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			LED => LED,
 			DRAW_FIG => DRAW_FIG,
 			DEL_SCREEN => DEL_SCREEN,
+			VERT=> VERT,
+			DIAG => DIAG,
 			COLOUR_CODE => COLOUR_CODE
 		);
 END str;
