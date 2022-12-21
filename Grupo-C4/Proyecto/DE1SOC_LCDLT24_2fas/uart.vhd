@@ -206,7 +206,7 @@ architecture arq_uart of uart is
 	begin
 		if RESET_L = '0' then cnt_LED <= (others =>'0'); DONE_LED <= '0';
 		elsif CLK'event and CLK='1' then
-			if LD_ITE = '1' then
+			if LD_LED = '1' then
 				cnt_LED <= "101111101011110000100000000";
 				DONE_LED <= '0';
 			elsif CL_LED='1' then 
@@ -286,6 +286,7 @@ architecture arq_uart of uart is
 	
 	--Comparador DIAG
 	ISDIAG <= '1' when RDATO(8 downto 1) = x"64" else '0';
+	
 	--Registro RDIAG
 	RDIAG : process(CLK, RESET_L)
 	begin
