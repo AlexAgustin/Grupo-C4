@@ -142,7 +142,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 
 	
-	-- Activacion de signals de control: asignaciones combinacionales - valor a seÃ¯Â¿Â½al
+	-- Activacion de signals de control: asignaciones combinacionales - valor a seÃÂ¯ÃÂ¿ÃÂ½al
 	---- Relacionadas con XCOL e YROW 
 	LD_X <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
 		LD_VERT = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or
@@ -170,7 +170,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	UPX <= '1' when EP = DOWNROMB or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ((ISDIAG = '1' and NOTJUMP = '0') or (ISDIAG = '0' and ISEQUIL = '0' and 
 		ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '1'))) else '0';
 	
-	-- Relacionadas con el número de píxeles y lineas
+	-- Relacionadas con el nÃºmero de pÃ­xeles y lineas
 	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
 		LD_VERT = '1' or LD_DIAG = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or 
 		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or LD_PATRON = '1' or 
@@ -325,7 +325,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	
 	-- Multiplexor para MUX_LINES   
 	MUX_LINES <= '0'&x"0002" when SEL_LINES =  "00" else -- 100 
-		    '0'&x"0003" when SEL_LINES =  "01" else --320
+		    '0'&x"0004" when SEL_LINES =  "01" else --320
 			'0'&x"0004"; -- 1000
 
 	-- Contador NUM_PIX : CLINES
