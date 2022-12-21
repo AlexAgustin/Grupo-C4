@@ -15,7 +15,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 	port(
 		CLK, RESET_L: in std_logic;
 
-		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, HORIZ, VERT, DIAG, MIRROR, TRIAN, EQUIL, ROMBO, ROMBOIDE, TRAP, PATRON: in std_logic;
+		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, HORIZ, VERT, DIAG, MIRROR, TRIAN, EQUIL, ROMBO, ROMBOIDE, TRAP, PATRON, DONE_ORDER: in std_logic;
 		COLOUR_CODE: in std_logic_vector(2 downto 0);
 
 		OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
@@ -43,6 +43,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 	signal ROMBOIDE : std_logic := '0';
 	signal TRAP : std_logic := '0';
 	signal PATRON : std_logic := '0';
+	signal DONE_ORDER : std_logic := '0';
 
     signal COLOUR_CODE : std_logic_vector(2 downto 0):= "000";
 
@@ -80,6 +81,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		ROMBO => ROMBO,
 		ROMBOIDE => ROMBOIDE,
 		TRAP => TRAP,
+		DONE_ORDER => DONE_ORDER,
 		PATRON => PATRON
 		);
 		
