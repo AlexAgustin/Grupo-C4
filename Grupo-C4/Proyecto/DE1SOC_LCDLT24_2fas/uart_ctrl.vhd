@@ -1,6 +1,6 @@
-----------------------
+---------------------------
 -- fichero uart_ctrl.vhd --
-----------------------
+---------------------------
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -9,7 +9,7 @@ entity uart_ctrl is
 	port(
 		CLK, RESET_L: in std_logic;
 		NEWOP, DONE_ORDER: in std_logic;
-		DAT: in std_logic_vector(7 downto 0)
+		DAT: in std_logic_vector(7 downto 0);
 		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;
 		COLOUR_CODE: out std_logic_vector(2 downto 0)
 	);
@@ -25,7 +25,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	-- Declaracion de senales de control
 	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_DAT: std_logic := '0';
 	signal CL_SIGS: std_logic := '0';
-	signal ISVERT, ISDEL, ISFIG, ISCOLOUR: std_logic :='0';
+	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG: std_logic :='0';
 	signal RDATO: std_logic_vector(7 downto 0);
 
 	begin
@@ -35,7 +35,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	-- #######################
 
 	-- Transicion de estados (calculo de estado siguiente)
-	SWSTATE: process (EP) begin
+	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL) begin
 		case EP is
 			when INICIO =>			if NEWOP='1' then ES<=SIGNALS;
 											else ES<=INICIO;
@@ -48,6 +48,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 
 			when WTORDER =>			if DONE_ORDER = '0' then ES<=WTORDER;
 											else ES <= SNDONE;
+											end if;
 
 			when SNDONE =>			ES<=INICIO;
 	
