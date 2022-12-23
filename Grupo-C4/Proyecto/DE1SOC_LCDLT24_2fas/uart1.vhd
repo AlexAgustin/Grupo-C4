@@ -90,26 +90,23 @@ architecture arq_uart of uart is
 	-- Activacion de signals de control: asignaciones combinacionales
 
 	--UP_CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
-
-	LD_WAIT <= '1' when (EP=WTTRAMA and Rx='0') or (EP=PREWAIT) else '0';
-	DEC_WAIT<= '1' when EP=MIDVEL or EP=WTDATA else '0';
-	LD_ITE	<= '1' when EP=MIDVEL and WAITED='1' else '0';
-	LD_DATO	<= '1' when EP=LDDATA else '0';
-	LD_OP	<= '1' when EP=ADDLEFT else '0';
-	CL_OP	<= '1' when EP=PREWAIT else '0';
-	DEC_ITE	<= '1' when EP=WTDATA and WAITED='1' and ALL_ITE='0' else '0';
-	CL_DATO	<= '1' when EP=WTTRAMA and Rx='0' else '0';
-	LD_COLOUR<= '1' when EP=SIGNALS and ISCOLOUR='1' else '0';
-	LD_FIG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='1' else '0';
-	LD_DEL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='1' else '0';
-	LD_VERT	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '1' else '0';
-	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '1' else '0';
-	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
-	LD_LED	<= '1' when EP=PRELED else '0';
-	DEC_LED	<= '1' when EP=WTLED else '0';
-	CL_LED	<=	'1' when EP=WTLED and DONE_LED = '1' else '0';
-	SEL		<= '1' when EP=WTTRAMA and Rx='0' else '0';
+	--LD_OP	<= '1' when EP=ADDLEFT else '0';
+	--CL_OP	<= '1' when EP=PREWAIT else '0';
 	--LD_PARITY<= '1' when EP=ADDLEFT else '0';
+
+	LD_WAIT <= '1' when (EP=WTTRAMA and Rx='0') or (EP=ADDLEFT and ALL_ITE='0') else '0';
+	LD_ITE	<= '1' when EP=WTTRAMA and Rx='0' else '0';
+	LD_LFT	<= '1' when EP=LDDATA else '0';
+	LD_DAT	<= '1' when EP=ISOK and OK='1' else '0';
+	LD_LED	<= '1' when EP=PRELED else '0';
+	OP	<= "10" when EP=ADDLEFT else '0';
+	DEC_ITE	<= '1' when EP=LDDATA else '0';
+	DEC_WAIT<= '1' when EP=WTVEL else '0';
+	DEC_LED	<= '1' when EP=WTLED else '0';
+	CL_DAT	<= '1' when EP=WTDONE and DONE_OP='1' else '0';
+	CL_LED	<= '1' when EP=WTLED and DONE_LED = '1' else '0';
+	SEL	<= '1' when EP=WTTRAMA and Rx='0' else '0';
+	
 
 
 	-- #######################
@@ -121,22 +118,33 @@ architecture arq_uart of uart is
 	begin
 		if RESET_L = '0' then LFT <= '0';
 		elsif CLK'event and CLK='1' then
-			if LD_DATO = '1' then LFT <= Rx;
-			elsif CL_DATO='1' then LFT<='0';
+			if LD_LFT = '1' then LFT <= Rx;
+			elsif CL_DAT='1' then LFT<='0';
 			end if;
 		end if;
 	end process RLEFT;
 
-	-- REG OP: ROP
-	ROP : process(CLK, RESET_L)
+	--Registro LED: RLED
+	RLED : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then OP <= "00";
+		if RESET_L = '0' then LED <= '0';
 		elsif CLK'event and CLK='1' then
-			if LD_OP = '1' then OP <= "10";
-			elsif CL_OP = '1' then OP <= "00";
+			if LD_LED = '1' then LED <= '1';
+			elsif CL_LED = '1' then LED <='0';
 			end if;
 		end if;
-	end process ROP;
+	end process RLED;
+
+	 --Registro DAT: RDAT
+	RDAT : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then DAT <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_DAT = '1' then DAT <= RDATO(8 downto 1);
+			elsif CL_DAT = '1' then DAT <='0';
+			end if;
+		end if;
+	end process RDAT;
 
 	-- REG DESPLAZADOR: SUART
 	SUART : process(CLK, RESET_L)
@@ -144,31 +152,10 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then RDATO <= (others => '0');
 		elsif CLK'event and CLK='1' then
 			if OP = "10" then RDATO <= LFT & RDATO(10 downto 1);
-			elsif CL_DATO = '1' then RDATO <= (others =>'0');
+			elsif CL_DAT = '1' then RDATO <= (others =>'0');
 			end if;
 		end if;
 	end process SUART;
-
-	-- Contador ESPERA : CWAIT
-	CWAIT : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then cnt_CWAIT <= (others =>'0'); WAITED <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_WAIT = '1' then
-				cnt_CWAIT <= WAITCNT;
-				WAITED <= '0';
-			elsif DEC_WAIT='1' and cnt_CWAIT="0000000000001" then 
-				cnt_CWAIT<= cnt_CWAIT-1;
-				WAITED <= '1';
-			elsif DEC_WAIT='1' and cnt_CWAIT="0000000000000" then 
-				cnt_CWAIT<= "1111111111111";
-				WAITED <= '0';
-			elsif DEC_WAIT = '1' then 
-				cnt_CWAIT <= cnt_CWAIT - 1;
-				WAITED <= '0';
-			end if;
-		end if;
-	end process CWAIT;
 
 	-- Contador  ITE: CITE
 	CITE : process(CLK, RESET_L)
@@ -191,6 +178,43 @@ architecture arq_uart of uart is
 		end if;
 	end process CITE;
 
+	--Multiplexor MUXWAIT1
+	WAITC1	<= "1010001010111" when VEL = "00" else
+		   "0010100010101" when VEL = "01" else
+		   "0000110110001" when VEL = "10" else
+		   "0000000110101";
+
+	--Multiplexor MUXWAIT2
+	WAITC2	<= "0101000101101" when VEL = "00" else
+		   "0001010001100" when VEL = "01" else
+		   "0000011011010" when VEL = "10" else
+		   "0000000011100";
+
+		--Multiplexor MUXSEL
+	WAITCNT	<= WAITC1 when SEL = '0' else
+		   WAITC2;
+
+	-- Contador ESPERA : CWAIT
+	CWAIT : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_CWAIT <= (others =>'0'); WAITED <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_WAIT = '1' then
+				cnt_CWAIT <= WAITCNT;
+				WAITED <= '0';
+			elsif DEC_WAIT='1' and cnt_CWAIT="0000000000001" then 
+				cnt_CWAIT<= cnt_CWAIT-1;
+				WAITED <= '1';
+			elsif DEC_WAIT='1' and cnt_CWAIT="0000000000000" then 
+				cnt_CWAIT<= "1111111111111";
+				WAITED <= '0';
+			elsif DEC_WAIT = '1' then 
+				cnt_CWAIT <= cnt_CWAIT - 1;
+				WAITED <= '0';
+			end if;
+		end if;
+	end process CWAIT;
+
 	-- Contador  LED: CLED
 	CLED : process(CLK, RESET_L)
 	begin
@@ -205,7 +229,7 @@ architecture arq_uart of uart is
 			elsif DEC_LED='1' and cnt_LED="00000000000000000000000001" then 
 				cnt_LED<= cnt_LED-1;
 				DONE_LED <= '1';
-			elsif DEC_LED='1' and cnt_LED="00000000000000000000000001" then
+			elsif DEC_LED='1' and cnt_LED="00000000000000000000000000" then
 				cnt_LED<= "111111111111111111111111111";
 				DONE_LED <= '0';
 			elsif DEC_LED = '1' then 
@@ -215,92 +239,6 @@ architecture arq_uart of uart is
 		end if;
 	end process CLED;
 
-
-	--Multiplexor MUXWAIT1
-	WAITC1	<= "1010001010110" when VEL = "00" else
-		   "0010100010100" when VEL = "01" else
-		   "0000110110000" when VEL = "10" else
-		   "0000000110100";
-
-	--Multiplexor MUXWAIT2
-	WAITC2	<= "0101000101101" when VEL = "00" else
-		   "0001010001100" when VEL = "01" else
-		   "0000011011010" when VEL = "10" else
-		   "0000000011100";
-
-		--Multiplexor MUXSEL
-	WAITCNT	<= WAITC1 when SEL = '0' else
-		   WAITC2;
-
-	--Comparador DEL_SCREEN
-	ISDEL <= '1' when RDATO(8 downto 1) = x"62" else '0';
-
-	--Registro RDEL
-	RDEL : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then DEL_SCREEN <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_DEL = '1' then DEL_SCREEN <= '1';
-			elsif CL_SIGS = '1' then DEL_SCREEN <='0';
-			end if;
-		end if;
-	end process RDEL;
-
-	--Comparador DRAW_FIG
-	ISFIG <= '1' when RDATO(8 downto 1) = x"66" else '0';
-
-	--Registro RFIG
-	RFIG : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then DRAW_FIG <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_FIG = '1' then DRAW_FIG <= '1';
-			elsif CL_SIGS = '1' then DRAW_FIG <='0';
-			end if;
-		end if;
-	end process RFIG;
-	
-	--Comparador VERT
-	ISVERT <= '1' when RDATO(8 downto 1) = x"76" else '0';
-	
-	--Registro RVERT
-	RVERT : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then VERT <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_VERT = '1' then VERT <= '1';
-			elsif CL_SIGS = '1' then VERT <='0';
-			end if;
-		end if;
-	end process RVERT;
-	
-	--Comparador DIAG
-	ISDIAG <= '1' when RDATO(8 downto 1) = x"64" else '0';
-	
-	--Registro RDIAG
-	RDIAG : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then DIAG <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_DIAG = '1' then DIAG <= '1';
-			elsif CL_SIGS = '1' then DIAG <='0';
-			end if;
-		end if;
-	end process RDIAG;
-
-	--Comparador Ceros, para comprobar que es un codigo de color
-	ISCOLOUR <= '1' when RDATO(8 downto 4) = "00110" else '0';
-	
-	--Registro COLOUR_CODE
-	RCOLOUR : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then COLOUR_CODE <= (others => '0');
-		elsif CLK'event and CLK='1' then
-			if LD_COLOUR = '1' then COLOUR_CODE <= std_logic_vector(RDATO(3 downto 1));
-			end if;
-		end if;
-	end process RCOLOUR;
-
 	--Comparador CMPEND
 	OKEND <= '1' when RDATO(10 downto 9)="11" else '0';
 
@@ -309,16 +247,5 @@ architecture arq_uart of uart is
 
 	--Puerta AND para el OK
 	OK <= '1' when OKEND='1' and OKSTART='1' else '0';
-	
-	 --Registro LED: RLED
-	RLED : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then LED <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_LED = '1' then LED <= '1';
-			elsif CL_LED = '1' then LED <='0';
-			end if;
-		end if;
-	end process RLED;
 
 end arq_uart; 
