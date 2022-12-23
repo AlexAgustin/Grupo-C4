@@ -27,11 +27,12 @@ architecture arq_uart of uart is
 	signal LD_LFT, LFT,		LD_LED, CL_LED,	LD_DAT, CL_DAT	: std_logic := '0';
 	signal LD_ITE, DEC_ITE, ALL_ITE, 	DEC_LED, DONE_LED, 		LD_WAIT, DEC_WAIT, WAITED, 		SEL: std_logic := '0';
 	signal OKEND, OKSTART, OK: std_logic := '0';
+	signal RPARITY, OKPAR, DOPAR, PARITY, LD_PARITY : std_logic :='0';
 
 	signal cnt_CITE: unsigned(3 downto 0);
 	signal cnt_CWAIT: unsigned(12 downto 0);
 	signal cnt_LED: unsigned (26 downto 0);
-	signal RDATO: std_logic_vector(10 downto 0);
+	signal RDATO: std_logic_vector(11 downto 0);
 	signal WAITC1, WAITC2, WAITCNT: unsigned (12 downto 0);
 	signal OP: std_logic_vector(1 downto 0);
 
@@ -106,6 +107,9 @@ architecture arq_uart of uart is
 	CL_DAT	<= '1' when EP=WTDONE and DONE_OP='1' else '0';
 	CL_LED	<= '1' when EP=WTLED and DONE_LED = '1' else '0';
 	SEL	<= '1' when EP=WTTRAMA and Rx='0' else '0';
+	NEWOP	<= '1' when EP=WTDONE else '0';
+	
+	LD_PARITY <= '1' when EP=WTVEL and WAITED = '1' and DOPAR = '1' else '0';
 	
 
 
@@ -145,13 +149,23 @@ architecture arq_uart of uart is
 			end if;
 		end if;
 	end process RDAT;
+	
+	-- REG PARITY: RPAR
+	RPAR : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then RPARITY <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_PARITY = '1' then RPARITY <= PARITY;
+			end if;
+		end if;
+	end process RPAR;
 
 	-- REG DESPLAZADOR: SUART
 	SUART : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then RDATO <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if OP = "10" then RDATO <= LFT & RDATO(10 downto 1);
+			if OP = "10" then RDATO <= LFT & RDATO(11 downto 1);
 			elsif CL_DAT = '1' then RDATO <= (others =>'0');
 			end if;
 		end if;
@@ -163,7 +177,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then cnt_CITE <= (others =>'0'); ALL_ITE <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_ITE = '1' then
-				cnt_CITE <= "1010";
+				cnt_CITE <= "1100";
 				ALL_ITE <= '0';
 			elsif DEC_ITE='1' and cnt_CITE="0001" then 
 				cnt_CITE<= cnt_CITE-1;
@@ -190,7 +204,8 @@ architecture arq_uart of uart is
 		   "0000011011010" when VEL = "10" else
 		   "0000000011100";
 
-		--Multiplexor MUXSEL
+
+	--Multiplexor MUXSEL
 	WAITCNT	<= WAITC1 when SEL = '0' else
 		   WAITC2;
 
@@ -240,12 +255,21 @@ architecture arq_uart of uart is
 	end process CLED;
 
 	--Comparador CMPEND
-	OKEND <= '1' when RDATO(10 downto 9)="11" else '0';
+	OKEND <= '1' when RDATO(11 downto 10)="11" else '0';
 
 	--Comparador CMPSTART
-	OKSTART <= '1' when RDATO(0 downto 0)="0" else '0';
+	OKSTART <= '1' when RDATO(0)='0' else '0';
+	
+	--Comparador CMPPAR
+	OKPAR <= '1' when RDATO(9)=RPARITY else '0';
+	
+	--Comparador CMPDOPAR
+	DOPAR <= '1' when cnt_CITE>"0011" else '0';
+
+	--xor
+	PARITY	<= LFT xor RPARITY;
 
 	--Puerta AND para el OK
-	OK <= '1' when OKEND='1' and OKSTART='1' else '0';
+	OK <= '1' when OKEND='1' and OKSTART='1' and OKPAR = '1' else '0';
 
 end arq_uart; 
