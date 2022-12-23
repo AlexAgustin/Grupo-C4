@@ -16,9 +16,9 @@ architecture arq_tb_uart of tb_uart is
 		CLK, RESET_L: in std_logic;
 		Rx: in std_logic;
 		VEL: in std_logic_vector(1 downto 0);
-		RTS,DONE_ORDER: in std_logic;
-		LED,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;--CTS,
-		COLOUR_CODE: out std_logic_vector(2 downto 0)
+		DONE_OP: in std_logic;
+		DAT: out std_logic_vector(7 downto 0);
+		LED,NEWOP: out std_logic
 	);
 	end component;
 
@@ -26,10 +26,11 @@ architecture arq_tb_uart of tb_uart is
 	signal CLK : std_logic := '0';
 	signal RESET_L : std_logic := '0';
 	signal Rx: std_logic := '1';
-	signal VEL: std_logic_vector (1 downto 0);
-	signal DRAW_FIG,DEL_SCREEN,DONE_ORDER , DIAG, VERT: std_logic := '0';--RTS,CTS,
+	signal VEL: std_logic_vector (1 downto 0):="00";
 	signal LED: std_logic;
-	signal COLOUR_CODE: std_logic_vector(2 downto 0);
+	signal DONE_OP: std_logic:='0';
+	signal NEWOP: std_logic;
+	signal DAT: std_logic_vector(7 downto 0);
 
 	begin
 
@@ -38,15 +39,10 @@ architecture arq_tb_uart of tb_uart is
 		RESET_L =>RESET_L,
 		Rx =>Rx,
 		VEL =>VEL,
-		--RTS =>RTS,
-		DRAW_FIG =>DRAW_FIG,
-		DEL_SCREEN =>DEL_SCREEN,
-		DIAG => DIAG,
-		VERT=> VERT,
-		COLOUR_CODE =>COLOUR_CODE,
-		--CTS =>CTS,
-		DONE_ORDER=>DONE_ORDER,
-		LED =>LED
+		LED =>LED,
+		DONE_OP=>DONE_OP,
+		NEWOP=>NEWOP,
+		DAT=>DAT
 	);
 		
 
@@ -63,257 +59,124 @@ architecture arq_tb_uart of tb_uart is
 		RESET_L <= '1';	
 
 	-------------------------------------------------
-		--prueba trama 1 : color
+		--prueba trama 1 : color 1 (00110010)
 		wait for 40 ns;
-		--RTS <= '1';
-		
-		wait for 60 ns;
 		
 		Rx <= '0';
 
-		wait for 80 ns;
+		wait for 120 ns;
 
-		--RTS <= '0';
 		Rx <='1'; --dato 1
 
-		wait for 140 ns; --procesa dato 1
+		wait for 120 ns; --procesa dato 1
 
 		Rx <='0'; --dato 2
 
-		wait for 140 ns; --procesa dato 2
+		wait for 120 ns; --procesa dato 2
 
 		Rx <='0'; --dato 3
 
-		wait for 140 ns; --procesa dato 3
+		wait for 120 ns; --procesa dato 3
 
 		Rx <='0'; --dato 4
 
-		wait for 140 ns; --procesa dato 4
+		wait for 120 ns; --procesa dato 4
 
-		Rx <='0'; --dato 5
+		Rx <='1'; --dato 5
 
-		wait for 140 ns; --procesa dato 5
+		wait for 120 ns; --procesa dato 5
 
-		Rx <='0'; --dato 6
+		Rx <='1'; --dato 6
 
-		wait for 140 ns; --procesa dato 6
+		wait for 120 ns; --procesa dato 6
 
 		Rx <='0'; --dato 7
 
-		wait for 140 ns; --procesa dato 7
+		wait for 120 ns; --procesa dato 7
 
 		Rx <='0'; --dato 8
 
-		wait for 140 ns; --procesa dato 8
+		wait for 120 ns; --procesa dato 8
 
-		Rx <='1'; --parity
+		Rx<='1';--parity bit
 
-		wait for 460 ns;
+		wait for 120 ns; --procesa parity bit
 
-		DONE_ORDER<='1';
+		Rx <='1'; --stop
+
+		wait for 120 ns; --procesa stop
+
+		Rx <='1'; --stop2
+
+		wait for 200 ns;
+
+		DONE_OP<='1';
+
+		wait for 20 ns;
+
+		DONE_OP<= '0';
 	
 	-------------------------------------------------
-		--prueba trama 2 : draw fig
-		wait for 100 ns;
-		
-		DONE_ORDER <= '0';
+		--prueba trama 2 : draw fig (0110110)
 
 		wait for 60 ns;
 		
 		Rx <= '0';
 
-		wait for 80 ns;
+		wait for 120 ns;
 
-		--RTS <= '0';
 		Rx <='0'; --dato 1
 
-		wait for 140 ns; --procesa dato 1
+		wait for 120 ns; --procesa dato 1
 
 		Rx <='1'; --dato 2
 
-		wait for 140 ns; --procesa dato 2
+		wait for 120 ns; --procesa dato 2
 
 		Rx <='1'; --dato 3
 
-		wait for 140 ns; --procesa dato 3
+		wait for 120 ns; --procesa dato 3
 
 		Rx <='0'; --dato 4
 
-		wait for 140 ns; --procesa dato 4
+		wait for 120 ns; --procesa dato 4
 
 		Rx <='0'; --dato 5
 
-		wait for 140 ns; --procesa dato 5
+		wait for 120 ns; --procesa dato 5
 
 		Rx <='1'; --dato 6
 
-		wait for 140 ns; --procesa dato 6
+		wait for 120 ns; --procesa dato 6
 
 		Rx <='1'; --dato 7
 
-		wait for 140 ns; --procesa dato 7
+		wait for 120 ns; --procesa dato 7
 
 		Rx <='0'; --dato 8
 
-		wait for 140 ns; --procesa dato 8
+		wait for 120 ns; --procesa dato 8
 
-		Rx <='1'; --parity
+		Rx<='0';--parity bit
 
-		wait for 540 ns;
-	
-		DONE_ORDER<='1';
-	
-	-------------------------------------------------
-		--prueba trama 3 : del screen
+		wait for 120 ns; --procesa parity bit
+
+		Rx <='1'; --stop
+
+		wait for 120 ns; --procesa stop
+
+		Rx <='1'; --stop2
+
 		wait for 100 ns;
+
+		DONE_OP<='1';
+
+		wait for 20 ns;
 		
-		DONE_ORDER <= '0';
+		DONE_OP<= '0';
 
-		wait for 60 ns;
-		
-		Rx <= '0';
+		wait for 200 ns;
 
-		wait for 80 ns;
-
-		--RTS <= '0';
-		Rx <='0'; --dato 1
-
-		wait for 140 ns; --procesa dato 1
-
-		Rx <='1'; --dato 2
-
-		wait for 140 ns; --procesa dato 2
-
-		Rx <='1'; --dato 3
-
-		wait for 140 ns; --procesa dato 3
-
-		Rx <='0'; --dato 4
-
-		wait for 140 ns; --procesa dato 4
-
-		Rx <='0'; --dato 5
-
-		wait for 140 ns; --procesa dato 5
-
-		Rx <='1'; --dato 6
-
-		wait for 140 ns; --procesa dato 6
-
-		Rx <='1'; --dato 7
-
-		wait for 140 ns; --procesa dato 7
-
-		Rx <='0'; --dato 8
-
-		wait for 140 ns; --procesa dato 8
-
-		Rx <='1'; --parity
-
-		wait for 540 ns;
-	
-		DONE_ORDER<='1';
-	
-	-------------------------------------------------
-		--prueba trama 4 : vert 
-		wait for 100 ns;
-		
-		DONE_ORDER <= '0';
-
-		wait for 60 ns;
-		
-		Rx <= '0';
-
-		wait for 80 ns;
-
-		--RTS <= '0';
-		Rx <='0'; --dato 1
-
-		wait for 140 ns; --procesa dato 1
-
-		Rx <='1'; --dato 2
-
-		wait for 140 ns; --procesa dato 2
-
-		Rx <='1'; --dato 3
-
-		wait for 140 ns; --procesa dato 3
-
-		Rx <='0'; --dato 4
-
-		wait for 140 ns; --procesa dato 4
-
-		Rx <='0'; --dato 5
-
-		wait for 140 ns; --procesa dato 5
-
-		Rx <='1'; --dato 6
-
-		wait for 140 ns; --procesa dato 6
-
-		Rx <='1'; --dato 7
-
-		wait for 140 ns; --procesa dato 7
-
-		Rx <='0'; --dato 8
-
-		wait for 140 ns; --procesa dato 8
-
-		Rx <='1'; --parity
-
-		wait for 540 ns;
-	
-		DONE_ORDER<='1';	
-	
-	-------------------------------------------------
-		--prueba trama 5 : diag
-		wait for 100 ns;
-		
-		DONE_ORDER <= '0';
-
-		wait for 60 ns;
-		
-		Rx <= '0';
-
-		wait for 80 ns;
-
-		--RTS <= '0';
-		Rx <='0'; --dato 1
-
-		wait for 140 ns; --procesa dato 1
-
-		Rx <='1'; --dato 2
-
-		wait for 140 ns; --procesa dato 2
-
-		Rx <='1'; --dato 3
-
-		wait for 140 ns; --procesa dato 3
-
-		Rx <='0'; --dato 4
-
-		wait for 140 ns; --procesa dato 4
-
-		Rx <='0'; --dato 5
-
-		wait for 140 ns; --procesa dato 5
-
-		Rx <='1'; --dato 6
-
-		wait for 140 ns; --procesa dato 6
-
-		Rx <='1'; --dato 7
-
-		wait for 140 ns; --procesa dato 7
-
-		Rx <='0'; --dato 8
-
-		wait for 140 ns; --procesa dato 8
-
-		Rx <='1'; --parity
-
-		wait for 540 ns;
-	
-		DONE_ORDER<='1';
 	end process;
 end arq_tb_uart;
+
