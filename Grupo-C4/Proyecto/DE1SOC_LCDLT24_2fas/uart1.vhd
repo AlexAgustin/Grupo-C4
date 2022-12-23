@@ -10,31 +10,27 @@ entity uart is
 		CLK, RESET_L: in std_logic;
 		Rx: in std_logic;
 		VEL: in std_logic_vector(1 downto 0);
-		DONE_ORDER: in std_logic;--RTS,
-		LED,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;--CTS,
-		COLOUR_CODE: out std_logic_vector(2 downto 0)
+		DONE_OP: in std_logic;
+		LED,NEWOP: out std_logic
 	);
 end uart;
 
 
 architecture arq_uart of uart is
 
-	-- DeclaraciÃÂ³n de estados
-	type estados is (WTTRAMA, MIDVEL, LDDATA, ADDLEFT, PREWAIT, WTDATA, PRELED, WTLED, SIGNALS, WTORDER); 
+	-- Declaracion de estados
+	type estados is (WTTRAMA, WTVEL, LDDATA, ADDLEFT, ISOK, PRELED, WTLED, WTDONE); 
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_DATO, LD_WAIT, LD_ITE, LD_DRECV, LD_FIG, LD_DEL, LD_VERT, LD_DIAG, LD_COLOUR, LD_PARITY, DEC_WAIT, DEC_ITE, LD_OP, CL_OP, CL_DATO, LFT: std_logic := '0';--, PRELEFT
-	signal WAITED, ALL_ITE, STOP, OK, SEL: std_logic :='0';
-	signal PARITY, RPARITY: std_logic; --, DOWN_CTS, UP_CTS
-	signal ISCOLOUR,ISDEL,ISFIG, ISVERT, ISDIAG, CL_SIGS: std_logic;
-	signal DONE_LED, LD_LED, DEC_LED, CL_LED, OKEND, OKSTART: std_logic;
+	signal LD_LFT, LFT,		LD_LED, CL_LED,	LD_DAT, CL_DAT	: std_logic := '0';
+	signal LD_ITE, DEC_ITE, ALL_ITE, 	DEC_LED, DONE_LED, 		LD_WAIT, DEC_WAIT, WAITED, 		SEL: std_logic := '0';
+	signal OKEND, OKSTART, OK: std_logic := '0';
 
 	signal cnt_CITE: unsigned(3 downto 0);
 	signal cnt_CWAIT: unsigned(12 downto 0);
 	signal cnt_LED: unsigned (26 downto 0);
 	signal RDATO: std_logic_vector(10 downto 0);
-	signal OP: unsigned(1 downto 0);
 	signal WAITC1, WAITC2, WAITCNT: unsigned (12 downto 0);
 
 	begin
@@ -43,43 +39,36 @@ architecture arq_uart of uart is
 	-- ## UNIDAD DE CONTROL ## 
 	-- #######################
 
-	-- TransiciÃÂ³n de estados (cÃÂ¡lculo de estado siguiente)
-	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, OK, DONE_ORDER, ISCOLOUR, ISFIG,ISDEL,ISDIAG,ISVERT, DONE_LED) begin --, RTS
+	-- Transicion de estados (calculo de estado siguiente)
+	SWSTATE: process (EP, Rx, WAITED, ALL_ITE, OK, DONE_OP, DONE_LED) begin
 		case EP is
-			when WTTRAMA =>			if Rx='0' then ES<=MIDVEL;
-											else ES<=WTTRAMA;
-											end if;
+			when WTTRAMA =>			if Rx='0' then ES<=WTVEL;
+								else ES<=WTTRAMA;
+								end if;
 
-			when MIDVEL =>			if WAITED='1' then ES<=LDDATA;
-											else ES<=MIDVEL;
-											end if; 
+			when WTVEL =>			if WAITED='1' then ES<=LDDATA;
+								else ES<=WTVEL;
+								end if; 
 
 			when LDDATA =>			ES<=ADDLEFT;
 
-			when ADDLEFT =>			ES<=PREWAIT;
-
-			when PREWAIT =>			ES<=WTDATA;
-
-			when WTDATA =>		if WAITED='0' then ES<=WTDATA;
-											elsif WAITED='1' and ALL_ITE='0' then ES<=LDDATA;
-											elsif WAITED='1' and ALL_ITE='1' and OK='0' then ES<=PRELED;
-											else ES<=SIGNALS;
-											end if;
+			when ADDLEFT =>			if ALL_ITE = '0' then ES<=WTVEL;
+								else ES<=ISOK;
+								end if;
+			when ISOK =>			if OK = '1' then ES <= WTDONE;
+								else ES <= PRELED;
+								end if;
 
 			when PRELED =>			ES<=WTLED;
 
 			when WTLED =>			if DONE_LED='1' then ES<=WTTRAMA;
-											else ES<=WTLED;
-											end if;
+								else ES<=WTLED;
+								end if;
 
-			when SIGNALS =>			if ISCOLOUR='1' then ES<=WTTRAMA;
-											elsif ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT='0' and ISDIAG='0' then ES<=WTTRAMA;
-											else ES<=WTORDER;
-											end if;
 	
-			when WTORDER =>			if DONE_ORDER='1' then ES<=WTTRAMA;
-											else ES<=WTORDER;
-											end if;
+			when WTDONE =>			if DONE_OP='1' then ES<=WTTRAMA;
+								else ES<=WTDONE;
+								end if;
 	
 			when others =>  		ES <= WTTRAMA; -- inalcanzable
 		end case;
