@@ -524,14 +524,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		
 		wait for 40 ns;
 		
-		
 	-------------------------------------------------
-
-
-		
-	-------------------------------------------------
-
-		
 
 		--prueba dibujar triangulo 1
 		COLOUR_CODE <= "011";
