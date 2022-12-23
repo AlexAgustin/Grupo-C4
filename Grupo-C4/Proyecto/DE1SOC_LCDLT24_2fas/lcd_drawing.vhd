@@ -31,7 +31,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- Declaracion de senales de control
 	signal SELREV, LD_X, E_X, UPX, CL_X, LD_Y, INC_Y, CL_Y, LD_CN, E_NUMPIX, UPNPIX, LD_LINES, DEC_LINES, ALL_PIX : std_logic := '0';
 	signal LD_TRAP, CL_TRAP, ISTRAP, LD_ROMBOIDE, CL_ROMBOIDE, ISROMBOIDE, LD_ROMBO, CL_ROMBO, ISROMBO, LD_EQUIL, CL_EQUIL, ISEQUIL, LD_PATRON, CL_PATRON, ISPATRON : std_logic := '0';
-	signal LD_MIRROR, CL_MIRROR, ISMIRROR, LD_DONE, CL_DONE, LD_DIAG, CL_DIAG, ISDIAG, LD_TRIAN, CL_TRIAN, ISTRIAN, DEC_JUMP, LD_JUMP, LD_VERT, CL_VERT, ISVERT, LD_HORIZ, CL_HORIZ, ISHORIZ: std_logic := '0';
+	signal LD_MIRROR, CL_MIRROR, ISMIRROR, LD_DONE, CL_DONE, ISDONE, LD_DIAG, CL_DIAG, ISDIAG, LD_TRIAN, CL_TRIAN, ISTRIAN, DEC_JUMP, LD_JUMP, LD_VERT, CL_VERT, ISVERT, LD_HORIZ, CL_HORIZ, ISHORIZ: std_logic := '0';
 	signal NOTJUMP, NOTMIRX, NOTMIRY, NOTMIRROR, DROMB: std_logic := '0';
 	
 	signal SEL_DATA: std_logic_vector(1 downto 0);
@@ -553,7 +553,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 			'0';
 
 	--Puerta OR NOTMIRROR
-	NOTMIRROR <= (NOTMIRX or NOTMIRY) or ISDONE);
+	NOTMIRROR <= (NOTMIRX or NOTMIRY) or ISDONE;
 	
 
 end arq_lcd_drawing; 
