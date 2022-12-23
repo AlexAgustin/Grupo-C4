@@ -106,6 +106,7 @@ architecture arq_uart of uart is
 	CL_DAT	<= '1' when EP=WTDONE and DONE_OP='1' else '0';
 	CL_LED	<= '1' when EP=WTLED and DONE_LED = '1' else '0';
 	SEL	<= '1' when EP=WTTRAMA and Rx='0' else '0';
+	NEWOP	<= '1' when EP=WTDONE else '0';
 	
 
 
@@ -163,7 +164,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then cnt_CITE <= (others =>'0'); ALL_ITE <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_ITE = '1' then
-				cnt_CITE <= "1010";
+				cnt_CITE <= "1011";
 				ALL_ITE <= '0';
 			elsif DEC_ITE='1' and cnt_CITE="0001" then 
 				cnt_CITE<= cnt_CITE-1;
@@ -179,18 +180,18 @@ architecture arq_uart of uart is
 	end process CITE;
 
 	--Multiplexor MUXWAIT1
-	WAITC1	<= "1010001010111" when VEL = "00" else
-		   "0010100010101" when VEL = "01" else
-		   "0000110110001" when VEL = "10" else
-		   "0000000110101";
+	WAITC1	<= "0000000000110" when VEL = "00" else
+		   "0000000000101" when VEL = "01" else
+		   "0000000000100" when VEL = "10" else
+		   "0000000000011";
 
 	--Multiplexor MUXWAIT2
-	WAITC2	<= "0101000101101" when VEL = "00" else
-		   "0001010001100" when VEL = "01" else
-		   "0000011011010" when VEL = "10" else
-		   "0000000011100";
+	WAITC2	<= "0000000000010" when VEL = "00" else
+		   "0000000000010" when VEL = "01" else
+		   "0000000000010" when VEL = "10" else
+		   "0000000000010";
 
-		--Multiplexor MUXSEL
+	--Multiplexor MUXSEL
 	WAITCNT	<= WAITC1 when SEL = '0' else
 		   WAITC2;
 
@@ -221,7 +222,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then cnt_LED <= (others =>'0'); DONE_LED <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_LED = '1' then
-				cnt_LED <= "101111101011110000100000000";
+				cnt_LED <= "000000000000000000000000011";
 				DONE_LED <= '0';
 			elsif CL_LED='1' then 
 				cnt_LED<=(others=>'0');
