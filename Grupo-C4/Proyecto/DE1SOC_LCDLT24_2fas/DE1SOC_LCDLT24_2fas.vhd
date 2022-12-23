@@ -116,8 +116,18 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			CLK, RESET_L: in std_logic;
 			Rx: in std_logic;
 			VEL: in std_logic_vector(1 downto 0);
-			DONE_ORDER: in std_logic;--RTS,
-			LED,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;--CTS,
+			DONE_OP: in std_logic;
+			DAT: out std_logic_vector(7 downto 0);
+			LED,NEWOP: out std_logic
+		);
+	end component;
+	
+	component uart_ctrl
+		port(
+			CLK, RESET_L: in std_logic;
+			NEWOP, DONE_ORDER: in std_logic;
+			DAT: in std_logic_vector(7 downto 0);
+			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;
 			COLOUR_CODE: out std_logic_vector(2 downto 0)
 		);
 	end component;
@@ -157,17 +167,22 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	signal 	ROMBOIDE 				: 	std_logic;
 	signal 	TRAP 					: 	std_logic;
 	signal 	PATRON 					: 	std_logic;
-	
-	-- uart
-	signal	COLOUR_CODE 			:  std_logic_vector(2 downto 0);
-	signal 	DEL_SCREEN 				: 	std_logic;
 	signal 	VERT 					: 	std_logic;
 	signal 	DIAG 					: 	std_logic;
+	signal	COLOUR_CODE 			:  std_logic_vector(2 downto 0);
+	signal 	DEL_SCREEN 				: 	std_logic;
 	signal 	DRAW_FIG 				: 	std_logic;
+	
+	-- uart
 	signal 	VEL						:  std_logic_vector(1 downto 0);
-	signal 	DATARECV					:  std_logic_vector (7 downto 0);
+	signal 	DONE_OP				:	std_logic;
+	signal 	DAT					:  std_logic_vector (7 downto 0);
 	signal 	LED						:  std_logic;
+	signal 	NEWOP				:	std_logic;
+	
+	--uart ctrl
 	signal 	DONE_ORDER				:	std_logic;
+	
 	
 	begin 
 		clk <= CLOCK_50;
@@ -298,12 +313,28 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			CLK	=> clk,
 			Rx => Rx,
 			VEL => VEL,
-			DONE_ORDER=>DONE_ORDER,
+			DONE_OP=>DONE_OP,
 			--RTS => RTS,
 			
 			-- salidas
 			--CTS => CTS,
+			DAT => DAT,
 			LED => LED,
+			NEWOP => NEWOP
+			
+		);
+		
+		O5_LCDUARTCTRL: UART_CTRL
+		port map (
+			-- entradas
+			RESET_L => reset_l,
+			CLK	=> clk,
+			NEWOP => NEWOP,
+			DONE_ORDER => DONE_ORDER,
+			DAT => DAT,
+			
+			-- salidas
+			DONE_OP => DONE_OP,
 			DRAW_FIG => DRAW_FIG,
 			DEL_SCREEN => DEL_SCREEN,
 			VERT=> VERT,
