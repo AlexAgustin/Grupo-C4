@@ -73,9 +73,67 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 
 
 -------------------------------------------------------------------------------------
-		wait for 200 ns;
-		
+		wait for 100 ns;--figura
 
+		DAT<="01100110";
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--borar pantalla
+
+		DAT<="01100010";
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--linea vertical
+
+		DAT<="01110110";
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--linea diagonal
+
+		DAT<="01100100";
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;
 
 	end process;
 end arq_tb_uart_ctrl;
