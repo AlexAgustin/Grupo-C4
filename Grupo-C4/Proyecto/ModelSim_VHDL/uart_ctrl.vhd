@@ -35,7 +35,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	-- #######################
 
 	-- Transicion de estados (calculo de estado siguiente)
-	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL) begin
+	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL, DONE_ORDER, NEWOP) begin
 		case EP is
 			when INICIO =>			if NEWOP='1' then ES<=SIGNALS;
 								else ES<=INICIO;
