@@ -68,7 +68,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 							ISMIRROR, NOTMIRROR, ISEQUIL, ISROMBO, DROMB, ISTRAP, EQUIL, ISROMBOIDE, ROMBO, ROMBOIDE, TRAP, ISPATRON, PATRON) begin
 		case EP is
 			when INICIO => 		if DEL_SCREEN = '1' then ES <= DELCURSOR;
-								elsif (DRAW_FIG = '1' or HORIZ = '1' or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1') then ES <= DRAWCURSOR;
+								elsif (DRAW_FIG = '1'  or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1') then ES <= DRAWCURSOR;
+								elsif HORIZ = '1' then ES<=DELCURSOR;
 								else ES <= INICIO;
 								end if;
 			
