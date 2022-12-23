@@ -1,16 +1,16 @@
-Fitter Status : Successful - Sun Dec 18 16:59:24 2022
-Quartus Prime Version : 18.1.0 Build 625 09/12/2018 SJ Lite Edition
+Fitter Status : Successful - Wed Dec 21 18:00:17 2022
+Quartus Prime Version : 18.1.1 Build 646 04/11/2019 SJ Standard Edition
 Revision Name : DE1SOC_LCDLT24_2fas
 Top-level Entity Name : DE1SOC_LCDLT24_2fas
 Family : Cyclone V
 Device : 5CSEMA5F31C6
 Timing Models : Final
-Logic utilization (in ALMs) : 638 / 32,070 ( 2 % )
-Total registers : 1383
-Total pins : 46 / 457 ( 10 % )
+Logic utilization (in ALMs) : 646 / 32,070 ( 2 % )
+Total registers : 1154
+Total pins : 47 / 457 ( 10 % )
 Total virtual pins : 0
-Total block memory bits : 33,792 / 4,065,280 ( < 1 % )
-Total RAM Blocks : 4 / 397 ( 1 % )
+Total block memory bits : 180,224 / 4,065,280 ( 4 % )
+Total RAM Blocks : 22 / 397 ( 6 % )
 Total DSP Blocks : 0 / 87 ( 0 % )
 Total HSSI RX PCSs : 0
 Total HSSI PMA RX Deserializers : 0
