@@ -38,17 +38,17 @@ architecture arq_uart_ctrl of uart_ctrl is
 	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL) begin
 		case EP is
 			when INICIO =>			if NEWOP='1' then ES<=SIGNALS;
-											else ES<=INICIO;
-											end if;
+								else ES<=INICIO;
+								end if;
 
 			when SIGNALS =>			if ISCOLOUR='1' then ES<=SNDONE;
-											elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' then ES <=SNDONE;
-											else ES<=WTORDER;
-											end if; 
+								elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' then ES <=SNDONE;
+								else ES<=WTORDER;
+								end if; 
 
 			when WTORDER =>			if DONE_ORDER = '0' then ES<=WTORDER;
-											else ES <= SNDONE;
-											end if;
+								else ES <= SNDONE;
+								end if;
 
 			when SNDONE =>			ES<=INICIO;
 	
