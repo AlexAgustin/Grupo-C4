@@ -156,6 +156,7 @@ architecture arq_uart of uart is
 		if RESET_L = '0' then RPARITY <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_PARITY = '1' then RPARITY <= PARITY;
+			elsif CL_DAT ='1' then RPARITY<='0';
 			end if;
 		end if;
 	end process RPAR;

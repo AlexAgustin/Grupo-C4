@@ -98,6 +98,10 @@ architecture arq_tb_uart of tb_uart is
 
 		wait for 120 ns; --procesa dato 8
 
+		Rx<='1';--parity bit
+
+		wait for 120 ns; --procesa parity bit
+
 		Rx <='1'; --stop
 
 		wait for 120 ns; --procesa stop
@@ -153,7 +157,11 @@ architecture arq_tb_uart of tb_uart is
 
 		wait for 120 ns; --procesa dato 8
 
-		Rx <='0'; --stop
+		Rx<='0';--parity bit
+
+		wait for 120 ns; --procesa parity bit
+
+		Rx <='1'; --stop
 
 		wait for 120 ns; --procesa stop
 
