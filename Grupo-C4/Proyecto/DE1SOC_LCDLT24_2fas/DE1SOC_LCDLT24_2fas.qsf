@@ -3,7 +3,7 @@ set_global_assignment -name DEVICE 5CSEMA5F31C6
 set_global_assignment -name TOP_LEVEL_ENTITY DE1SOC_LCDLT24_2fas
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "00:00:00  SEPTEMBER 22, 2021"
-set_global_assignment -name LAST_QUARTUS_VERSION "18.1.1 Standard Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "18.1.0 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -618,18 +618,6 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIP
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id auto_signaltap_0
 
 
-set_global_assignment -name VHDL_FILE uart.vhd
-set_global_assignment -name VHDL_FILE lcd_drawing.vhd
-set_global_assignment -name VHDL_FILE lcd_ctrl.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/romsinc.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/LT24SetUp.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitReset.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitLCD.vhd
-set_global_assignment -name VHDL_FILE LCD_SetUp/Init128rom_pkg.vhd
-set_global_assignment -name SDC_FILE DE1SOC_LCDLT24_2fas.sdc
-set_global_assignment -name VHDL_FILE DE1SOC_LCDLT24_2fas.vhd
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_global_assignment -name SOURCE_FILE DE1SOC_LCDLT24_2fas.qsf
 
 
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
@@ -662,7 +650,6 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=22" -se
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=22" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=22" -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_global_assignment -name SIGNALTAP_FILE output_files/stp_V1.stp
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to Rx -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "uart:O4_LCDUART|EP.ADDLEFT" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "uart:O4_LCDUART|EP.LDDATA" -section_id auto_signaltap_0
@@ -716,5 +703,19 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LE
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name VHDL_FILE uart_ctrl.vhd
+set_global_assignment -name VHDL_FILE uart.vhd
+set_global_assignment -name VHDL_FILE lcd_drawing.vhd
+set_global_assignment -name VHDL_FILE lcd_ctrl.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/romsinc.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/LT24SetUp.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitReset.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/LT24InitLCD.vhd
+set_global_assignment -name VHDL_FILE LCD_SetUp/Init128rom_pkg.vhd
+set_global_assignment -name SDC_FILE DE1SOC_LCDLT24_2fas.sdc
+set_global_assignment -name VHDL_FILE DE1SOC_LCDLT24_2fas.vhd
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name SOURCE_FILE DE1SOC_LCDLT24_2fas.qsf
+set_global_assignment -name SIGNALTAP_FILE output_files/stp_V1.stp
 set_global_assignment -name SLD_FILE db/stp_V1_auto_stripped.stp
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
