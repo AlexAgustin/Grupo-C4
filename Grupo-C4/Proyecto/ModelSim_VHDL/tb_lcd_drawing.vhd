@@ -1001,7 +1001,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		
 	-------------------------------------------------
 
-		--prueba dibujar patron 1
+		--prueba dibujar patron 1                son 5 lineas
 		COLOUR_CODE <= "111";
 		PATRON <= '1';
 
@@ -1009,25 +1009,61 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
-		DONE_CURSOR <= '0';
+		DONE_CURSOR <= '0'; --cursor 1
 
 		wait for 60 ns;
 		DONE_COLOUR <= '1';
 
 		wait for 20 ns;
-		DONE_COLOUR <= '0';
+		DONE_COLOUR <= '0'; --colour 1
 
 		wait for 80 ns;	
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
-		DONE_CURSOR <= '0';
+		DONE_CURSOR <= '0'; --cursor 2
 
 		wait for 60 ns;
 		DONE_COLOUR <= '1';
 
 		wait for 20 ns;
-		DONE_COLOUR <= '0';
+		DONE_COLOUR <= '0'; --colour 2
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0'; --cursor 3
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0'; --colour 3
+
+		wait for 80 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0'; --cursor 4
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0'; --colour 4
+
+		wait for 80 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0'; --cursor 5
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0'; --colour 5
 
 		wait for 40 ns;
 		PATRON <= '0';
@@ -1044,25 +1080,61 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
-		DONE_CURSOR <= '0';
+		DONE_CURSOR <= '0'; --cursor 1
 
 		wait for 60 ns;
 		DONE_COLOUR <= '1';
 
 		wait for 20 ns;
-		DONE_COLOUR <= '0';
+		DONE_COLOUR <= '0'; --colour 1
 
 		wait for 80 ns;	
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
-		DONE_CURSOR <= '0';
+		DONE_CURSOR <= '0'; --cursor 2
 
 		wait for 60 ns;
 		DONE_COLOUR <= '1';
 
 		wait for 20 ns;
-		DONE_COLOUR <= '0';
+		DONE_COLOUR <= '0'; --colour 2
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0'; --cursor 3
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0'; --colour 3
+
+		wait for 80 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0'; --cursor 4
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0'; --colour 4
+
+		wait for 80 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0'; --cursor 5
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0'; --colour 5
 
 		wait for 40 ns;
 		PATRON <= '0';
