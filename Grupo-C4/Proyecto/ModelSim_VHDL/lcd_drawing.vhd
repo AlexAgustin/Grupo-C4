@@ -251,6 +251,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 				
 	SEL_LINES <= 	"01" when LD_VERT = '1' or LD_DIAG = '1'  else
 					"10" when LD_PATRON = '1' else
+					"11" when LD_ROMBOIDE = '1' or LD_EQUIL = '1' or LD_TRAP = '1' else
 					"00";
 	
 
@@ -307,8 +308,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- Multiplexor para MUX_NPIX   (MUXNPIX)
 	MUX_NPIX <= '1'&x"0005" when SEL_DATA = "00" else -- 76800
 		    '0'&x"0002" when SEL_DATA = "01" else -- 100
-		    '0'&x"0004" when SEL_DATA = "10" else -- 820
-		    '0'&x"0003"; -- 5
+		    '0'&x"0004" when SEL_DATA = "10" else 
+		    '0'&x"0003"; 
 
 	-- Contador NUM_PIX : CNPIX
 	CNPIX : process(CLK, RESET_L)
@@ -327,8 +328,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- Multiplexor para MUX_LINES   
 	MUX_LINES <= '0'&x"0002" when SEL_LINES =  "00" else -- 100 
 		    '0'&x"0004" when SEL_LINES =  "01" else --320
-			'0'&x"0004"; -- 1000
-
+			'0'&x"0005" when SEL_LINES =  "10" else  -- 1000
+			'0'&x"0003";
 	-- Contador NUM_PIX : CLINES
 	CLINES : process(CLK, RESET_L)
 	begin
