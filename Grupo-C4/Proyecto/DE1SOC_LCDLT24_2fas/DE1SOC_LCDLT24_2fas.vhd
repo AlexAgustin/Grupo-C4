@@ -17,18 +17,18 @@ entity DE1SOC_LCDLT24_2fas is
 		-- UART----------------
 		Rx : in std_logic;
 		-- UART_TX : out std_logic;
-		--CTS : out std_logic;
-		--RTS : in std_logic;
+		CTS : out std_logic;
+		RTS : in std_logic;
 		
 		-- KEY ----------------
-		KEY 		: in	std_logic_vector(3 downto 0);
+		KEY 		: in	std_logic_vector(2 downto 0);
 
 		-- SW ----------------
-		SW 			: in	std_logic_vector(8 downto 0);
+		SW 			: in	std_logic_vector(8 downto 7);
 	--	SW 			: in	std_logic_vector(9 downto 0);
 
 		-- LEDR ----------------
-		LEDR 		: out	std_logic_vector(9 downto 0);
+		LEDR 		: out	std_logic_vector(9 downto 6);
 
 		-- LT24_LCD ----------------
 		LT24_LCD_ON     : out std_logic;
@@ -114,11 +114,11 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	component uart
 		port(
 			CLK, RESET_L: in std_logic;
-			Rx: in std_logic;
+			Rx, RTS: in std_logic;
 			VEL: in std_logic_vector(1 downto 0);
 			DONE_OP: in std_logic;
 			DAT: out std_logic_vector(7 downto 0);
-			LED,NEWOP: out std_logic
+			LED,NEWOP, CTS: out std_logic
 		);
 	end component;
 	
@@ -127,7 +127,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			CLK, RESET_L: in std_logic;
 			NEWOP, DONE_ORDER: in std_logic;
 			DAT: in std_logic_vector(7 downto 0);
-			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;
+			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN: out std_logic;
 			COLOUR_CODE: out std_logic_vector(2 downto 0)
 		);
 	end component;
@@ -191,32 +191,12 @@ architecture str of DE1SOC_LCDLT24_2fas is
 
 		reset_l	<=		KEY(0);
 
---		DEL_SCREEN <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
---		DRAW_FIG <= 	not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
-		MIRROR <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
-		
-		HORIZ <= 		not(KEY(1)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
---		VERT <= 		not(KEY(2)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
---		DIAG <= 		not(KEY(3)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
-		
-		TRIAN <= 		not(KEY(1)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
-		EQUIL <= 		not(KEY(2)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
-		ROMBO <= 		not(KEY(3)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
-		
-		ROMBOIDE <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and	(SW(5));
-		TRAP <= 		not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
-		PATRON <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
+		MIRROR <= 		not(KEY(1))		
+		PATRON <= 		not(KEY(2))
 		
 		
---		COLOUR_CODE <= SW(2 downto 0);
 		VEL <= SW(8 downto 7);
 		
-		LEDR(0)  <= SW(0); --para comprobar visualmente que el switch está activado
-		LEDR(1)  <= SW(1); --para comprobar visualmente que el switch está activado
-		LEDR(2)  <= SW(2); --para comprobar visualmente que el switch está activado
-		LEDR(3)  <= SW(3); --para comprobar visualmente que el switch está activado
-		LEDR(4)  <= SW(4); --para comprobar visualmente que el switch está activado
-		LEDR(5)  <= SW(5); --para comprobar visualmente que el switch está activado 
 		LEDR(6)  <= LED;
 		LEDR(7)  <= SW(7); --para comprobar visualmente que el switch está activado 
 		LEDR(8)  <= SW(8); --para comprobar visualmente que el switch está activado 
@@ -314,10 +294,10 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			Rx => Rx,
 			VEL => VEL,
 			DONE_OP=>DONE_OP,
-			--RTS => RTS,
+			RTS => RTS,
 			
 			-- salidas
-			--CTS => CTS,
+			CTS => CTS,
 			DAT => DAT,
 			LED => LED,
 			NEWOP => NEWOP
@@ -339,6 +319,12 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			DEL_SCREEN => DEL_SCREEN,
 			VERT=> VERT,
 			DIAG => DIAG,
+			HORIZ => HORIZ,
+			EQUIL => EQUIL,
+			ROMBO => ROMBO,
+			ROMBOIDE => ROMBOIDE,
+			TRAP => TRAP,
+			TRIAN => TRIAN,
 			COLOUR_CODE => COLOUR_CODE
 		);
 END str;
