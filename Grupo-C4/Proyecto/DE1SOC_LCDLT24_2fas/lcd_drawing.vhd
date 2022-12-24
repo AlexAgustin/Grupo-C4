@@ -207,17 +207,17 @@ architecture arq_lcd_drawing of lcd_drawing is
 	LD_MIRROR <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
 		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '1' else '0';
 	LD_TRIAN <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
-		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '1' else '0';
+		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and TRIAN = '1' else '0';
 	LD_EQUIL <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
-		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '1' else '0';
+		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and TRIAN = '0' and EQUIL = '1' else '0';
 	LD_ROMBO <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
-		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '0' and ROMBO = '1' else '0';
+		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and TRIAN = '0' and EQUIL = '0' and ROMBO = '1' else '0';
 	LD_ROMBOIDE <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
-		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '0' and ROMBO = '0' and ROMBOIDE = '1' else '0';
+		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and TRIAN = '0' and EQUIL = '0' and ROMBO = '0' and ROMBOIDE = '1' else '0';
 	LD_TRAP <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
-		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '0' and ROMBO = '0' and ROMBOIDE = '0' and TRAP = '1' else '0';
+		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and TRIAN = '0' and EQUIL = '0' and ROMBO = '0' and ROMBOIDE = '0' and TRAP = '1' else '0';
 	LD_PATRON<= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
-		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '0' and ROMBO = '0' and ROMBOIDE = '0' and TRAP = '0' and PATRON = '1' else '0';
+		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and TRIAN = '0' and EQUIL = '0' and ROMBO = '0' and ROMBOIDE = '0' and TRAP = '0' and PATRON = '1' else '0';
 
 	---- CL opciones extra
 	CL_HORIZ <= '1' when EP = DELWAIT and ISHORIZ = '1' and HORIZ = '0' else '0';
