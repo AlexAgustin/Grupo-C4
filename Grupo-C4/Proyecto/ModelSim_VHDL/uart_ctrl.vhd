@@ -78,11 +78,11 @@ architecture arq_uart_ctrl of uart_ctrl is
 	LD_DEL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='1' else '0';
 	LD_VERT	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '1' else '0';
 	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '1' else '0';
-	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='1' else '0';
-	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '1'  else '0';
-	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '1'  else '0';
-	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '1'  else '0';
-	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '1'  else '0';
+	LD_HORIZ	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='1' else '0';
+	LD_EQUIL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '1'  else '0';
+	LD_ROMBO	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '1'  else '0';
+	LD_ROMBOIDE	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '1'  else '0';
+	LD_TRAP	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '1'  else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
 	DONE_OP<='1' when EP=SNDONE else '0';
 	
