@@ -10,7 +10,7 @@ entity uart_ctrl is
 		CLK, RESET_L: in std_logic;
 		NEWOP, DONE_ORDER: in std_logic;
 		DAT: in std_logic_vector(7 downto 0);
-		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP: out std_logic;
+		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN: out std_logic;
 		COLOUR_CODE: out std_logic_vector(2 downto 0)
 	);
 end uart_ctrl;
@@ -23,9 +23,9 @@ architecture arq_uart_ctrl of uart_ctrl is
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_HORIZ, LD_ROMBO, LD_EQUIL, LD_ROMBOIDE, LD_TRAP, LD_DAT: std_logic := '0';
+	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_HORIZ, LD_ROMBO, LD_EQUIL, LD_ROMBOIDE, LD_TRAP, LD_TRIAN, LD_DAT: std_logic := '0';
 	signal CL_SIGS: std_logic := '0';
-	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP: std_logic :='0';
+	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN: std_logic :='0';
 	signal RDATO: std_logic_vector(7 downto 0);
 
 	begin
@@ -35,14 +35,14 @@ architecture arq_uart_ctrl of uart_ctrl is
 	-- #######################
 
 	-- Transicion de estados (calculo de estado siguiente)
-	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, DONE_ORDER, NEWOP) begin
+	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN,  DONE_ORDER, NEWOP) begin
 		case EP is
 			when INICIO =>		if NEWOP='1' then ES<=SIGNALS;
 									else ES<=INICIO;
 									end if;
 
 			when SIGNALS =>		if ISCOLOUR='1' then ES<=SNDONE;
-									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' then ES <=SNDONE;
+									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' then ES <=SNDONE;
 									else ES<=WTORDER;
 									end if; 
 
@@ -69,9 +69,6 @@ architecture arq_uart_ctrl of uart_ctrl is
 
 	
 	-- Activacion de signals de control: asignaciones combinacionales
-
-	--UP_CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
-
 	LD_DAT <= '1' when EP=INICIO and NEWOP = '1' else '0';
 	LD_COLOUR<= '1' when EP=SIGNALS and ISCOLOUR='1' else '0';
 	LD_FIG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='1' else '0';
@@ -83,6 +80,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	LD_ROMBO	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '1'  else '0';
 	LD_ROMBOIDE	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '1'  else '0';
 	LD_TRAP	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '1'  else '0';
+	LD_TRIAN	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '1'  else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
 	DONE_OP<='1' when EP=SNDONE else '0';
 	
@@ -222,6 +220,21 @@ architecture arq_uart_ctrl of uart_ctrl is
 			end if;
 		end if;
 	end process RTRAP;
+	
+	--Comparador TRIAN: CMPTRIAN
+	ISTRIAN <= '1' when RDATO(7 downto 0) = x"54" else '0';
+	
+	--Registro RTRIAN
+	RTRIAN : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then TRIAN <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_TRIAN = '1' then TRIAN <= '1';
+			elsif CL_SIGS = '1' then TRIAN <='0';
+			end if;
+		end if;
+	end process RTRIAN;
+	
 
 	--Comparador Ceros, para comprobar que es un codigo de color
 	ISCOLOUR <= '1' when RDATO(7 downto 3) = "00110" else '0';
