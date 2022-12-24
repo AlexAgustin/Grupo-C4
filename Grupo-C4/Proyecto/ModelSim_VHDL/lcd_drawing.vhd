@@ -207,7 +207,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	LD_MIRROR <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
 		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '1' else '0';
 	LD_TRIAN <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
-		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '1' else '0';
+		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR='0' and TRIAN = '1' else '0';
 	LD_EQUIL <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
 		HORIZ = '0' and VERT = '0' and DIAG ='0' and MIRROR = '0' and EQUIL = '1' else '0';
 	LD_ROMBO <= '1' when EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '0' and 
@@ -244,9 +244,9 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	SEL_DATA <= "00" when EP = INICIO and DEL_SCREEN = '1' else
 				"01" when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
-					LD_MIRROR = '1' or LD_TRIAN = '1' or LD_ROMBOIDE ='1' or LD_TRAP = '1' else
+					LD_MIRROR = '1' or LD_ROMBOIDE ='1' or LD_TRAP = '1' else
 				"10" when LD_HORIZ = '1' else
-				"11" when LD_VERT ='1' or LD_DIAG = '1' or LD_EQUIL = '1' or LD_ROMBO = '1' or LD_PATRON = '1' else
+				"11" when LD_VERT ='1' or LD_DIAG = '1' or LD_EQUIL = '1' or LD_ROMBO = '1' or LD_PATRON = '1' or LD_TRIAN = '1' else
 				"00"; -- inalcanzable
 				
 	SEL_LINES <= 	"01" when LD_VERT = '1' or LD_DIAG = '1'  else
