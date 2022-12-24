@@ -309,7 +309,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	MUX_NPIX <= '1'&x"2C00" when SEL_DATA = "00" else
 		    '0'&x"0064" when SEL_DATA = "01" else
 		    '0'&x"03C0" when SEL_DATA = "10" else
-		    '0'&x"0002";
+		    '0'&x"0003";
 
 	-- Contador NUM_PIX : CNPIX
 	CNPIX : process(CLK, RESET_L)
