@@ -10,7 +10,7 @@ entity uart_ctrl is
 		CLK, RESET_L: in std_logic;
 		NEWOP, DONE_ORDER: in std_logic;
 		DAT: in std_logic_vector(7 downto 0);
-		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;
+		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP: out std_logic;
 		COLOUR_CODE: out std_logic_vector(2 downto 0)
 	);
 end uart_ctrl;
@@ -23,9 +23,9 @@ architecture arq_uart_ctrl of uart_ctrl is
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_DAT: std_logic := '0';
+	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_HORIZ, LD_ROMBO, LD_EQUIL, LD_ROMBOIDE, LD_TRAP, LD_DAT: std_logic := '0';
 	signal CL_SIGS: std_logic := '0';
-	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG: std_logic :='0';
+	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP: std_logic :='0';
 	signal RDATO: std_logic_vector(7 downto 0);
 
 	begin
@@ -35,24 +35,24 @@ architecture arq_uart_ctrl of uart_ctrl is
 	-- #######################
 
 	-- Transicion de estados (calculo de estado siguiente)
-	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL, DONE_ORDER, NEWOP) begin
+	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, DONE_ORDER, NEWOP) begin
 		case EP is
-			when INICIO =>			if NEWOP='1' then ES<=SIGNALS;
-								else ES<=INICIO;
-								end if;
+			when INICIO =>		if NEWOP='1' then ES<=SIGNALS;
+									else ES<=INICIO;
+									end if;
 
-			when SIGNALS =>			if ISCOLOUR='1' then ES<=SNDONE;
-								elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' then ES <=SNDONE;
-								else ES<=WTORDER;
-								end if; 
+			when SIGNALS =>		if ISCOLOUR='1' then ES<=SNDONE;
+									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' then ES <=SNDONE;
+									else ES<=WTORDER;
+									end if; 
 
-			when WTORDER =>			if DONE_ORDER = '0' then ES<=WTORDER;
-								else ES <= SNDONE;
-								end if;
+			when WTORDER =>		if DONE_ORDER = '0' then ES<=WTORDER;
+									else ES <= SNDONE;
+									end if;
 
-			when SNDONE =>			ES<=INICIO;
+			when SNDONE =>		ES<=INICIO;
 	
-			when others =>  		ES <= INICIO; -- inalcanzable
+			when others =>  	ES <= INICIO; -- inalcanzable
 		end case;
 	end process SWSTATE;
 
@@ -78,6 +78,11 @@ architecture arq_uart_ctrl of uart_ctrl is
 	LD_DEL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='1' else '0';
 	LD_VERT	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '1' else '0';
 	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '1' else '0';
+	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='1' else '0';
+	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '1'  else '0';
+	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '1'  else '0';
+	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '1'  else '0';
+	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '1'  else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
 	DONE_OP<='1' when EP=SNDONE else '0';
 	
@@ -142,6 +147,81 @@ architecture arq_uart_ctrl of uart_ctrl is
 			end if;
 		end if;
 	end process RDIAG;
+
+
+	--Comparador HORIZ: CMPHORIZ
+	ISHORIZ <= '1' when RDATO(7 downto 0) = x"68" else '0';
+	
+	--Registro RHORIZ
+	RHORIZ : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then HORIZ <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_HORIZ = '1' then HORIZ <= '1';
+			elsif CL_SIGS = '1' then HORIZ <='0';
+			end if;
+		end if;
+	end process RHORIZ;
+
+
+	--Comparador EQUIL: CMPEQUIL
+	ISEQUIL <= '1' when RDATO(7 downto 0) = x"65" else '0';
+	
+	--Registro REQUIL
+	REQUIL : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then EQUIL <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_EQUIL = '1' then EQUIL <= '1';
+			elsif CL_SIGS = '1' then EQUIL <='0';
+			end if;
+		end if;
+	end process REQUIL;
+	
+	
+	--Comparador ROMBO: CMPROMBO
+	ISROMBO <= '1' when RDATO(7 downto 0) = x"72" else '0';
+	
+	--Registro RROMBO
+	RROMBO : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ROMBO <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_ROMBO = '1' then ROMBO <= '1';
+			elsif CL_SIGS = '1' then ROMBO <='0';
+			end if;
+		end if;
+	end process RROMBO;
+	
+	
+	--Comparador ROMBOIDE: CMPROMBOIDE
+	ISROMBOIDE <= '1' when RDATO(7 downto 0) = x"52" else '0';
+	
+	--Registro RROMBOIDE
+	RROMBOIDE : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ROMBOIDE <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_ROMBOIDE = '1' then ROMBOIDE <= '1';
+			elsif CL_SIGS = '1' then ROMBOIDE <='0';
+			end if;
+		end if;
+	end process RROMBOIDE;
+	
+	
+	--Comparador TRAP: CMPTRAP
+	ISTRAP <= '1' when RDATO(7 downto 0) = x"74" else '0';
+	
+	--Registro RTRAP
+	RTRAP : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then TRAP <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_TRAP = '1' then TRAP <= '1';
+			elsif CL_SIGS = '1' then TRAP <='0';
+			end if;
+		end if;
+	end process RTRAP;
 
 	--Comparador Ceros, para comprobar que es un codigo de color
 	ISCOLOUR <= '1' when RDATO(7 downto 3) = "00110" else '0';
