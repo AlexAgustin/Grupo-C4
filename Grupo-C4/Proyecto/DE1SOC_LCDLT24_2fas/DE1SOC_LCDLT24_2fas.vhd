@@ -124,11 +124,11 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	
 	component uart_ctrl
 		port(
-			CLK, RESET_L: in std_logic;
-			NEWOP, DONE_ORDER: in std_logic;
-			DAT: in std_logic_vector(7 downto 0);
-			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;
-			COLOUR_CODE: out std_logic_vector(2 downto 0)
+		CLK, RESET_L: in std_logic;
+		NEWOP, DONE_ORDER: in std_logic;
+		DAT: in std_logic_vector(7 downto 0);
+		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP: out std_logic;
+		COLOUR_CODE: out std_logic_vector(2 downto 0)
 		);
 	end component;
 	  
@@ -195,16 +195,16 @@ architecture str of DE1SOC_LCDLT24_2fas is
 --		DRAW_FIG <= 	not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
 		MIRROR <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
 		
-		HORIZ <= 		not(KEY(1)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
+--		HORIZ <= 		not(KEY(1)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
 --		VERT <= 		not(KEY(2)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
 --		DIAG <= 		not(KEY(3)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
 		
 		TRIAN <= 		not(KEY(1)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
-		EQUIL <= 		not(KEY(2)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
-		ROMBO <= 		not(KEY(3)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
+--		EQUIL <= 		not(KEY(2)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
+--		ROMBO <= 		not(KEY(3)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
 		
-		ROMBOIDE <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and	(SW(5));
-		TRAP <= 		not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
+--		ROMBOIDE <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and	(SW(5));
+--		TRAP <= 		not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
 		PATRON <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
 		
 		
@@ -339,6 +339,11 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			DEL_SCREEN => DEL_SCREEN,
 			VERT=> VERT,
 			DIAG => DIAG,
+			HORIZ => HORIZ,
+			EQUIL => EQUIL,
+			ROMBO => ROMBO,
+			ROMBOIDE => ROMBOIDE,
+			TRAP => TRAP,
 			COLOUR_CODE => COLOUR_CODE
 		);
 END str;
