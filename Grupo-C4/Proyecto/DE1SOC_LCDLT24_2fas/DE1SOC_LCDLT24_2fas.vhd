@@ -37,18 +37,18 @@ entity DE1SOC_LCDLT24_2fas is
 		LT24_RD_N       : out std_logic;
 		LT24_RS         : out std_logic;
 		LT24_WR_N       : out std_logic;
-		LT24_D          : out std_logic_vector(15 downto 0)
+		LT24_D          : out std_logic_vector(15 downto 0);
 
 		-- GPIO ----------------
 	--	GPIO_0 		: inout	std_logic_vector(35 downto 0);
 
 		-- SEG7 ----------------
-	--	HEX0	: out	std_logic_vector(6 downto 0);
-	--	HEX1	: out	std_logic_vector(6 downto 0);
-	--	HEX2	: out	std_logic_vector(6 downto 0);
-	--	HEX3	: out	std_logic_vector(6 downto 0);
-	--	HEX4	: out	std_logic_vector(6 downto 0);
-	--	HEX5	: out	std_logic_vector(6 downto 0);
+		HEX5	: out	std_logic_vector(6 downto 1);
+		HEX4	: out	std_logic_vector(5 downto 0);
+		HEX3	: out	std_logic_vector(6 downto 0);
+		HEX2	: out	std_logic_vector(6 downto 1);
+		HEX1	: out	std_logic_vector(5 downto 0);
+		HEX0	: out	std_logic_vector(6 downto 1)
 
 	);
 end;
@@ -114,11 +114,11 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	component uart
 		port(
 			CLK, RESET_L: in std_logic;
-			Rx, RTS: in std_logic;
+			Rx: in std_logic;
 			VEL: in std_logic_vector(1 downto 0);
 			DONE_OP: in std_logic;
 			DAT: out std_logic_vector(7 downto 0);
-			LED,NEWOP, CTS: out std_logic
+			LED,NEWOP: out std_logic
 		);
 	end component;
 	
@@ -191,8 +191,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 
 		reset_l	<=		KEY(0);
 
-		MIRROR <= 		not(KEY(1))		
-		PATRON <= 		not(KEY(2))
+		MIRROR <= 		not(KEY(1));	
+		PATRON <= 		not(KEY(2));
 		
 		
 		VEL <= SW(8 downto 7);
@@ -201,6 +201,57 @@ architecture str of DE1SOC_LCDLT24_2fas is
 		LEDR(7)  <= SW(7); --para comprobar visualmente que el switch está activado 
 		LEDR(8)  <= SW(8); --para comprobar visualmente que el switch está activado 
 		LEDR(9)  <= LT24_Init_Done; --para comprobar visualmente que funciona
+		
+		--D
+		HEX5(1) <= '0';
+		HEX5(2) <= '0';
+		HEX5(3) <= '0';
+		HEX5(4) <= '0';
+		HEX5(5) <= '1';
+		HEX5(6) <= '0';
+		
+		--C
+		HEX4(0) <= '0';
+		HEX4(1) <= '1';
+		HEX4(2) <= '1';
+		HEX4(3) <= '0';
+		HEX4(4) <= '0';
+		HEX4(5) <= '0';
+		
+		--S
+		HEX3(0) <= '0';
+		HEX3(1) <= '1';
+		HEX3(2) <= '0';
+		HEX3(3) <= '0';
+		HEX3(4) <= '1';
+		HEX3(5) <= '0';
+		HEX3(6) <= '0';
+		
+		--D
+		HEX2(1) <= '0';
+		HEX2(2) <= '0';
+		HEX2(3) <= '0';
+		HEX2(4) <= '0';
+		HEX2(5) <= '1';
+		HEX2(6) <= '0';
+		
+		--G
+		HEX1(0) <= '0';
+		HEX1(1) <= '1';
+		HEX1(2) <= '0';
+		HEX1(3) <= '0';
+		HEX1(4) <= '0';
+		HEX1(5) <= '0';
+		
+		--4
+		HEX0(1) <= '0';
+		HEX0(2) <= '0';
+		HEX0(3) <= '1';
+		HEX0(4) <= '1';
+		HEX0(5) <= '0';
+		HEX0(6) <= '0';
+		
+		
 		
 		-- Union de componentes        --------------    
 		--    señal de entrada del componente     => señal a la que se va ha enlazar
@@ -294,10 +345,10 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			Rx => Rx,
 			VEL => VEL,
 			DONE_OP=>DONE_OP,
-			RTS => RTS,
+			---RTS => RTS,
 			
 			-- salidas
-			CTS => CTS,
+			--CTS => CTS,
 			DAT => DAT,
 			LED => LED,
 			NEWOP => NEWOP
