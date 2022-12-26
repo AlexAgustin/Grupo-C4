@@ -280,8 +280,10 @@ architecture arq_lcd_drawing of lcd_drawing is
 		if RESET_L = '0' then cnt_XCOL <= (others =>'0');
 		elsif CLK'event and CLK='1' then
 			if LD_X = '1' then cnt_XCOL <= DX;
-			elsif E_X = '1' and UPX = '0' then cnt_XCOL <= ((cnt_XCOL - 1) mod 240 );
-			elsif E_X = '1' and UPX = '1' then cnt_XCOL <= ((cnt_XCOL + 1) mod 240 );
+			elsif E_X = '1' and UPX = '0' and cnt_XCOL="00000000" then cnt_XCOL <= "11101111";
+			elsif E_X = '1' and UPX = '0' then cnt_XCOL <= cnt_XCOL - 1;
+			elsif E_X = '1' and UPX = '1' and cnt_XCOL="11101111" then cnt_XCOL <= "00000000";
+			elsif E_X = '1' and UPX = '1' then cnt_XCOL <= cnt_XCOL + 1;
 			elsif CL_X = '1' then cnt_XCOL <= (others => '0');
 			end if;
 		end if;
@@ -298,7 +300,8 @@ architecture arq_lcd_drawing of lcd_drawing is
 		if RESET_L = '0' then cnt_YROW <= (others =>'0');
 		elsif CLK'event and CLK='1' then
 			if LD_Y = '1' then cnt_YROW <= DY;
-			elsif INC_Y = '1' then cnt_YROW <= ((cnt_YROW + 1) mod 320);
+			elsif INC_Y = '1' and cnt_YROW="100111111" then cnt_YROW <= "000000000";
+			elsif INC_Y = '1' then cnt_YROW <= cnt_YROW + 1;
 			elsif CL_Y = '1' then cnt_YROW <= (others => '0');
 			end if;
 		end if;
@@ -330,7 +333,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- Multiplexor para MUX_LINES   
 	MUX_LINES <= '0'&x"0064" when SEL_LINES =  "00" else -- 100 
 		    '0'&x"0140" when SEL_LINES =  "01" else --320
-			'1'&x"2C00" when SEL_LINES =  "10" else 
+			'0'&x"0800" when SEL_LINES =  "10" else 
 			'0'&x"0032";
 	-- Contador NUM_PIX : CLINES
 	CLINES : process(CLK, RESET_L)
@@ -544,7 +547,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	REVY <= ('0' & x"DC") - PREVY;
 
 	--Comparador NOTMIRX
-	DROMB <= '1' when cnt_LINES < x"33" else
+	DROMB <= '1' when cnt_LINES < x"32" else
 			'0';
 
 	--Comparador NOTMIRX
