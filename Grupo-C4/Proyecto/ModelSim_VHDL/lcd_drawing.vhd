@@ -34,7 +34,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	signal LD_MIRROR, CL_MIRROR, ISMIRROR, LD_DONE, CL_DONE, ISDONE, LD_DIAG, CL_DIAG, ISDIAG, LD_TRIAN, CL_TRIAN, ISTRIAN, DEC_JUMP, LD_JUMP, LD_VERT, CL_VERT, ISVERT, LD_HORIZ, CL_HORIZ, ISHORIZ: std_logic := '0';
 	signal NOTJUMP, NOTMIRX, NOTMIRY, NOTMIRROR, DROMB: std_logic := '0';
 	
-	signal SEL_DATA: std_logic_vector(1 downto 0);
+	signal SEL_DATA: std_logic_vector(2 downto 0);
 	signal SEL_LINES: std_logic_vector(1 downto 0);
 	
 	signal DX: unsigned(7 downto 0);
@@ -242,12 +242,13 @@ architecture arq_lcd_drawing of lcd_drawing is
 	---- selectores de datos
 	SELREV <= '1' when EP = DRAWREPEAT and ALL_PIX = '1' and ISMIRROR = '1' and NOTMIRROR = '0' else '0';
 
-	SEL_DATA <= "00" when EP = INICIO and DEL_SCREEN = '1' else
-				"01" when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
+	SEL_DATA <= "000" when EP = INICIO and DEL_SCREEN = '1' else
+				"001" when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
 					LD_MIRROR = '1' or LD_TRIAN = '1' or LD_ROMBOIDE ='1' or LD_TRAP = '1' else
-				"10" when LD_HORIZ = '1' else
-				"11" when LD_VERT ='1' or LD_DIAG = '1' or LD_EQUIL = '1' or LD_ROMBO = '1' or LD_PATRON = '1' else
-				"00"; -- inalcanzable
+				"010" when LD_HORIZ = '1' else
+				"011" when LD_VERT ='1' or LD_DIAG = '1' or LD_PATRON = '1' else
+				"100" when LD_EQUIL = '1' or LD_ROMBO = '1' else
+				"000"; -- inalcanzable
 				
 	SEL_LINES <= 	"01" when LD_VERT = '1' or LD_DIAG = '1'  else
 					"10" when LD_PATRON = '1' else
@@ -279,7 +280,9 @@ architecture arq_lcd_drawing of lcd_drawing is
 		if RESET_L = '0' then cnt_XCOL <= (others =>'0');
 		elsif CLK'event and CLK='1' then
 			if LD_X = '1' then cnt_XCOL <= DX;
+			elsif E_X = '1' and UPX = '0' and cnt_XCOL="00000000" then cnt_XCOL <= "11101111";
 			elsif E_X = '1' and UPX = '0' then cnt_XCOL <= cnt_XCOL - 1;
+			elsif E_X = '1' and UPX = '1' and cnt_XCOL="11101111" then cnt_XCOL <= "00000000";
 			elsif E_X = '1' and UPX = '1' then cnt_XCOL <= cnt_XCOL + 1;
 			elsif CL_X = '1' then cnt_XCOL <= (others => '0');
 			end if;
@@ -297,6 +300,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 		if RESET_L = '0' then cnt_YROW <= (others =>'0');
 		elsif CLK'event and CLK='1' then
 			if LD_Y = '1' then cnt_YROW <= DY;
+			elsif INC_Y = '1' and cnt_YROW="100111111" then cnt_YROW <= "000000000";
 			elsif INC_Y = '1' then cnt_YROW <= cnt_YROW + 1;
 			elsif CL_Y = '1' then cnt_YROW <= (others => '0');
 			end if;
@@ -543,7 +547,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	REVY <= ('0' & x"DC") - PREVY;
 
 	--Comparador NOTMIRX
-	DROMB <= '1' when cnt_LINES < x"32" else
+	DROMB <= '1' when cnt_LINES < x"2" else
 			'0';
 
 	--Comparador NOTMIRX
