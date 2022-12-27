@@ -351,6 +351,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 		    '0'&x"0140" when SEL_LINES =  "01" else --320
 			'0'&x"0800" when SEL_LINES =  "10" else 
 			'0'&x"0032";
+			    
 	-- Contador NUM_PIX : CLINES
 	CLINES : process(CLK, RESET_L)
 	begin
@@ -573,7 +574,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	--Restador para REVY
 	REVY <= ('0' & x"DC") - PREVY;
 
-	--Comparador NOTMIRX
+	--Comparador DSIDE
 	DSIDE <= '1' when cnt_LINES < x"32" else
 			'0';
 
