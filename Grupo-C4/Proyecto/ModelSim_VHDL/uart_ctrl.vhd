@@ -10,8 +10,10 @@ entity uart_ctrl is
 		CLK, RESET_L: in std_logic;
 		NEWOP, DONE_ORDER: in std_logic;
 		DAT: in std_logic_vector(7 downto 0);
-		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN: out std_logic;
-		COLOUR_CODE: out std_logic_vector(2 downto 0)
+		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN, PATRON, HEXAG, LED_POS, LED_SIG: out std_logic;
+		COLOUR_CODE: out std_logic_vector(2 downto 0);
+		UART_XCOL: out std_logic_vector(7 downto 0);
+		UART_YROW: out std_logic_vector(8 downto 0)
 	);
 end uart_ctrl;
 
@@ -19,14 +21,23 @@ end uart_ctrl;
 architecture arq_uart_ctrl of uart_ctrl is
 
 	-- Declaracion de estados
-	type estados is (INICIO, SIGNALS, WTORDER, SNDONE); 
+	type estados is (INICIO, SIGNALS, LDLEDSIG, WTLEDSIG, FORMINGXCOL, WTXBIT, FORMINGYROW, WTYBIT, LDLEDPOS, WTLEDPOS, WTORDER, SNDONE); 
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_HORIZ, LD_ROMBO, LD_EQUIL, LD_ROMBOIDE, LD_TRAP, LD_TRIAN, LD_DAT: std_logic := '0';
-	signal CL_SIGS: std_logic := '0';
-	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN: std_logic :='0';
+	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_HORIZ, LD_ROMBO, LD_EQUIL, LD_ROMBOIDE, LD_TRAP, LD_TRIAN, LD_PATRON, LD_HEXAG, LD_LENX, LD_LENY: std_logic := '0';
+	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN, ISPATRON, ISHEXAG, ISX, ISY: std_logic :='0';
+
+	signal LD_LEDSIG, DEC_LEDSIG, DONE_LEDSIG, CL_LEDSIG: std_logic := '0';
+	signal LD_LEDPOS, DEC_LEDPOS, DONE_LEDPOS, CL_LEDPOS: std_logic := '0';
+	signal DEC_LENX, DEC_LENY, DONE_X, DONE_Y, ISDEF, LD_DEF, DEFAULT, CL_DEF, ISa0, ISa1, XBIT, YBIT: std_logic := '0';
+	signal CL_SIGS, LD_DAT, CL_DAT: std_logic := '0';
 	signal RDATO: std_logic_vector(7 downto 0);
+
+	signal OPX: std_logic_vector(1 downto 0);
+	
+	signal OPY: std_logic_vector(1 downto 0);
+	
 
 	begin
 
@@ -35,17 +46,51 @@ architecture arq_uart_ctrl of uart_ctrl is
 	-- #######################
 
 	-- Transicion de estados (calculo de estado siguiente)
-	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN,  DONE_ORDER, NEWOP) begin
+	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN, ISPATRON, ISHEXAG, ISX, ISY, ISDEF, DONE_X, DONE_Y, ISa0, ISa1, DONE_LEDPOS, DONE_LEDSIG, DONE_ORDER, NEWOP) begin
 		case EP is
 			when INICIO =>		if NEWOP='1' then ES<=SIGNALS;
 									else ES<=INICIO;
 									end if;
 
 			when SIGNALS =>		if ISCOLOUR='1' then ES<=SNDONE;
-									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' then ES <=SNDONE;
+									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON = '0' and ISHEXAG = '0' and ISX = '0' and  ISY = '0' then ES <=LDLEDSIG;
+									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON = '0' and ISHEXAG = '0' and ISX = '1' then ES <=FORMINGXCOL;
+									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON = '0' and ISHEXAG = '0' and ISX = '0' and  ISY = '1' then ES <=FORMINGYROW;
 									else ES<=WTORDER;
 									end if; 
-
+			when LDLEDSIG =>	ES <= WTLEDSIG;
+			when WTLEDSIG =>	if DONE_LEDSIG = '1' then ES <= INICIO;
+									else ES <= WTLEDSIG;
+									end if;
+									
+			when FORMINGXCOL =>	if DONE_X = '1' then ES <= INICIO;
+									else ES <= WTXBIT;
+									end if;
+									
+			when WTXBIT =>		if NEWOP = '0' then ES <= WTXBIT;
+									elsif ISDEF = '1' then ES <= INICIO;
+									elsif ISa0 = '1' then ES <= FORMINGXCOL;
+									elsif ISa1 = '1' then ES <= FORMINGXCOL;
+									else ES <= LDLEDPOS;
+									end if;
+									
+			when FORMINGYROW =>	if DONE_Y = '1' then ES <= INICIO;
+									else ES <= WTYBIT;
+									end if;		
+									
+									
+			when WTYBIT =>		if NEWOP = '0' then ES <= WTYBIT;
+									elsif ISDEF = '1' then ES <= INICIO;
+									elsif ISa0 = '1' then ES <= FORMINGYROW;
+									elsif ISa1 = '1' then ES <= FORMINGYROW;
+									else ES <= LDLEDPOS;
+									end if;
+			when LDLEDPOS => 	ES <= WTLEDPOS;
+			
+			when WTLEDPOS => 	if DONE_LEDPOS = '0' then ES <= WTLEDPOS;
+									else ES <= INICIO;
+									end if;
+			
 			when WTORDER =>		if DONE_ORDER = '0' then ES<=WTORDER;
 									else ES <= SNDONE;
 									end if;
