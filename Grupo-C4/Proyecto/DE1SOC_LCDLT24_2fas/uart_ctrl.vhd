@@ -10,7 +10,7 @@ entity uart_ctrl is
 		CLK, RESET_L: in std_logic;
 		NEWOP, DONE_ORDER: in std_logic;
 		DAT: in std_logic_vector(7 downto 0);
-		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN, PATRON, HEXAG, LED_POS, LED_SIG: out std_logic;
+		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN, PATRON, HEXAG, LED_POS, LED_SIG,DEFAULT: out std_logic;
 		COLOUR_CODE: out std_logic_vector(2 downto 0);
 		UART_XCOL: out std_logic_vector(7 downto 0);
 		UART_YROW: out std_logic_vector(8 downto 0)
@@ -30,15 +30,21 @@ architecture arq_uart_ctrl of uart_ctrl is
 
 	signal LD_LEDSIG, DEC_LEDSIG, DONE_LEDSIG, CL_LEDSIG: std_logic := '0';
 	signal LD_LEDPOS, DEC_LEDPOS, DONE_LEDPOS, CL_LEDPOS: std_logic := '0';
-	signal DEC_LENX, DEC_LENY, DONE_X, DONE_Y, ISDEF, LD_DEF, DEFAULT, CL_DEF, ISa0, ISa1, XBIT, YBIT: std_logic := '0';
-	signal CL_SIGS, LD_DAT, CL_DAT: std_logic := '0';
+	signal DEC_LENX, DEC_LENY, DONE_X, DONE_Y, ISDEF, LD_DEF, CL_DEF, ISa0, ISa1, XBIT, YBIT: std_logic := '0';
+	signal CL_SIGS, LD_DAT : std_logic := '0'; --CL_DAT
 	signal RDATO: std_logic_vector(7 downto 0);
 
 	signal OPX: std_logic_vector(1 downto 0);
 	
 	signal OPY: std_logic_vector(1 downto 0);
-	
 
+	signal cnt_LENX: unsigned (3 downto 0);
+	signal cnt_LENY: unsigned (3 downto 0);
+	signal cnt_LEDPOS: unsigned (26 downto 0);
+	signal cnt_LEDSIG: unsigned (26 downto 0);
+	
+	signal UART_XCOL_buf :  std_logic_vector(7 downto 0);
+	signal UART_YROW_buf :  std_logic_vector(8 downto 0);
 	begin
 
 	-- #######################
@@ -102,6 +108,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	end process SWSTATE;
 
 
+
 	-- Actualizacion de EP en cada flanco de reloj (sequential)
 	SEQ: process (CLK, RESET_L) begin
 		if RESET_L = '0' then EP <= INICIO; -- reset asincrono
@@ -119,15 +126,35 @@ architecture arq_uart_ctrl of uart_ctrl is
 	LD_DEL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='1' else '0';
 	LD_VERT	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '1' else '0';
 	LD_DIAG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '1' else '0';
-	LD_HORIZ	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='1' else '0';
-	LD_EQUIL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '1'  else '0';
-	LD_ROMBO	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '1'  else '0';
-	LD_ROMBOIDE	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '1'  else '0';
+	LD_HORIZ<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='1' else '0';
+	LD_EQUIL<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '1'  else '0';
+	LD_ROMBO<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '1'  else '0';
+	LD_ROMBOIDE<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '1'  else '0';
 	LD_TRAP	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '1'  else '0';
-	LD_TRIAN	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '1'  else '0';
+	LD_TRIAN<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '1'  else '0';
+	LD_PATRON<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='1' else '0';
+	LD_HEXAG<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='0' and ISHEXAG='1' else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
-	DONE_OP<='1' when EP=SNDONE else '0';
-	
+	DONE_OP	<='1' when EP=SNDONE and EP=FORMINGXCOL and EP=FORMINGYROW else '0';
+	LD_LENX	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='0' and ISHEXAG='0' and ISX='1' else '0';
+	LD_LENY	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='0' and ISHEXAG='0' and ISX='0' and ISY='1' else '0';
+	DEC_LENX<='1' when EP=FORMINGXCOL else '0';
+	DEC_LENY<='1' when EP=FORMINGYROW else '0';
+	LD_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='1') or (EP=WTYBIT and NEWOP='1' and ISDEF='1') else '0';
+	CL_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='0') or (EP=WTYBIT and NEWOP='1' and ISDEF='0') else '0';
+	OPX	<="10" when (EP=WTXBIT and NEWOP='1' and ISDEF='0' and ISa0='1') or (EP=WTXBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
+	XBIT	<='1' when EP=WTXBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
+	OPY	<="10" when (EP=WTYBIT and NEWOP='1' and ISDEF='0' and ISa0='1') or (EP=WTYBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
+	YBIT	<='1' when EP=WTYBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
+	LD_LEDPOS<='1' when EP=LDLEDPOS else '0';
+	--LED_POS	<='1' when EP=WTLEDPOS else '0';
+	DEC_LEDPOS<='1' when EP=WTLEDPOS else '0';
+	CL_LEDPOS<='1' when EP=WTLEDPOS and DONE_LEDPOS='1' else '0';
+	LD_LEDSIG<='1' when EP=LDLEDSIG else '0';
+	--LED_SIG	<='1' when EP=WTLEDSIG else '0';
+	DEC_LEDSIG<='1' when EP=WTLEDSIG else '0';
+	CL_LEDSIG<='1' when EP=WTLEDSIG and DONE_LEDSIG='1' else '0';
+
 
 
 	-- #######################
@@ -278,7 +305,34 @@ architecture arq_uart_ctrl of uart_ctrl is
 			end if;
 		end if;
 	end process RTRIAN;
+
+	--Comparador p: CMPPATRON
+	ISPATRON <= '1' when RDATO = x"70" else '0';
 	
+	--Registro PATRON: RPATRON
+	RPATRON : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then PATRON <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_PATRON = '1' then PATRON <= '1';
+			elsif CL_SIGS = '1' then PATRON <= '0';
+			end if;
+		end if;
+	end process RPATRON;
+
+	--Comparador H: CMPHEXAG
+	ISHEXAG <= '1' when RDATO = x"48" else '0';
+	
+	--Registro HEXAG: RHEXAG
+	RHEXAG : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then HEXAG <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_HEXAG = '1' then HEXAG <= '1';
+			elsif CL_SIGS = '1' then HEXAG <= '0';
+			end if;
+		end if;
+	end process RHEXAG;	
 
 	--Comparador Ceros, para comprobar que es un codigo de color
 	ISCOLOUR <= '1' when RDATO(7 downto 3) = "00110" else '0';
@@ -302,5 +356,171 @@ architecture arq_uart_ctrl of uart_ctrl is
 			end if;
 		end if;
 	end process RDAT;
+
+	--Comparador X: CMPX
+	ISX <= '1' when RDATO = x"78" else '0';
+
+	--Comparador Y: CMPY
+	ISY <= '1' when RDATO = x"79" else '0';
+
+	--Comparador 0: CMPCERO
+	ISa0 <= '1' when RDATO = x"30" else '0';
+
+	--Comparador 1: CMPUNO
+	ISa1 <= '1' when RDATO = x"31" else '0';
+
+	--Comparador d: CMPDEF
+	ISDEF <= '1' when RDATO = x"64" else '0';
+	
+	
+	-- REG DESPLAZADOR: SXCOL
+	SXCOL : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then UART_XCOL_buf <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if OPX = "10" then UART_XCOL_buf <= UART_XCOL_buf(7 downto 1) & XBIT;
+			else UART_XCOL_buf <= UART_XCOL_buf;
+			end if;
+		end if;
+	end process SXCOL;
+	UART_XCOL <= UART_XCOL_buf;
+
+	-- Contador  CLENX: CLENX
+	CLENX : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_LENX <= (others =>'0'); DONE_X <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_LENX = '1' then
+				cnt_LENX <= "1000";
+				DONE_X <= '0';
+			elsif DEC_LENX='1' and cnt_LENX="0001" then 
+				cnt_LENX<= cnt_LENX-1;
+				DONE_X <= '1';
+			elsif DEC_LENX='1' and cnt_LENX="0000" then
+				cnt_LENX<= "1111";
+				DONE_X <= '0';
+			elsif DEC_LENX = '1' then 
+				cnt_LENX <= cnt_LENX - 1;
+				DONE_X <= '0';
+			end if;
+		end if;
+	end process CLENX;	
+	
+	
+	-- REG DESPLAZADOR: SYROW
+	SYROW : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then UART_YROW_buf <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if OPY = "10" then UART_YROW_buf <= UART_YROW_buf(8 downto 1) & YBIT;
+			else UART_YROW_buf <= UART_YROW_buf;
+			end if;
+		end if;
+	end process SYROW;	
+	UART_YROW <= UART_YROW_buf;
+	
+	-- Contador  CLENY: CLENY
+	CLENY : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_LENY <= (others =>'0'); DONE_Y <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_LENY = '1' then
+				cnt_LENY <= "1001";
+				DONE_Y <= '0';
+			elsif DEC_LENY='1' and cnt_LENY="0001" then 
+				cnt_LENY<= cnt_LENY-1;
+				DONE_Y <= '1';
+			elsif DEC_LENY='1' and cnt_LENY="0000" then
+				cnt_LENY<= "1111";
+				DONE_Y <= '0';
+			elsif DEC_LENY = '1' then 
+				cnt_LENY <= cnt_LENY - 1;
+				DONE_Y <= '0';
+			end if;
+		end if;
+	end process CLENY;		
+	
+	--Registro DEFAULT
+	RDEF : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then DEFAULT <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_DEF = '1' then DEFAULT <= '1';
+			elsif CL_DEF = '1' then DEFAULT <= '0';
+			end if;
+		end if;
+	end process RDEF;
+
+
+
+	-- Contador  LEDPOS: CLEDPOS
+	CLEDPOS : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_LEDPOS <= (others =>'0'); DONE_LEDPOS <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_LEDPOS = '1' then
+				cnt_LEDPOS <= "101111101011110000100000000";
+				DONE_LEDPOS <= '0';
+			elsif CL_LEDPOS='1' then 
+				cnt_LEDPOS<=(others=>'0');
+				DONE_LEDPOS <= '0';
+			elsif DEC_LEDPOS='1' and cnt_LEDPOS="00000000000000000000000001" then 
+				cnt_LEDPOS<= cnt_LEDPOS-1;
+				DONE_LEDPOS <= '1';
+			elsif DEC_LEDPOS='1' and cnt_LEDPOS="00000000000000000000000000" then
+				cnt_LEDPOS<= "111111111111111111111111111";
+				DONE_LEDPOS <= '0';
+			elsif DEC_LEDPOS = '1' then 
+				cnt_LEDPOS <= cnt_LEDPOS - 1;
+				DONE_LEDPOS <= '0';
+			end if;
+		end if;
+	end process CLEDPOS;
+
+	--Registro LEDPOS: RLEDPOS
+	RLEDPOS : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then LED_POS <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_LEDPOS = '1' then LED_POS <= '1';
+			elsif CL_LEDPOS = '1' then LED_POS <='0';
+			end if;
+		end if;
+	end process RLEDPOS;
+
+	-- Contador  LEDSIG: CLEDSIG
+	CLEDSIG : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_LEDSIG <= (others =>'0'); DONE_LEDSIG <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_LEDSIG = '1' then
+				cnt_LEDSIG <= "101111101011110000100000000";
+				DONE_LEDSIG <= '0';
+			elsif CL_LEDSIG='1' then 
+				cnt_LEDSIG<=(others=>'0');
+				DONE_LEDSIG <= '0';
+			elsif DEC_LEDSIG='1' and cnt_LEDSIG="00000000000000000000000001" then 
+				cnt_LEDSIG<= cnt_LEDSIG-1;
+				DONE_LEDSIG <= '1';
+			elsif DEC_LEDSIG='1' and cnt_LEDSIG="00000000000000000000000000" then
+				cnt_LEDSIG<= "111111111111111111111111111";
+				DONE_LEDSIG <= '0';
+			elsif DEC_LEDSIG = '1' then 
+				cnt_LEDSIG <= cnt_LEDSIG - 1;
+				DONE_LEDSIG <= '0';
+			end if;
+		end if;
+	end process CLEDSIG;
+
+	--Registro LEDSIG: RLEDSIG
+	RLEDSIG : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then LED_SIG <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_LEDSIG = '1' then LED_SIG <= '1';
+			elsif CL_LEDSIG = '1' then LED_SIG <='0';
+			end if;
+		end if;
+	end process RLEDSIG;
 
 end arq_uart_ctrl; 
