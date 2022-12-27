@@ -17,18 +17,18 @@ entity DE1SOC_LCDLT24_2fas is
 		-- UART----------------
 		Rx : in std_logic;
 		-- UART_TX : out std_logic;
-		CTS : out std_logic;
-		RTS : in std_logic;
+		--CTS : out std_logic;
+		--RTS : in std_logic;
 		
 		-- KEY ----------------
-		KEY 		: in	std_logic_vector(2 downto 0);
+		KEY 		: in	std_logic_vector(1 downto 0);
 
 		-- SW ----------------
 		SW 			: in	std_logic_vector(8 downto 7);
 	--	SW 			: in	std_logic_vector(9 downto 0);
 
 		-- LEDR ----------------
-		LEDR 		: out	std_logic_vector(9 downto 6);
+		LEDR 		: out	std_logic_vector(9 downto 4);
 
 		-- LT24_LCD ----------------
 		LT24_LCD_ON     : out std_logic;
@@ -83,17 +83,19 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	component LCD_DRAWING IS
 		port
 		(
-			CLK, RESET_L: in std_logic;
+		CLK, RESET_L, DEFAULT: in std_logic;
 
-			DEL_SCREEN, DRAW_FIG, HORIZ, VERT, DIAG, TRIAN, MIRROR, EQUIL, ROMBO, ROMBOIDE, TRAP, PATRON, DONE_CURSOR, DONE_COLOUR: in std_logic;
-			COLOUR_CODE: in std_logic_vector(2 downto 0);
-
-			OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
-			XCOL: out std_logic_vector(7 downto 0);
-			YROW: out std_logic_vector(8 downto 0);
-			RGB: out std_logic_vector(15 downto 0);
-			NUM_PIX: out unsigned(16 downto 0);
-			DONE_ORDER: out std_logic
+		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, HORIZ, VERT, DIAG, MIRROR, TRIAN, EQUIL, ROMBO, ROMBOIDE, TRAP, PATRON, HEXAG: in std_logic;
+		COLOUR_CODE: in std_logic_vector(2 downto 0);
+		UART_XCOL: in std_logic_vector(7 downto 0);
+		UART_YROW: in std_logic_vector(8 downto 0);
+		
+		XCOL: out std_logic_vector(7 downto 0);
+		YROW: out std_logic_vector(8 downto 0);
+		OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
+		RGB: out std_logic_vector(15 downto 0);
+		NUM_PIX: out unsigned(16 downto 0);
+		DONE_ORDER: out std_logic
 		);
 	end component;
 
@@ -127,8 +129,10 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			CLK, RESET_L: in std_logic;
 			NEWOP, DONE_ORDER: in std_logic;
 			DAT: in std_logic_vector(7 downto 0);
-			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN: out std_logic;
-			COLOUR_CODE: out std_logic_vector(2 downto 0)
+			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN, PATRON, HEXAG, LED_POS, LED_SIG, DEFAULT: out std_logic;
+			COLOUR_CODE: out std_logic_vector(2 downto 0);
+			UART_XCOL: out std_logic_vector(7 downto 0);
+			UART_YROW: out std_logic_vector(8 downto 0)
 		);
 	end component;
 	  
@@ -169,6 +173,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	signal 	PATRON 					: 	std_logic;
 	signal 	VERT 					: 	std_logic;
 	signal 	DIAG 					: 	std_logic;
+	signal 	HEXAG 					: 	std_logic;
 	signal	COLOUR_CODE 			:  std_logic_vector(2 downto 0);
 	signal 	DEL_SCREEN 				: 	std_logic;
 	signal 	DRAW_FIG 				: 	std_logic;
@@ -182,7 +187,11 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	
 	--uart ctrl
 	signal 	DONE_ORDER				:	std_logic;
-	
+	signal 	DEFAULT					:	std_logic;
+	signal 	LED_POS					:	std_logic;
+	signal 	LED_SIG					:	std_logic;
+	signal	UART_XCOL				:  std_logic_vector(7 downto 0);
+	signal	UART_YROW				:  std_logic_vector(8 downto 0);
 	
 	begin 
 		clk <= CLOCK_50;
@@ -192,11 +201,11 @@ architecture str of DE1SOC_LCDLT24_2fas is
 		reset_l	<=		KEY(0);
 
 		MIRROR <= 		not(KEY(1));	
-		PATRON <= 		not(KEY(2));
 		
 		
 		VEL <= SW(8 downto 7);
-		
+		LEDR(4)  <= LED_POS;
+		LEDR(5)  <= LED_SIG;
 		LEDR(6)  <= LED;
 		LEDR(7)  <= SW(7); --para comprobar visualmente que el switch está activado 
 		LEDR(8)  <= SW(8); --para comprobar visualmente que el switch está activado 
@@ -299,10 +308,14 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			ROMBOIDE  => ROMBOIDE,
 			TRAP => TRAP,
 			PATRON => PATRON,
+			HEXAG => HEXAG,
 			
 			DONE_CURSOR => DONE_CURSOR,
 			DONE_COLOUR =>  DONE_COLOUR,
 			COLOUR_CODE => COLOUR_CODE,
+			DEFAULT => DEFAULT,
+			UART_XCOL => UART_XCOL,
+			UART_YROW => UART_YROW,
 
 			-- salidas
 			OP_SETCURSOR => OP_SETCURSOR,
@@ -376,6 +389,13 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			ROMBOIDE => ROMBOIDE,
 			TRAP => TRAP,
 			TRIAN => TRIAN,
-			COLOUR_CODE => COLOUR_CODE
+			PATRON => PATRON,
+			HEXAG => HEXAG,
+			COLOUR_CODE => COLOUR_CODE,
+			DEFAULT => DEFAULT,
+			LED_POS => LED_POS,
+			LED_SIG => LED_SIG,
+			UART_XCOL => UART_XCOL,
+			UART_YROW => UART_YROW
 		);
 END str;
