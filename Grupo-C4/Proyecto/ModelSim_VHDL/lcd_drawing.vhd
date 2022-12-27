@@ -7,14 +7,16 @@ use IEEE.numeric_std.all;
 
 entity lcd_drawing is
 	port(
-		CLK, RESET_L: in std_logic;
+		CLK, RESET_L, DEFAULT: in std_logic;
 
 		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, HORIZ, VERT, DIAG, MIRROR, TRIAN, EQUIL, ROMBO, ROMBOIDE, TRAP, PATRON, HEXAG: in std_logic;
 		COLOUR_CODE: in std_logic_vector(2 downto 0);
-
-		OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
+		UART_XCOL: in std_logic_vector(7 downto 0);
+		UART_YROW: in std_logic_vector(8 downto 0);
+		
 		XCOL: out std_logic_vector(7 downto 0);
 		YROW: out std_logic_vector(8 downto 0);
+		OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
 		RGB: out std_logic_vector(15 downto 0);
 		NUM_PIX: out unsigned(16 downto 0);
 		DONE_ORDER: out std_logic
@@ -37,9 +39,9 @@ architecture arq_lcd_drawing of lcd_drawing is
 	signal SEL_DATA: std_logic_vector(2 downto 0);
 	signal SEL_LINES: std_logic_vector(1 downto 0);
 	
-	signal DX: unsigned(7 downto 0);
+	signal DX, DXD: unsigned(7 downto 0);
 	signal REVX: unsigned(7 downto 0);
-	signal DY: unsigned(8 downto 0);
+	signal DY, DYD: unsigned(8 downto 0);
 	signal REVY: unsigned(8 downto 0);
 	signal PREVY: unsigned(8 downto 0);
 	
@@ -65,7 +67,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	-- Transicipn de estados (calculo de estado siguiente)
 	SWSTATE: process (EP, DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, ALL_PIX, HORIZ, VERT, DIAG, MIRROR, TRIAN, ISHORIZ, ISVERT, ISDIAG, ISTRIAN,
-							ISMIRROR, NOTMIRROR, ISEQUIL, ISROMBO, DSIDE, ISTRAP, EQUIL, ISROMBOIDE, ROMBO, ROMBOIDE, TRAP, ISPATRON, PATRON) begin
+							ISMIRROR, NOTMIRROR, ISEQUIL, ISROMBO, DSIDE, ISTRAP, EQUIL, ISROMBOIDE, ROMBO, ROMBOIDE, TRAP, ISPATRON, PATRON, HEXAG, ISHEXAG) begin
 		case EP is
 			when INICIO => 		if DEL_SCREEN = '1' or (DEL_SCREEN = '0' and DRAW_FIG = '0' and HORIZ = '1') then ES <= DELCURSOR;
 								elsif (DRAW_FIG = '1'  or VERT = '1' or DIAG = '1' or MIRROR = '1' or TRIAN = '1' or EQUIL ='1' or ROMBO = '1' or ROMBOIDE = '1' or TRAP = '1' or PATRON = '1' or HEXAG = '1') then ES <= DRAWCURSOR;
@@ -144,12 +146,12 @@ architecture arq_lcd_drawing of lcd_drawing is
 	---- Relacionadas con XCOL e YROW 
 	LD_X <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
 		LD_VERT = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or
-		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or LD_HEXAG or
+		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or LD_HEXAG = '1' or
 		SELREV='1' else '0';
 	
 	LD_Y <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 	
 		LD_HORIZ = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or 
-		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1'or LD_HEXAG or 
+		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1'or LD_HEXAG = '1' or 
 		SELREV='1' else '0';	
 	
 	CL_X <= '1' when (EP = INICIO and DEL_SCREEN = '1')  or 
@@ -168,10 +170,10 @@ architecture arq_lcd_drawing of lcd_drawing is
 	UPX <= '1' when EP = RGT or (EP = DRAWREPEAT and ALL_PIX = '0' and ISTRIAN = '0' and ((ISDIAG = '1' and NOTJUMP = '0') or (ISDIAG = '0' and ISEQUIL = '0' and 
 		ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '1'))) else '0';
 	
-	-- Relacionadas con el nÃºmero de pÃ­xeles y lineas
+	-- Relacionadas con el nÃÂºmero de pÃÂ­xeles y lineas
 	LD_LINES <= '1' when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
 		LD_VERT = '1' or LD_DIAG = '1' or LD_MIRROR = '1' or LD_TRIAN = '1' or 
-		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or LD_PATRON = '1' or LD_HEXAG or
+		LD_EQUIL = '1' or LD_ROMBO = '1' or LD_ROMBOIDE = '1' or LD_TRAP = '1' or LD_PATRON = '1' or LD_HEXAG = '1'or
 		SELREV = '1' else '0';
 	
 	LD_CN <= '1' when EP = INICIO and (DEL_SCREEN = '1' or DRAW_FIG = '1' or 
@@ -184,7 +186,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	E_NUMPIX <= '1' when UPNPIX = '1' or EP = RGT or (EP = DRAWREPEAT and ALL_PIX = '0' and 
 		(ISTRIAN = '1' or (ISTRIAN = '0' and ISDIAG = '0' and ISEQUIL = '0' and 
 		((ISROMBO = '1' and DSIDE = '1') or 
-		(ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '0' and ISPATRON = '0' and ISHEXAG = '1' and DSIDE = '1')))) 
+		(ISROMBO = '0' and ISTRAP = '0' and ISROMBOIDE = '0' and ISPATRON = '0' and ISHEXAG = '1' and DSIDE = '1'))))) 
 		else '0';
 	
 	UPNPIX <= '1' when EP = LFT or 
@@ -274,10 +276,16 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- ## UNIDAD DE PROCESO ##
 	-- #######################
 
-	--Multiplexor DX (MUXX)
-	DX <= x"46" when SELREV = '0' else
+	--Multiplexor DX (MUXXDEF)
+	DXD <= x"46" when SELREV = '0' else
 			 REVX;
 
+			 
+		--Multiplexor DX (MUXX)
+	DX <= DXD when DEFAULT = '1' else
+			 unsigned(UART_XCOL);
+
+			 
 	--Contador XCOL
 	CX : process(CLK, RESET_L)
 	begin
@@ -294,9 +302,13 @@ architecture arq_lcd_drawing of lcd_drawing is
 	end process CX;
 	XCOL <= std_logic_vector(cnt_XCOL);	
 
-	--Multiplexor DY (MUXY)
-	DY <= '0' & x"6E" when SELREV = '0' else
+	--Multiplexor DY (MUXYDEF)
+	DYD <= '0' & x"6E" when SELREV = '0' else
 			 REVY;
+			 
+	--Multiplexor DY (MUXY)
+	DY <= DYD when DEFAULT = '1' else
+			 unsigned(UART_YROW);
 
 	-- Contador YROW : CY
 	CY : process(CLK, RESET_L)
@@ -338,7 +350,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 		    '0'&x"0004" when SEL_LINES =  "01" else --320
 			'0'&x"0005" when SEL_LINES =  "10" else  -- 1000
 			'0'&x"0003";
-							  
+			
 	-- Contador NUM_PIX : CLINES
 	CLINES : process(CLK, RESET_L)
 	begin
@@ -532,6 +544,17 @@ architecture arq_lcd_drawing of lcd_drawing is
 			end if;
 		end if;
 	end process RPATRON;
+	
+	-- REG HEXAG: RHEXAG
+	RHEXAG : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then ISHEXAG <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_HEXAG = '1' then ISHEXAG <= '1';
+			elsif CL_HEXAG = '1' then ISHEXAG <= '0';
+			end if;
+		end if;
+	end process RHEXAG;
 	
 	-- REG DONE: RDONE
 	RDONE : process(CLK, RESET_L)
