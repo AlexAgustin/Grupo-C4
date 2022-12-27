@@ -31,17 +31,20 @@ architecture arq_uart_ctrl of uart_ctrl is
 	signal LD_LEDSIG, DEC_LEDSIG, DONE_LEDSIG, CL_LEDSIG: std_logic := '0';
 	signal LD_LEDPOS, DEC_LEDPOS, DONE_LEDPOS, CL_LEDPOS: std_logic := '0';
 	signal DEC_LENX, DEC_LENY, DONE_X, DONE_Y, ISDEF, LD_DEF, CL_DEF, ISa0, ISa1, XBIT, YBIT: std_logic := '0';
-	signal CL_SIGS, LD_DAT, CL_DAT: std_logic := '0';
+	signal CL_SIGS, LD_DAT : std_logic := '0'; --CL_DAT
 	signal RDATO: std_logic_vector(7 downto 0);
 
 	signal OPX: std_logic_vector(1 downto 0);
 	
 	signal OPY: std_logic_vector(1 downto 0);
 
+	signal cnt_LENX: unsigned (3 downto 0);
+	signal cnt_LENY: unsigned (3 downto 0);
 	signal cnt_LEDPOS: unsigned (26 downto 0);
 	signal cnt_LEDSIG: unsigned (26 downto 0);
 	
-
+	signal UART_XCOL_buf :  std_logic_vector(7 downto 0);
+	signal UART_YROW_buf :  std_logic_vector(8 downto 0);
 	begin
 
 	-- #######################
@@ -144,11 +147,11 @@ architecture arq_uart_ctrl of uart_ctrl is
 	OPY	<="10" when (EP=WTYBIT and NEWOP='1' and ISDEF='0' and ISa0='1') or (EP=WTYBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
 	YBIT	<='1' when EP=WTYBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
 	LD_LEDPOS<='1' when EP=LDLEDPOS else '0';
-	LED_POS	<='1' when EP=WTLEDPOS else '0';
+	--LED_POS	<='1' when EP=WTLEDPOS else '0';
 	DEC_LEDPOS<='1' when EP=WTLEDPOS else '0';
 	CL_LEDPOS<='1' when EP=WTLEDPOS and DONE_LEDPOS='1' else '0';
 	LD_LEDSIG<='1' when EP=LDLEDSIG else '0';
-	LED_SIG	<='1' when EP=WTLEDSIG else '0';
+	--LED_SIG	<='1' when EP=WTLEDSIG else '0';
 	DEC_LEDSIG<='1' when EP=WTLEDSIG else '0';
 	CL_LEDSIG<='1' when EP=WTLEDSIG and DONE_LEDSIG='1' else '0';
 
@@ -302,7 +305,34 @@ architecture arq_uart_ctrl of uart_ctrl is
 			end if;
 		end if;
 	end process RTRIAN;
+
+	--Comparador p: CMPPATRON
+	ISPATRON <= '1' when RDATO = x"70" else '0';
 	
+	--Registro PATRON: RPATRON
+	RPATRON : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then PATRON <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_PATRON = '1' then PATRON <= '1';
+			elsif CL_SIGS = '1' then PATRON <= '0';
+			end if;
+		end if;
+	end process RPATRON;
+
+	--Comparador H: CMPHEXAG
+	ISHEXAG <= '1' when RDATO = x"48" else '0';
+	
+	--Registro HEXAG: RHEXAG
+	RHEXAG : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then HEXAG <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_HEXAG = '1' then HEXAG <= '1';
+			elsif CL_SIGS = '1' then HEXAG <= '0';
+			end if;
+		end if;
+	end process RHEXAG;	
 
 	--Comparador Ceros, para comprobar que es un codigo de color
 	ISCOLOUR <= '1' when RDATO(7 downto 3) = "00110" else '0';
@@ -342,8 +372,76 @@ architecture arq_uart_ctrl of uart_ctrl is
 	--Comparador d: CMPDEF
 	ISDEF <= '1' when RDATO = x"64" else '0';
 	
+	
+	-- REG DESPLAZADOR: SXCOL
+	SXCOL : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then UART_XCOL_buf <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if OPX = "10" then UART_XCOL_buf <= UART_XCOL_buf(7 downto 1) & XBIT;
+			else UART_XCOL_buf <= UART_XCOL_buf;
+			end if;
+		end if;
+	end process SXCOL;
+	UART_XCOL <= UART_XCOL_buf;
+
+	-- Contador  CLENX: CLENX
+	CLENX : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_LENX <= (others =>'0'); DONE_X <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_LENX = '1' then
+				cnt_LENX <= "1000";
+				DONE_X <= '0';
+			elsif DEC_LENX='1' and cnt_LENX="0001" then 
+				cnt_LENX<= cnt_LENX-1;
+				DONE_X <= '1';
+			elsif DEC_LENX='1' and cnt_LENX="0000" then
+				cnt_LENX<= "1111";
+				DONE_X <= '0';
+			elsif DEC_LENX = '1' then 
+				cnt_LENX <= cnt_LENX - 1;
+				DONE_X <= '0';
+			end if;
+		end if;
+	end process CLENX;	
+	
+	
+	-- REG DESPLAZADOR: SYROW
+	SYROW : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then UART_YROW_buf <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if OPY = "10" then UART_YROW_buf <= UART_YROW_buf(8 downto 1) & YBIT;
+			else UART_YROW_buf <= UART_YROW_buf;
+			end if;
+		end if;
+	end process SYROW;	
+	UART_YROW <= UART_YROW_buf;
+	
+	-- Contador  CLENY: CLENY
+	CLENY : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then cnt_LENY <= (others =>'0'); DONE_Y <= '0';
+		elsif CLK'event and CLK='1' then
+			if LD_LENY = '1' then
+				cnt_LENY <= "1001";
+				DONE_Y <= '0';
+			elsif DEC_LENY='1' and cnt_LENY="0001" then 
+				cnt_LENY<= cnt_LENY-1;
+				DONE_Y <= '1';
+			elsif DEC_LENY='1' and cnt_LENY="0000" then
+				cnt_LENY<= "1111";
+				DONE_Y <= '0';
+			elsif DEC_LENY = '1' then 
+				cnt_LENY <= cnt_LENY - 1;
+				DONE_Y <= '0';
+			end if;
+		end if;
+	end process CLENY;		
+	
 	--Registro DEFAULT
-	RDEFAULT : process(CLK, RESET_L)
+	RDEF : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then DEFAULT <= '0';
 		elsif CLK'event and CLK='1' then
@@ -351,35 +449,9 @@ architecture arq_uart_ctrl of uart_ctrl is
 			elsif CL_DEF = '1' then DEFAULT <= '0';
 			end if;
 		end if;
-	end process RDEFAULT;
+	end process RDEF;
 
-	--Comparador p: CMPPATRON
-	ISPATRON <= '1' when RDATO = x"70" else '0';
-	
-	--Registro PATRON: RPATRON
-	RPATRON : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then PATRON <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_PATRON = '1' then PATRON <= '1';
-			elsif CL_SIGS = '1' then PATRON <= '0';
-			end if;
-		end if;
-	end process RPATRON;
 
-	--Comparador H: CMPHEXAG
-	ISHEXAG <= '1' when RDATO = x"70" else '0';
-	
-	--Registro HEXAG: RHEXAG
-	RHEXAG : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then HEXAG <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_HEXAG = '1' then HEXAG <= '1';
-			elsif CL_SIGS = '1' then HEXAG <= '0';
-			end if;
-		end if;
-	end process RHEXAG;
 
 	-- Contador  LEDPOS: CLEDPOS
 	CLEDPOS : process(CLK, RESET_L)
