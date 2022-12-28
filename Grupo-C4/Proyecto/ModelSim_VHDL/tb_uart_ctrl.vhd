@@ -133,7 +133,49 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 		--NEWOP<='0';
 
 -------------------------------------------------------------------------------------
-		wait for 100 ns;--xcol default
+		--wait for 100 ns;--xcol default
+		--DAT<=x"78";
+		--NEWOP<='1';
+
+		--wait for 60 ns;
+
+		--NEWOP<='0';
+
+		--wait for 40 ns;
+
+		--DAT<=x"44";
+
+		--wait for 20 ns;
+
+		--NEWOP<='1';
+
+		--wait for 60 ns;
+
+		--NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		--wait for 100 ns;--yrow default
+		--DAT<=x"79";
+		--NEWOP<='1';
+
+		--wait for 60 ns;
+
+		--NEWOP<='0';
+
+		--wait for 40 ns;
+
+		--DAT<=x"44";
+
+		--wait for 20 ns;
+
+		--NEWOP<='1';
+
+		--wait for 60 ns;
+
+		--NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--xcol d'200'
 		DAT<=x"78";
 		NEWOP<='1';
 
@@ -143,7 +185,75 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 
 		wait for 40 ns;
 
-		DAT<=x"44";
+		DAT<=x"31"; -- primer bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"31"; -- segundo bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- tercer bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+
+		NEWOP<='0';
+		DAT<=x"30"; -- cuarto bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+
+		NEWOP<='0';
+		DAT<=x"31"; -- quinto bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+
+		NEWOP<='0';
+		DAT<=x"30"; -- sexto bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+
+		NEWOP<='0';
+		DAT<=x"30"; -- septimo bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+
+		NEWOP<='0';
+		DAT<=x"30"; -- octavo bit
 
 		wait for 20 ns;
 

@@ -137,7 +137,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 
 	
 	-- Activacion de signals de control: asignaciones combinacionales
-	LD_DAT <= '1' when (EP=INICIO and NEWOP = '1') or (EP=WTXBIT and NEWOP='0') or (EP=WTYBIT AND NEWOP='0') else '0';
+	LD_DAT <= '1' when (EP=INICIO and NEWOP = '1') or (EP=WTXBIT) or (EP=WTYBIT) else '0';
 	LD_COLOUR<= '1' when EP=SIGNALS and ISCOLOUR='1' else '0';
 	LD_FIG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='1' else '0';
 	LD_DEL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='1' else '0';
