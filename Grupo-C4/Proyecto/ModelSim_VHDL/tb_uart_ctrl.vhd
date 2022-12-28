@@ -62,74 +62,95 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 		RESET_L <= '1';	
 
 -------------------------------------------------------------------------------------
-		wait for 40 ns; --color 1
+		--wait for 40 ns; --color 1
 		
-		DAT<="00110001";
-		NEWOP <= '1';
+		--DAT<="00110001";
+		--NEWOP <= '1';
 
-		wait for 20 ns;
+		--wait for 20 ns;
 	
-		NEWOP <='0';
+		--NEWOP <='0';
 
 
 -------------------------------------------------------------------------------------
-		wait for 100 ns;--figura
+		--wait for 100 ns;--figura
 
-		DAT<="01100110";
+		--DAT<="01100110";
+		--NEWOP<='1';
+
+		--wait for 60 ns;
+
+		--DONE_ORDER<='1';
+
+		--wait for 20 ns;
+
+		--DONE_ORDER<='0';
+		--NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		--wait for 100 ns;--borar pantalla
+
+		--DAT<="01100010";
+		--NEWOP<='1';
+
+		--wait for 60 ns;
+
+		--DONE_ORDER<='1';
+
+		--wait for 20 ns;
+
+		--DONE_ORDER<='0';
+		--NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		--wait for 100 ns;--linea vertical
+
+		--DAT<="01110110";
+		--NEWOP<='1';
+
+		--wait for 60 ns;
+
+		--DONE_ORDER<='1';
+
+		--wait for 20 ns;
+
+		--DONE_ORDER<='0';
+		--NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		--wait for 100 ns;--linea diagonal
+
+		--DAT<="01100100";
+		--NEWOP<='1';
+
+		--wait for 60 ns;
+
+		--DONE_ORDER<='1';
+
+		--wait for 20 ns;
+
+		--DONE_ORDER<='0';
+		--NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--xcol default
+		DAT<=x"78";
 		NEWOP<='1';
 
 		wait for 60 ns;
 
-		DONE_ORDER<='1';
-
-		wait for 20 ns;
-
-		DONE_ORDER<='0';
 		NEWOP<='0';
 
--------------------------------------------------------------------------------------
-		wait for 100 ns;--borar pantalla
+		wait for 40 ns;
 
-		DAT<="01100010";
+		DAT<=x"44";
+
+		wait for 20 ns;
+
 		NEWOP<='1';
 
 		wait for 60 ns;
 
-		DONE_ORDER<='1';
-
-		wait for 20 ns;
-
-		DONE_ORDER<='0';
-		NEWOP<='0';
-
--------------------------------------------------------------------------------------
-		wait for 100 ns;--linea vertical
-
-		DAT<="01110110";
-		NEWOP<='1';
-
-		wait for 60 ns;
-
-		DONE_ORDER<='1';
-
-		wait for 20 ns;
-
-		DONE_ORDER<='0';
-		NEWOP<='0';
-
--------------------------------------------------------------------------------------
-		wait for 100 ns;--linea diagonal
-
-		DAT<="01100100";
-		NEWOP<='1';
-
-		wait for 60 ns;
-
-		DONE_ORDER<='1';
-
-		wait for 20 ns;
-
-		DONE_ORDER<='0';
 		NEWOP<='0';
 
 -------------------------------------------------------------------------------------
