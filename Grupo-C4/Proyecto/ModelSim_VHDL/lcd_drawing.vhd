@@ -249,7 +249,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	SEL_DATA <= "000" when EP = INICIO and DEL_SCREEN = '1' else
 				"001" when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
-					LD_MIRROR = '1' or LD_TRIAN = '1' or LD_ROMBOIDE ='1' or LD_TRAP = '1' or LD_HEXAG = '1' else
+					LD_MIRROR = '1' or LD_TRIAN = '1' or LD_ROMBOIDE ='1' or LD_TRAP = '1' else
 				"010" when LD_HORIZ = '1' else
 				"011" when LD_VERT ='1' or LD_DIAG = '1' or LD_PATRON = '1' else
 				"100" when LD_EQUIL = '1' or LD_ROMBO = '1' else
@@ -325,11 +325,10 @@ architecture arq_lcd_drawing of lcd_drawing is
 	
 	
 	-- Multiplexor para MUX_NPIX   (MUXNPIX)
-	MUX_NPIX <= '1'&x"2C00" when SEL_DATA = "000" else
-		    '0'&x"0064" when SEL_DATA = "001" else
-		    '0'&x"03C0" when SEL_DATA = "010" else
-		    '0'&x"0005" when SEL_DATA = "011" else
-		    '0'&x"0002";
+	MUX_NPIX <= '1'&x"0005" when SEL_DATA = "00" else -- 76800
+		    '0'&x"0002" when SEL_DATA = "01" else -- 100
+		    '0'&x"0004" when SEL_DATA = "10" else 
+		    '0'&x"0003"; 
 
 	-- Contador NUM_PIX : CNPIX
 	CNPIX : process(CLK, RESET_L)
@@ -346,10 +345,10 @@ architecture arq_lcd_drawing of lcd_drawing is
 	
 	
 	-- Multiplexor para MUX_LINES   
-	MUX_LINES <= '0'&x"0064" when SEL_LINES =  "00" else -- 100 
-		    '0'&x"0140" when SEL_LINES =  "01" else --320
-			'0'&x"0800" when SEL_LINES =  "10" else 
-			'0'&x"0032";
+	MUX_LINES <= '0'&x"0002" when SEL_LINES =  "00" else -- 100 
+		    '0'&x"0004" when SEL_LINES =  "01" else --320
+			'0'&x"0005" when SEL_LINES =  "10" else  -- 1000
+			'0'&x"0003";
 			    
 	-- Contador NUM_PIX : CLINES
 	CLINES : process(CLK, RESET_L)
@@ -574,7 +573,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	REVY <= ('0' & x"DC") - PREVY;
 
 	--Comparador DSIDE
-	DSIDE <= '1' when cnt_LINES < x"32" else
+	DSIDE <= '1' when cnt_LINES < x"2" else
 			'0';
 
 	--Comparador NOTMIRX
