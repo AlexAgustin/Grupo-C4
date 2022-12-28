@@ -1,4 +1,3 @@
-
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider Entradas
@@ -37,4 +36,3 @@ configure wave -timeline 0
 configure wave -timelineunits ps
 update
 WaveRestoreZoom {6830925 ps} {7219425 ps}
-

@@ -24,11 +24,11 @@ entity DE1SOC_LCDLT24_2fas is
 		KEY 		: in	std_logic_vector(3 downto 0);
 
 		-- SW ----------------
-		SW 			: in	std_logic_vector(8 downto 0);
+		SW 			: in	std_logic_vector(8 downto 7);
 	--	SW 			: in	std_logic_vector(9 downto 0);
 
 		-- LEDR ----------------
-		LEDR 		: out	std_logic_vector(9 downto 0);
+		LEDR 		: out	std_logic_vector(9 downto 4);
 
 		-- LT24_LCD ----------------
 		LT24_LCD_ON     : out std_logic;
@@ -37,18 +37,18 @@ entity DE1SOC_LCDLT24_2fas is
 		LT24_RD_N       : out std_logic;
 		LT24_RS         : out std_logic;
 		LT24_WR_N       : out std_logic;
-		LT24_D          : out std_logic_vector(15 downto 0)
+		LT24_D          : out std_logic_vector(15 downto 0);
 
 		-- GPIO ----------------
 	--	GPIO_0 		: inout	std_logic_vector(35 downto 0);
 
 		-- SEG7 ----------------
-	--	HEX0	: out	std_logic_vector(6 downto 0);
-	--	HEX1	: out	std_logic_vector(6 downto 0);
-	--	HEX2	: out	std_logic_vector(6 downto 0);
-	--	HEX3	: out	std_logic_vector(6 downto 0);
-	--	HEX4	: out	std_logic_vector(6 downto 0);
-	--	HEX5	: out	std_logic_vector(6 downto 0);
+		HEX5	: out	std_logic_vector(6 downto 0);
+		HEX4	: out	std_logic_vector(6 downto 0);
+		HEX3	: out	std_logic_vector(6 downto 0);
+		HEX2	: out	std_logic_vector(6 downto 0);
+		HEX1	: out	std_logic_vector(6 downto 0);
+		HEX0	: out	std_logic_vector(6 downto 0)
 
 	);
 end;
@@ -83,17 +83,19 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	component LCD_DRAWING IS
 		port
 		(
-			CLK, RESET_L: in std_logic;
+		CLK, RESET_L, DEFAULT: in std_logic;
 
-			DEL_SCREEN, DRAW_FIG, HORIZ, VERT, DIAG, TRIAN, MIRROR, EQUIL, ROMBO, ROMBOIDE, TRAP, PATRON, DONE_CURSOR, DONE_COLOUR: in std_logic;
-			COLOUR_CODE: in std_logic_vector(2 downto 0);
-
-			OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
-			XCOL: out std_logic_vector(7 downto 0);
-			YROW: out std_logic_vector(8 downto 0);
-			RGB: out std_logic_vector(15 downto 0);
-			NUM_PIX: out unsigned(16 downto 0);
-			DONE_ORDER: out std_logic
+		DEL_SCREEN, DRAW_FIG, DONE_CURSOR, DONE_COLOUR, HORIZ, VERT, DIAG, MIRROR, TRIAN, EQUIL, ROMBO, ROMBOIDE, TRAP, PATRON, HEXAG: in std_logic;
+		COLOUR_CODE: in std_logic_vector(2 downto 0);
+		UART_XCOL: in std_logic_vector(7 downto 0);
+		UART_YROW: in std_logic_vector(8 downto 0);
+		
+		XCOL: out std_logic_vector(7 downto 0);
+		YROW: out std_logic_vector(8 downto 0);
+		OP_SETCURSOR, OP_DRAWCOLOUR: out std_logic;
+		RGB: out std_logic_vector(15 downto 0);
+		NUM_PIX: out unsigned(16 downto 0);
+		DONE_ORDER: out std_logic
 		);
 	end component;
 
@@ -127,8 +129,17 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			CLK, RESET_L: in std_logic;
 			NEWOP, DONE_ORDER: in std_logic;
 			DAT: in std_logic_vector(7 downto 0);
-			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT: out std_logic;
-			COLOUR_CODE: out std_logic_vector(2 downto 0)
+			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN, LED_POS, LED_SIG,DEFAULT: out std_logic;
+			COLOUR_CODE: out std_logic_vector(2 downto 0);
+			UART_XCOL: out std_logic_vector(7 downto 0);
+			UART_YROW: out std_logic_vector(8 downto 0)
+		);
+	end component;
+	
+	component display
+		port(
+			CLK, RESET_L, LED, LED_POS, LED_SIG: in std_logic;
+			DISPL: out std_logic_vector(41 downto 0)
 		);
 	end component;
 	  
@@ -169,6 +180,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	signal 	PATRON 					: 	std_logic;
 	signal 	VERT 					: 	std_logic;
 	signal 	DIAG 					: 	std_logic;
+	signal 	HEXAG 					: 	std_logic;
 	signal	COLOUR_CODE 			:  std_logic_vector(2 downto 0);
 	signal 	DEL_SCREEN 				: 	std_logic;
 	signal 	DRAW_FIG 				: 	std_logic;
@@ -182,7 +194,14 @@ architecture str of DE1SOC_LCDLT24_2fas is
 	
 	--uart ctrl
 	signal 	DONE_ORDER				:	std_logic;
+	signal 	DEFAULT					:	std_logic;
+	signal 	LED_POS					:	std_logic;
+	signal 	LED_SIG					:	std_logic;
+	signal	UART_XCOL				:  std_logic_vector(7 downto 0);
+	signal	UART_YROW				:  std_logic_vector(8 downto 0);
 	
+	--display
+	signal	DISPL				:  std_logic_vector(41 downto 0);
 	
 	begin 
 		clk <= CLOCK_50;
@@ -191,36 +210,74 @@ architecture str of DE1SOC_LCDLT24_2fas is
 
 		reset_l	<=		KEY(0);
 
---		DEL_SCREEN <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
---		DRAW_FIG <= 	not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
-		MIRROR <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and not (SW(5));
-		
-		HORIZ <= 		not(KEY(1)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
---		VERT <= 		not(KEY(2)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
---		DIAG <= 		not(KEY(3)) and  		(SW(3)) and not (SW(4)) and not (SW(5));
-		
-		TRIAN <= 		not(KEY(1)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
-		EQUIL <= 		not(KEY(2)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
-		ROMBO <= 		not(KEY(3)) and not 	(SW(3)) and  	(SW(4)) 	and not (SW(5));
-		
-		ROMBOIDE <= 	not(KEY(1)) and not 	(SW(3)) and not (SW(4)) and	(SW(5));
-		TRAP <= 		not(KEY(2)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
-		PATRON <= 		not(KEY(3)) and not 	(SW(3)) and not (SW(4)) and 	(SW(5));
+		MIRROR <= 		not(KEY(1));	
+		PATRON <= 		not(KEY(2));	
+		HEXAG <= 		not(KEY(3));	
 		
 		
---		COLOUR_CODE <= SW(2 downto 0);
 		VEL <= SW(8 downto 7);
-		
-		LEDR(0)  <= SW(0); --para comprobar visualmente que el switch está activado
-		LEDR(1)  <= SW(1); --para comprobar visualmente que el switch está activado
-		LEDR(2)  <= SW(2); --para comprobar visualmente que el switch está activado
-		LEDR(3)  <= SW(3); --para comprobar visualmente que el switch está activado
-		LEDR(4)  <= SW(4); --para comprobar visualmente que el switch está activado
-		LEDR(5)  <= SW(5); --para comprobar visualmente que el switch está activado 
+		LEDR(4)  <= LED_POS;
+		LEDR(5)  <= LED_SIG;
 		LEDR(6)  <= LED;
 		LEDR(7)  <= SW(7); --para comprobar visualmente que el switch está activado 
 		LEDR(8)  <= SW(8); --para comprobar visualmente que el switch está activado 
 		LEDR(9)  <= LT24_Init_Done; --para comprobar visualmente que funciona
+		
+		--HEX5
+		HEX5(0) <= DISPL(41);
+		HEX5(1) <= DISPL(40);
+		HEX5(2) <= DISPL(39);
+		HEX5(3) <= DISPL(38);
+		HEX5(4) <= DISPL(37);
+		HEX5(5) <= DISPL(36);
+		HEX5(6) <= DISPL(35);
+		
+		--HEX4
+		HEX4(0) <= DISPL(34);
+		HEX4(1) <= DISPL(33);
+		HEX4(2) <= DISPL(32);
+		HEX4(3) <= DISPL(31);
+		HEX4(4) <= DISPL(30);
+		HEX4(5) <= DISPL(29);
+		HEX4(6) <= DISPL(28);
+		
+		--HEX3
+		HEX3(0) <= DISPL(27);
+		HEX3(1) <= DISPL(26);
+		HEX3(2) <= DISPL(25);
+		HEX3(3) <= DISPL(24);
+		HEX3(4) <= DISPL(23);
+		HEX3(5) <= DISPL(22);
+		HEX3(6) <= DISPL(21);
+		
+		--HEX2
+		HEX2(0) <= DISPL(20);
+		HEX2(1) <= DISPL(19);
+		HEX2(2) <= DISPL(18);
+		HEX2(3) <= DISPL(17);
+		HEX2(4) <= DISPL(16);
+		HEX2(5) <= DISPL(15);
+		HEX2(6) <= DISPL(14);
+		
+		--HEX1
+		HEX1(0) <= DISPL(13);
+		HEX1(1) <= DISPL(12);
+		HEX1(2) <= DISPL(11);
+		HEX1(3) <= DISPL(10);
+		HEX1(4) <= DISPL(9);
+		HEX1(5) <= DISPL(8);
+		HEX1(6) <= DISPL(7);
+		
+		--HEX0
+		HEX0(0) <= DISPL(6);
+		HEX0(1) <= DISPL(5);
+		HEX0(2) <= DISPL(4);
+		HEX0(3) <= DISPL(3);
+		HEX0(4) <= DISPL(2);
+		HEX0(5) <= DISPL(1);
+		HEX0(6) <= DISPL(0);
+		
+		
 		
 		-- Union de componentes        --------------    
 		--    señal de entrada del componente     => señal a la que se va ha enlazar
@@ -268,10 +325,14 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			ROMBOIDE  => ROMBOIDE,
 			TRAP => TRAP,
 			PATRON => PATRON,
+			HEXAG => HEXAG,
 			
 			DONE_CURSOR => DONE_CURSOR,
 			DONE_COLOUR =>  DONE_COLOUR,
 			COLOUR_CODE => COLOUR_CODE,
+			DEFAULT => DEFAULT,
+			UART_XCOL => UART_XCOL,
+			UART_YROW => UART_YROW,
 
 			-- salidas
 			OP_SETCURSOR => OP_SETCURSOR,
@@ -314,7 +375,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			Rx => Rx,
 			VEL => VEL,
 			DONE_OP=>DONE_OP,
-			--RTS => RTS,
+			---RTS => RTS,
 			
 			-- salidas
 			--CTS => CTS,
@@ -339,6 +400,30 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			DEL_SCREEN => DEL_SCREEN,
 			VERT=> VERT,
 			DIAG => DIAG,
-			COLOUR_CODE => COLOUR_CODE
+			HORIZ => HORIZ,
+			EQUIL => EQUIL,
+			ROMBO => ROMBO,
+			ROMBOIDE => ROMBOIDE,
+			TRAP => TRAP,
+			TRIAN => TRIAN,
+			COLOUR_CODE => COLOUR_CODE,
+			DEFAULT => DEFAULT,
+			LED_POS => LED_POS,
+			LED_SIG => LED_SIG,
+			UART_XCOL => UART_XCOL,
+			UART_YROW => UART_YROW
+		);
+		
+		O6_LCDDISPLAY: DISPLAY
+		port map (
+			-- entradas
+			RESET_L => reset_l,
+			CLK	=> clk,
+			LED => LED,
+			LED_POS => LED_POS,
+			LED_SIG => LED_SIG,
+			
+			-- salidas
+			DISPL => DISPL
 		);
 END str;
