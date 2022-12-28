@@ -21,7 +21,7 @@ entity DE1SOC_LCDLT24_2fas is
 		--RTS : in std_logic;
 		
 		-- KEY ----------------
-		KEY 		: in	std_logic_vector(1 downto 0);
+		KEY 		: in	std_logic_vector(3 downto 0);
 
 		-- SW ----------------
 		SW 			: in	std_logic_vector(8 downto 7);
@@ -129,7 +129,7 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			CLK, RESET_L: in std_logic;
 			NEWOP, DONE_ORDER: in std_logic;
 			DAT: in std_logic_vector(7 downto 0);
-			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN, PATRON, HEXAG, LED_POS, LED_SIG, DEFAULT: out std_logic;
+			DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN, LED_POS, LED_SIG,DEFAULT: out std_logic;
 			COLOUR_CODE: out std_logic_vector(2 downto 0);
 			UART_XCOL: out std_logic_vector(7 downto 0);
 			UART_YROW: out std_logic_vector(8 downto 0)
@@ -211,6 +211,8 @@ architecture str of DE1SOC_LCDLT24_2fas is
 		reset_l	<=		KEY(0);
 
 		MIRROR <= 		not(KEY(1));	
+		PATRON <= 		not(KEY(2));	
+		HEXAG <= 		not(KEY(3));	
 		
 		
 		VEL <= SW(8 downto 7);
@@ -404,8 +406,6 @@ architecture str of DE1SOC_LCDLT24_2fas is
 			ROMBOIDE => ROMBOIDE,
 			TRAP => TRAP,
 			TRIAN => TRIAN,
-			PATRON => PATRON,
-			HEXAG => HEXAG,
 			COLOUR_CODE => COLOUR_CODE,
 			DEFAULT => DEFAULT,
 			LED_POS => LED_POS,
