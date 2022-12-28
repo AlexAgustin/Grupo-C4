@@ -67,7 +67,7 @@ architecture arq_display of display is
 	-- REG OPT: ROPT
 	ROPT : process(CLK, RESET_L)
 	begin
-		if RESET_L = '0' then DISPL <= "00000000000000000000000000000000000000000";
+		if RESET_L = '0' then DISPL <=(others => '0');
 		elsif CLK'event and CLK='1' then
 			if LD_OPT = '1' then DISPL <= DCHOICE;
 			end if;
