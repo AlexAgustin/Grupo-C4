@@ -10,7 +10,7 @@ entity uart_ctrl is
 		CLK, RESET_L: in std_logic;
 		NEWOP, DONE_ORDER: in std_logic;
 		DAT: in std_logic_vector(7 downto 0);
-		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN, PATRON, HEXAG, LED_POS, LED_SIG,DEFAULT: out std_logic;
+		DONE_OP,DRAW_FIG,DEL_SCREEN, DIAG, VERT, HORIZ, EQUIL, ROMBO, ROMBOIDE, TRAP, TRIAN, LED_POS, LED_SIG,DEFAULT: out std_logic;
 		COLOUR_CODE: out std_logic_vector(2 downto 0);
 		UART_XCOL: out std_logic_vector(7 downto 0);
 		UART_YROW: out std_logic_vector(8 downto 0)
@@ -25,8 +25,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_HORIZ, LD_ROMBO, LD_EQUIL, LD_ROMBOIDE, LD_TRAP, LD_TRIAN, LD_PATRON, LD_HEXAG, LD_LENX, LD_LENY, LD_XCOL, LD_YROW: std_logic := '0';
-	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN, ISPATRON, ISHEXAG, ISX, ISY: std_logic :='0';
+	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_HORIZ, LD_ROMBO, LD_EQUIL, LD_ROMBOIDE, LD_TRAP, LD_TRIAN, LD_LENX, LD_LENY, LD_XCOL, LD_YROW: std_logic := '0';
+	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN, ISX, ISY: std_logic :='0';
 
 	signal LD_LEDSIG, DEC_LEDSIG, DONE_LEDSIG, CL_LEDSIG: std_logic := '0';
 	signal LD_LEDPOS, DEC_LEDPOS, DONE_LEDPOS, CL_LEDPOS: std_logic := '0';
@@ -52,16 +52,16 @@ architecture arq_uart_ctrl of uart_ctrl is
 	-- #######################
 
 	-- Transicion de estados (calculo de estado siguiente)
-	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN, ISPATRON, ISHEXAG, ISX, ISY, ISDEF, DONE_X, DONE_Y, ISa0, ISa1, DONE_LEDPOS, DONE_LEDSIG, DONE_ORDER, NEWOP) begin
+	SWSTATE: process (EP, ISCOLOUR, ISDIAG, ISVERT, ISFIG, ISDEL, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN, ISX, ISY, ISDEF, DONE_X, DONE_Y, ISa0, ISa1, DONE_LEDPOS, DONE_LEDSIG, DONE_ORDER, NEWOP) begin
 		case EP is
 			when INICIO =>		if NEWOP='1' then ES<=SIGNALS;
 									else ES<=INICIO;
 									end if;
 
 			when SIGNALS =>		if ISCOLOUR='1' then ES<=SNDONE;
-									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON = '0' and ISHEXAG = '0' and ISX = '0' and  ISY = '0' then ES <=LDLEDSIG;
-									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON = '0' and ISHEXAG = '0' and ISX = '1' then ES <=FORMINGXCOL;
-									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON = '0' and ISHEXAG = '0' and ISX = '0' and  ISY = '1' then ES <=FORMINGYROW;
+									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX = '0' and  ISY = '0' then ES <=LDLEDSIG;
+									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX = '1' then ES <=FORMINGXCOL;
+									elsif ISCOLOUR = '0' and ISFIG = '0' and ISDEL = '0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ = '0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX = '0' and  ISY = '1' then ES <=FORMINGYROW;
 									else ES<=WTORDER;
 									end if; 
 			when LDLEDSIG =>	ES <= WTLEDSIG;
@@ -149,12 +149,10 @@ architecture arq_uart_ctrl of uart_ctrl is
 	LD_ROMBOIDE<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '1'  else '0';
 	LD_TRAP	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '1'  else '0';
 	LD_TRIAN<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '1'  else '0';
-	LD_PATRON<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='1' else '0';
-	LD_HEXAG<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='0' and ISHEXAG='1' else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
 	DONE_OP	<='1' when EP=SNDONE and EP=FORMINGXCOL and EP=FORMINGYROW else '0';
-	LD_LENX	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='0' and ISHEXAG='0' and ISX='1' else '0';
-	LD_LENY	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='0' and ISHEXAG='0' and ISX='0' and ISY='1' else '0';
+	LD_LENX	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='1' else '0';
+	LD_LENY	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='0' and ISY='1' else '0';
 	DEC_LENX<='1' when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else '0';
 	DEC_LENY<='1' when EP=FORMINGYROW else '0';
 	LD_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='1') or (EP=WTYBIT and NEWOP='1' and ISDEF='1') else '0';
@@ -325,33 +323,6 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RTRIAN;
 
-	--Comparador p: CMPPATRON
-	ISPATRON <= '1' when RDATO = x"70" else '0';
-	
-	--Registro PATRON: RPATRON
-	RPATRON : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then PATRON <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_PATRON = '1' then PATRON <= '1';
-			elsif CL_SIGS = '1' then PATRON <= '0';
-			end if;
-		end if;
-	end process RPATRON;
-
-	--Comparador H: CMPHEXAG
-	ISHEXAG <= '1' when RDATO = x"48" else '0';
-	
-	--Registro HEXAG: RHEXAG
-	RHEXAG : process(CLK, RESET_L)
-	begin
-		if RESET_L = '0' then HEXAG <= '0';
-		elsif CLK'event and CLK='1' then
-			if LD_HEXAG = '1' then HEXAG <= '1';
-			elsif CL_SIGS = '1' then HEXAG <= '0';
-			end if;
-		end if;
-	end process RHEXAG;	
 
 	--Comparador Ceros, para comprobar que es un codigo de color
 	ISCOLOUR <= '1' when RDATO(7 downto 3) = "00110" else '0';
