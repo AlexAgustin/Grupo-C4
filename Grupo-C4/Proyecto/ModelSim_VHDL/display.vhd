@@ -53,6 +53,10 @@ architecture arq_display of display is
 	-- Activacion de signals de control: asignaciones combinacionales
 	LD_OPT <= '1' when EP = CHOICE else '0';
 	
+	SEL <= 	"01" when LED = '1' else
+				"10" when LED_POS = '1' else
+				"11" when LED_SIG = '1' else
+				"00";
 	
 	-- #######################
 	-- ## UNIDAD DE PROCESO ##
