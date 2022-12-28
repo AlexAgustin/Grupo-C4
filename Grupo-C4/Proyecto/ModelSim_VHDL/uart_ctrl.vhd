@@ -137,7 +137,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 
 	
 	-- Activacion de signals de control: asignaciones combinacionales
-	LD_DAT <= '1' when (EP=INICIO and NEWOP = '1') or (EP=WTXBIT) or (EP=WTYBIT) else '0';
+	LD_DAT <= '1' when (EP=INICIO and NEWOP = '1') or (EP=WTXBIT and NEWOP='1') or (EP=WTYBIT and NEWOP='1') else '0';
 	LD_COLOUR<= '1' when EP=SIGNALS and ISCOLOUR='1' else '0';
 	LD_FIG	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='1' else '0';
 	LD_DEL	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='1' else '0';
@@ -155,14 +155,14 @@ architecture arq_uart_ctrl of uart_ctrl is
 	DONE_OP	<='1' when EP=SNDONE and EP=FORMINGXCOL and EP=FORMINGYROW else '0';
 	LD_LENX	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='0' and ISHEXAG='0' and ISX='1' else '0';
 	LD_LENY	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0' and ISPATRON='0' and ISHEXAG='0' and ISX='0' and ISY='1' else '0';
-	DEC_LENX<='1' when EP=FORMINGXCOL else '0';
+	DEC_LENX<='1' when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else '0';
 	DEC_LENY<='1' when EP=FORMINGYROW else '0';
 	LD_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='1') or (EP=WTYBIT and NEWOP='1' and ISDEF='1') else '0';
 	CL_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='0') or (EP=WTYBIT and NEWOP='1' and ISDEF='0') else '0';
-	OPX	<="10" when (EP=WTXBIT and NEWOP='1' and ISDEF='0' and ISa0='1') or (EP=WTXBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
-	XBIT	<='1' when EP=WTXBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
-	OPY	<="10" when (EP=WTYBIT and NEWOP='1' and ISDEF='0' and ISa0='1') or (EP=WTYBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
-	YBIT	<='1' when EP=WTYBIT and NEWOP='1' and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
+	OPX	<="10" when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
+	XBIT	<='1' when EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
+	OPY	<="10" when (EP=LDDATY and ISDEF='0' and ISa0='1') or (EP=LDDATY and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
+	YBIT	<='1' when EP=LDDATY and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
 	LD_LEDPOS<='1' when EP=LDLEDPOS else '0';
 	--LED_POS	<='1' when EP=WTLEDPOS else '0';
 	DEC_LEDPOS<='1' when EP=WTLEDPOS else '0';
@@ -401,6 +401,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 			elsif OPX="00" then UART_XCOL_buf <= UART_XCOL_buf;
 			end if;
 		end if;
+
 	end process SXCOL;
 	
 	--Registro UART_XCOL_buf

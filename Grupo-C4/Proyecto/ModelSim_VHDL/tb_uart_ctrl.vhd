@@ -58,7 +58,7 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 
 	process
 	begin
-		wait for 20 ns;
+		wait for 30 ns;
 		RESET_L <= '1';	
 
 -------------------------------------------------------------------------------------
