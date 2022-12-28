@@ -249,7 +249,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 
 	SEL_DATA <= "000" when EP = INICIO and DEL_SCREEN = '1' else
 				"001" when (EP = INICIO and DEL_SCREEN = '0' and DRAW_FIG = '1') or 
-					LD_MIRROR = '1' or LD_TRIAN = '1' or LD_ROMBOIDE ='1' or LD_TRAP = '1' else
+					LD_MIRROR = '1' or LD_TRIAN = '1' or LD_ROMBOIDE ='1' or LD_TRAP = '1' or LD_HEXAG = '1' else
 				"010" when LD_HORIZ = '1' else
 				"011" when LD_VERT ='1' or LD_DIAG = '1' or LD_PATRON = '1' else
 				"100" when LD_EQUIL = '1' or LD_ROMBO = '1' else
