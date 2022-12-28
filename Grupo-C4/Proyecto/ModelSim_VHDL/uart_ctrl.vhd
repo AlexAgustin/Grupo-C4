@@ -379,7 +379,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		if RESET_L = '0' then UART_XCOL_buf <= (others => '0');
 		elsif CLK'event and CLK='1' then
 			if OPX = "10" then UART_XCOL_buf <= UART_XCOL_buf(7 downto 1) & XBIT;
-			else UART_XCOL_buf <= UART_XCOL_buf;
+			elsif UART_XCOL_buf <= UART_XCOL_buf;
 			end if;
 		end if;
 	end process SXCOL;
@@ -413,7 +413,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		if RESET_L = '0' then UART_YROW_buf <= (others => '0');
 		elsif CLK'event and CLK='1' then
 			if OPY = "10" then UART_YROW_buf <= UART_YROW_buf(8 downto 1) & YBIT;
-			else UART_YROW_buf <= UART_YROW_buf;
+			elsif UART_YROW_buf <= UART_YROW_buf;
 			end if;
 		end if;
 	end process SYROW;	

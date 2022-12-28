@@ -21,11 +21,11 @@ end uart_ctrl;
 architecture arq_uart_ctrl of uart_ctrl is
 
 	-- Declaracion de estados
-	type estados is (INICIO, SIGNALS, LDLEDSIG, WTLEDSIG, FORMINGXCOL, WTXBIT, FORMINGYROW, WTYBIT, LDLEDPOS, WTLEDPOS, WTORDER, SNDONE); 
+	type estados is (INICIO, SIGNALS, LDLEDSIG, WTLEDSIG, FORMINGXCOL, WTNOOPX, WTXBIT, FORMINGYROW, WTNOOPY, WTYBIT, LDLEDPOS, WTLEDPOS, WTORDER, SNDONE); 
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
-	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_HORIZ, LD_ROMBO, LD_EQUIL, LD_ROMBOIDE, LD_TRAP, LD_TRIAN, LD_PATRON, LD_HEXAG, LD_LENX, LD_LENY: std_logic := '0';
+	signal LD_FIG, LD_DEL, LD_COLOUR, LD_DIAG, LD_VERT, LD_HORIZ, LD_ROMBO, LD_EQUIL, LD_ROMBOIDE, LD_TRAP, LD_TRIAN, LD_PATRON, LD_HEXAG, LD_LENX, LD_LENY, LD_XCOL, LD_YROW: std_logic := '0';
 	signal ISVERT, ISDEL, ISFIG, ISCOLOUR, ISDIAG, ISHORIZ, ISEQUIL, ISROMBO, ISROMBOIDE, ISTRAP, ISTRIAN, ISPATRON, ISHEXAG, ISX, ISY: std_logic :='0';
 
 	signal LD_LEDSIG, DEC_LEDSIG, DONE_LEDSIG, CL_LEDSIG: std_logic := '0';
@@ -70,6 +70,10 @@ architecture arq_uart_ctrl of uart_ctrl is
 									end if;
 									
 			when FORMINGXCOL =>	if DONE_X = '1' then ES <= INICIO;
+									else ES <= WTNOOPX;
+									end if;
+									
+			when WTNOOPX =>	if NEWOP='1' then ES <= WTNOOPX;
 									else ES <= WTXBIT;
 									end if;
 									
@@ -81,6 +85,10 @@ architecture arq_uart_ctrl of uart_ctrl is
 									end if;
 									
 			when FORMINGYROW =>	if DONE_Y = '1' then ES <= INICIO;
+									else ES <= WTNOOPY;
+									end if;
+									
+			when WTNOOPY =>	if NEWOP='1' then ES <= WTNOOPY;
 									else ES <= WTYBIT;
 									end if;		
 									
@@ -154,6 +162,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 	--LED_SIG	<='1' when EP=WTLEDSIG else '0';
 	DEC_LEDSIG<='1' when EP=WTLEDSIG else '0';
 	CL_LEDSIG<='1' when EP=WTLEDSIG and DONE_LEDSIG='1' else '0';
+	LD_XCOL	<='1' when EP=FORMINGXCOL and DONE_X='1' else '0';
+	LD_YROW	<='1' when EP=FORMINGYROW and DONE_Y='1' else '0';
 
 
 
@@ -378,12 +388,21 @@ architecture arq_uart_ctrl of uart_ctrl is
 	begin
 		if RESET_L = '0' then UART_XCOL_buf <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if OPX = "10" then UART_XCOL_buf <= UART_XCOL_buf(7 downto 1) & XBIT;
-			else UART_XCOL_buf <= UART_XCOL_buf;
+			if OPX = "10" then UART_XCOL_buf <= UART_XCOL_buf(6 downto 0) & XBIT;
+			elsif OPX="00" then UART_XCOL_buf <= UART_XCOL_buf;
 			end if;
 		end if;
 	end process SXCOL;
-	UART_XCOL <= UART_XCOL_buf;
+	
+	--Registro UART_XCOL_buf
+	RUARTXCOL : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then UART_XCOL <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if LD_XCOL = '1' then UART_XCOL <= UART_XCOL_buf;
+			end if;
+		end if;
+	end process RUARTXCOL;
 
 	-- Contador  CLENX: CLENX
 	CLENX : process(CLK, RESET_L)
@@ -412,12 +431,21 @@ architecture arq_uart_ctrl of uart_ctrl is
 	begin
 		if RESET_L = '0' then UART_YROW_buf <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if OPY = "10" then UART_YROW_buf <= UART_YROW_buf(8 downto 1) & YBIT;
-			else UART_YROW_buf <= UART_YROW_buf;
+			if OPY = "10" then UART_YROW_buf <= UART_YROW_buf(7 downto 0) & YBIT;
+			elsif OPY="00" then UART_YROW_buf <= UART_YROW_buf;
 			end if;
 		end if;
-	end process SYROW;	
-	UART_YROW <= UART_YROW_buf;
+	end process SYROW;
+	
+	--Registro UART_YROW_buf
+	RUARTYROW : process(CLK, RESET_L)
+	begin
+		if RESET_L = '0' then UART_YROW <= (others => '0');
+		elsif CLK'event and CLK='1' then
+			if LD_YROW = '1' then UART_YROW <= UART_YROW_buf;
+			end if;
+		end if;
+	end process RUARTYROW;
 	
 	-- Contador  CLENY: CLENY
 	CLENY : process(CLK, RESET_L)
