@@ -113,7 +113,6 @@ architecture arq_lcd_drawing of lcd_drawing is
 			
 
 			when DRAWWAIT =>	if    ISMIRROR = '1' and MIRROR = '1' then ES <= DRAWWAIT;
-								elsif ISMIRROR = '1' and MIRROR = '0' then ES <= DRAWCURSOR;
 								elsif ISDIAG = '1' and DIAG = '1' then ES <= DRAWWAIT;
 								elsif ISVERT = '1' and VERT = '1' then ES <= DRAWWAIT;
 								elsif ISTRIAN = '1' and TRIAN = '1' then ES <= DRAWWAIT;		
@@ -439,7 +438,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	begin
 		if RESET_L = '0' then PREVY <= (others => '0');
 		elsif CLK'event and CLK='1' then
-			if LD_MIRROR = '1' then PREVY <= '0' & x"6E";
+			if LD_MIRROR = '1' then PREVY <= DY;
 			end if;
 		end if;
 	end process RY;
@@ -587,7 +586,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 			'0';
 
 	--Puerta OR NOTMIRROR
-	NOTMIRROR <= (NOTMIRX or NOTMIRY) or ISDONE;
+	NOTMIRROR <= NOTMIRX or NOTMIRY or ISDONE;
 	
 
 end arq_lcd_drawing; 
