@@ -276,13 +276,13 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- #######################
 
 	--Multiplexor DX (MUXXDEF)
-	DXD <= x"46" when SELREV = '0' else
-			 REVX;
+	DXD <= unsigned(UART_XCOL when DEFAULT = '0' else
+			 x"46";
 
 			 
 		--Multiplexor DX (MUXX)
-	DX <= DXD when DEFAULT = '1' else
-			 unsigned(UART_XCOL);
+	DX <= DXD when SELREV = '0' else
+			 REVX;
 
 			 
 	--Contador XCOL
@@ -302,12 +302,12 @@ architecture arq_lcd_drawing of lcd_drawing is
 	XCOL <= std_logic_vector(cnt_XCOL);	
 
 	--Multiplexor DY (MUXYDEF)
-	DYD <= '0' & x"6E" when SELREV = '0' else
-			 REVY;
+	DYD <=  unsigned(UART_YROW) when DEFAULT = '0' else
+			 '0' & x"6E";
 			 
 	--Multiplexor DY (MUXY)
-	DY <= DYD when DEFAULT = '1' else
-			 unsigned(UART_YROW);
+	DY <= DYD when SELREV = '0' else
+			 REVY;
 
 	-- Contador YROW : CY
 	CY : process(CLK, RESET_L)
