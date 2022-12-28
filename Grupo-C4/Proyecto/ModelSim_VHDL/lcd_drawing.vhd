@@ -276,7 +276,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- #######################
 
 	--Multiplexor DX (MUXXDEF)
-	DXD <= unsigned(UART_XCOL when DEFAULT = '0' else
+	DXD <= unsigned(UART_XCOL) when DEFAULT = '0' else
 			 x"46";
 
 			 
