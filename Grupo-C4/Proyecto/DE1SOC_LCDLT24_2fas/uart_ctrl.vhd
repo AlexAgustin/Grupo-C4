@@ -21,7 +21,7 @@ end uart_ctrl;
 architecture arq_uart_ctrl of uart_ctrl is
 
 	-- Declaracion de estados
-	type estados is (INICIO, SIGNALS, LDLEDSIG, WTLEDSIG, FORMINGXCOL, WTNOOPX, WTXBIT, FORMINGYROW, WTNOOPY, WTNOOPDEF, WTYBIT, LDLEDPOS, WTLEDPOS, WTORDER, SNDONE, LDDATX, LDDATY); 
+	type estados is (INICIO, SIGNALS, LDLEDSIG, WTLEDSIG, FORMINGXCOL, WTNOOPX, WTXBIT, FORMINGYROW, WTNOOPY, WTYBIT, LDLEDPOS, WTLEDPOS, WTORDER, SNDONE, LDDATX, LDDATY); 
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
@@ -65,6 +65,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 									else ES<=WTORDER;
 									end if; 
 			when LDLEDSIG =>	ES <= WTLEDSIG;
+
 			when WTLEDSIG =>	if DONE_LEDSIG = '1' then ES <= INICIO;
 									else ES <= WTLEDSIG;
 									end if;
@@ -81,15 +82,11 @@ architecture arq_uart_ctrl of uart_ctrl is
 									else ES<=LDDATX;
 									end if;
 
-			when LDDATX =>		if ISDEF = '1' then ES <= WTNOOPDEF;
+			when LDDATX =>		if ISDEF = '1' then ES <= SNDONE;
 									elsif ISDEF='0' and  ISa0 = '1' then ES <= FORMINGXCOL;
 									elsif ISDEF='0' and  ISa0 = '0' and ISa1 = '1' then ES <= FORMINGXCOL;
 									else ES <= LDLEDPOS;
 									end if;
-
-			when WTNOOPDEF =>	if NEWOP='1' then ES<=WTNOOPDEF;
-						else ES<=INICIO;
-						end if;
 									
 			when FORMINGYROW =>	if DONE_Y = '1' then ES <= INICIO;
 									else ES <= WTNOOPY;
@@ -103,7 +100,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 									else ES<=LDDATY;
 									end if;
 
-			when LDDATY =>		if ISDEF = '1' then ES <= WTNOOPDEF;
+			when LDDATY =>		if ISDEF = '1' then ES <= SNDONE;
 									elsif ISDEF='0' and  ISa0 = '1' then ES <= FORMINGYROW;
 									elsif ISDEF='0' and  ISa0 = '0' and ISa1 = '1' then ES <= FORMINGYROW;
 									else ES <= LDLEDPOS;
@@ -153,10 +150,10 @@ architecture arq_uart_ctrl of uart_ctrl is
 	DONE_OP	<='1' when EP=SNDONE or EP=FORMINGXCOL or EP=FORMINGYROW or (EP=WTLEDPOS and DONE_LEDPOS='1') or (EP=WTLEDSIG and DONE_LEDSIG='1') else '0';
 	LD_LENX	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='1' else '0';
 	LD_LENY	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='0' and ISY='1' else '0';
-	DEC_LENX<='1' when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else '0';
+	DEC_LENX<='1' when EP=FORMINGXCOL else '0';
 	DEC_LENY<='1' when EP=FORMINGYROW else '0';
-	LD_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='1') or (EP=WTYBIT and NEWOP='1' and ISDEF='1') else '0';
-	CL_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='0') or (EP=WTYBIT and NEWOP='1' and ISDEF='0') else '0';
+	LD_DEF	<='1' when (EP=LDDATX and ISDEF='1') or (EP=LDDATY and ISDEF='1') else '0';
+	CL_DEF	<='1' when (EP=LDDATX and ISDEF='0') or (EP=LDDATY and ISDEF='0') else '0';
 	OPX	<="10" when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
 	XBIT	<='1' when EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
 	OPY	<="10" when (EP=LDDATY and ISDEF='0' and ISa0='1') or (EP=LDDATY and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
@@ -468,7 +465,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		if RESET_L = '0' then cnt_LEDPOS <= (others =>'0'); DONE_LEDPOS <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_LEDPOS = '1' then
-				cnt_LEDPOS <= "101111101011110000100000000";
+				cnt_LEDPOS <= "000000000000000000000000011";
 				DONE_LEDPOS <= '0';
 			elsif CL_LEDPOS='1' then 
 				cnt_LEDPOS<=(others=>'0');
@@ -503,7 +500,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		if RESET_L = '0' then cnt_LEDSIG <= (others =>'0'); DONE_LEDSIG <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_LEDSIG = '1' then
-				cnt_LEDSIG <= "101111101011110000100000000";
+				cnt_LEDSIG <= "000000000000000000000000011";
 				DONE_LEDSIG <= '0';
 			elsif CL_LEDSIG='1' then 
 				cnt_LEDSIG<=(others=>'0');

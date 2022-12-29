@@ -21,7 +21,7 @@ end uart_ctrl;
 architecture arq_uart_ctrl of uart_ctrl is
 
 	-- Declaracion de estados
-	type estados is (INICIO, SIGNALS, LDLEDSIG, WTLEDSIG, FORMINGXCOL, WTNOOPX, WTXBIT, FORMINGYROW, WTNOOPY, WTNOOPDEF, WTYBIT, LDLEDPOS, WTLEDPOS, WTORDER, SNDONE, LDDATX, LDDATY); 
+	type estados is (INICIO, SIGNALS, LDLEDSIG, WTLEDSIG, FORMINGXCOL, WTNOOPX, WTXBIT, FORMINGYROW, WTNOOPY, WTYBIT, LDLEDPOS, WTLEDPOS, WTORDER, SNDONE, LDDATX, LDDATY); 
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
@@ -82,15 +82,11 @@ architecture arq_uart_ctrl of uart_ctrl is
 									else ES<=LDDATX;
 									end if;
 
-			when LDDATX =>		if ISDEF = '1' then ES <= WTNOOPDEF;
+			when LDDATX =>		if ISDEF = '1' then ES <= SNDONE;
 									elsif ISDEF='0' and  ISa0 = '1' then ES <= FORMINGXCOL;
 									elsif ISDEF='0' and  ISa0 = '0' and ISa1 = '1' then ES <= FORMINGXCOL;
 									else ES <= LDLEDPOS;
 									end if;
-
-			when WTNOOPDEF =>	if NEWOP='1' then ES<=WTNOOPDEF;
-						else ES<=INICIO;
-						end if;
 									
 			when FORMINGYROW =>	if DONE_Y = '1' then ES <= INICIO;
 									else ES <= WTNOOPY;
@@ -104,7 +100,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 									else ES<=LDDATY;
 									end if;
 
-			when LDDATY =>		if ISDEF = '1' then ES <= WTNOOPDEF;
+			when LDDATY =>		if ISDEF = '1' then ES <= SNDONE;
 									elsif ISDEF='0' and  ISa0 = '1' then ES <= FORMINGYROW;
 									elsif ISDEF='0' and  ISa0 = '0' and ISa1 = '1' then ES <= FORMINGYROW;
 									else ES <= LDLEDPOS;
