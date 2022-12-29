@@ -65,6 +65,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 									else ES<=WTORDER;
 									end if; 
 			when LDLEDSIG =>	ES <= WTLEDSIG;
+
 			when WTLEDSIG =>	if DONE_LEDSIG = '1' then ES <= INICIO;
 									else ES <= WTLEDSIG;
 									end if;
@@ -153,10 +154,10 @@ architecture arq_uart_ctrl of uart_ctrl is
 	DONE_OP	<='1' when EP=SNDONE or EP=FORMINGXCOL or EP=FORMINGYROW or (EP=WTLEDPOS and DONE_LEDPOS='1') or (EP=WTLEDSIG and DONE_LEDSIG='1') else '0';
 	LD_LENX	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='1' else '0';
 	LD_LENY	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='0' and ISY='1' else '0';
-	DEC_LENX<='1' when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else '0';
+	DEC_LENX<='1' when EP=FORMINGXCOL else '0';
 	DEC_LENY<='1' when EP=FORMINGYROW else '0';
-	LD_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='1') or (EP=WTYBIT and NEWOP='1' and ISDEF='1') else '0';
-	CL_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='0') or (EP=WTYBIT and NEWOP='1' and ISDEF='0') else '0';
+	LD_DEF	<='1' when (EP=LDDATX and ISDEF='1') or (EP=LDDATY and ISDEF='1') else '0';
+	CL_DEF	<='1' when (EP=LDDATX and ISDEF='0') or (EP=LDDATY and ISDEF='0') else '0';
 	OPX	<="10" when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
 	XBIT	<='1' when EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
 	OPY	<="10" when (EP=LDDATY and ISDEF='0' and ISa0='1') or (EP=LDDATY and ISDEF='0' and ISa0='0' and ISa1='1') else "00";

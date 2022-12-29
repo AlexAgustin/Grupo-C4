@@ -58,8 +58,29 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 
 	process
 	begin
-		wait for 30 ns;
+		wait for 20 ns;
 		RESET_L <= '1';	
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--xcol default
+		DAT<=x"78";
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+
+		wait for 40 ns;
+
+		DAT<=x"44";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
 
 -------------------------------------------------------------------------------------
 		--wait for 40 ns; --color 1
@@ -73,19 +94,22 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 
 
 -------------------------------------------------------------------------------------
-		--wait for 100 ns;--figura
+		wait for 100 ns;--figura
 
-		--DAT<="01100110";
-		--NEWOP<='1';
+		DAT<="01100110";
 
-		--wait for 60 ns;
+		wait for 20 ns;
 
-		--DONE_ORDER<='1';
+		NEWOP<='1';
 
-		--wait for 20 ns;
+		wait for 60 ns;
 
-		--DONE_ORDER<='0';
-		--NEWOP<='0';
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
 
 -------------------------------------------------------------------------------------
 		--wait for 100 ns;--borar pantalla
@@ -133,27 +157,7 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 		--NEWOP<='0';
 
 -------------------------------------------------------------------------------------
-		--wait for 100 ns;--xcol default
-		--DAT<=x"78";
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-		--NEWOP<='0';
-
-		--wait for 40 ns;
-
-		--DAT<=x"44";
-
-		--wait for 20 ns;
-
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-		--NEWOP<='0';
-
--------------------------------------------------------------------------------------
+		
 		--wait for 100 ns;--yrow default
 		--DAT<=x"79";
 		--NEWOP<='1';
