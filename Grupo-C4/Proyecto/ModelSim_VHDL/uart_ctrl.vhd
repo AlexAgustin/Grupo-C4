@@ -150,7 +150,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	LD_TRAP	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '1'  else '0';
 	LD_TRIAN<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '1'  else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
-	DONE_OP	<='1' when EP=SNDONE and EP=FORMINGXCOL and EP=FORMINGYROW else '0';
+	DONE_OP	<='1' when EP=SNDONE or EP=FORMINGXCOL or EP=FORMINGYROW or (EP=WTLEDPOS and DONE_LEDPOS='1') or (EP=WTLEDSIG and DONE_LEDSIG='1') else '0';
 	LD_LENX	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='1' else '0';
 	LD_LENY	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='0' and ISY='1' else '0';
 	DEC_LENX<='1' when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else '0';
