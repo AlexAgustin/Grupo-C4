@@ -58,6 +58,7 @@ architecture arq_uart of uart is
 			when ADDLEFT =>			if ALL_ITE = '0' then ES<=WTVEL;
 								else ES<=ISOK;
 								end if;
+
 			when ISOK =>			if OK = '1' then ES <= WTDONE;
 								else ES <= PRELED;
 								end if;
@@ -67,7 +68,6 @@ architecture arq_uart of uart is
 			when WTLED =>			if DONE_LED='1' then ES<=WTTRAMA;
 								else ES<=WTLED;
 								end if;
-
 	
 			when WTDONE =>			if DONE_OP='1' then ES<=WTTRAMA;
 								else ES<=WTDONE;
@@ -77,8 +77,6 @@ architecture arq_uart of uart is
 		end case;
 	end process SWSTATE;
 
-
-
 	-- Actualizacion de EP en cada flanco de reloj (sequential)
 	SEQ: process (CLK, RESET_L) begin
 		if RESET_L = '0' then EP <= WTTRAMA; -- reset asincrono
@@ -87,20 +85,13 @@ architecture arq_uart of uart is
 		end if;
 	end process SEQ;
 
-	
 	-- Activacion de signals de control: asignaciones combinacionales
-
-	--UP_CTS	<= '1' when EP=WTRTS and RTS='1' else '0';
-	--LD_OP	<= '1' when EP=ADDLEFT else '0';
-	--CL_OP	<= '1' when EP=PREWAIT else '0';
-	--LD_PARITY<= '1' when EP=ADDLEFT else '0';
-
 	LD_WAIT <= '1' when (EP=WTTRAMA and Rx='0') or (EP=ADDLEFT and ALL_ITE='0') else '0';
 	LD_ITE	<= '1' when EP=WTTRAMA and Rx='0' else '0';
 	LD_LFT	<= '1' when EP=LDDATA else '0';
 	LD_DAT	<= '1' when EP=ISOK and OK='1' else '0';
 	LD_LED	<= '1' when EP=PRELED else '0';
-	OP	<= "10" when EP=ADDLEFT else "00";
+	OP	<="10" when EP=ADDLEFT else "00";
 	DEC_ITE	<= '1' when EP=LDDATA else '0';
 	DEC_WAIT<= '1' when EP=WTVEL else '0';
 	DEC_LED	<= '1' when EP=WTLED else '0';
@@ -108,10 +99,7 @@ architecture arq_uart of uart is
 	CL_LED	<= '1' when EP=WTLED and DONE_LED = '1' else '0';
 	SEL	<= '1' when EP=WTTRAMA and Rx='0' else '0';
 	NEWOP	<= '1' when EP=WTDONE else '0';
-	
 	LD_PARITY <= '1' when EP=WTVEL and WAITED = '1' and DOPAR = '1' else '0';
-	
-
 
 	-- #######################
 	-- ## UNIDAD DE PROCESO ##
@@ -229,7 +217,6 @@ architecture arq_uart of uart is
 			end if;
 		end if;
 	end process CWAIT;
-
 
 	-- Contador  LED: CLED
 	CLED : process(CLK, RESET_L)
