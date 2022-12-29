@@ -69,7 +69,8 @@ architecture arq_uart of uart is
 								end if;
 
 	
-			when WTDONE =>			if DONE_OP='1' then ES<=WTTRAMA;
+			when WTDONE =>			if LED_SIG='1' then ES<=WTTRAMA;
+								elsif LED_SIG='0' and DONE_OP='1' then ES<=WTTRAMA;
 								else ES<=WTDONE;
 								end if;
 	

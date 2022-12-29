@@ -175,93 +175,98 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 		--NEWOP<='0';
 
 -------------------------------------------------------------------------------------
-		wait for 100 ns;--xcol d'200'
-		DAT<=x"78";
-		NEWOP<='1';
+		--wait for 100 ns;--xcol d'200'
+		--DAT<=x"78";
+		--NEWOP<='1';
 
-		wait for 60 ns;
+		--wait for 60 ns;
 
-		NEWOP<='0';
+		--NEWOP<='0';
 
-		wait for 40 ns;
+		--wait for 40 ns;
 
-		DAT<=x"31"; -- primer bit
+		--DAT<=x"31"; -- primer bit
 
-		wait for 20 ns;
+		--wait for 20 ns;
 
-		NEWOP<='1';
+		--NEWOP<='1';
 
-		wait for 60 ns;
+		--wait for 60 ns;
 
-		NEWOP<='0';
-		DAT<=x"31"; -- segundo bit
+		--NEWOP<='0';
+		--DAT<=x"31"; -- segundo bit
 
-		wait for 20 ns;
+		--wait for 20 ns;
 
-		NEWOP<='1';
+		--NEWOP<='1';
 
-		wait for 60 ns;
+		--wait for 60 ns;
 
-		NEWOP<='0';
-		DAT<=x"30"; -- tercer bit
+		--NEWOP<='0';
+		--DAT<=x"30"; -- tercer bit
 
-		wait for 20 ns;
+		--wait for 20 ns;
 
-		NEWOP<='1';
+		--NEWOP<='1';
 
-		wait for 60 ns;
+		--wait for 60 ns;
 
+		--NEWOP<='0';
+		--DAT<=x"30"; -- cuarto bit
 
-		NEWOP<='0';
-		DAT<=x"30"; -- cuarto bit
+		--wait for 20 ns;
 
-		wait for 20 ns;
+		--NEWOP<='1';
 
-		NEWOP<='1';
+		--wait for 60 ns;
 
-		wait for 60 ns;
+		--NEWOP<='0';
+		--DAT<=x"31"; -- quinto bit
 
+		--wait for 20 ns;
 
-		NEWOP<='0';
-		DAT<=x"31"; -- quinto bit
+		--NEWOP<='1';
 
-		wait for 20 ns;
-
-		NEWOP<='1';
-
-		wait for 60 ns;
+		--wait for 60 ns;
 
 
-		NEWOP<='0';
-		DAT<=x"30"; -- sexto bit
+		--NEWOP<='0';
+		--DAT<=x"30"; -- sexto bit
 
-		wait for 20 ns;
+		--wait for 20 ns;
 
-		NEWOP<='1';
+		--NEWOP<='1';
 
-		wait for 60 ns;
-
-
-		NEWOP<='0';
-		DAT<=x"30"; -- septimo bit
-
-		wait for 20 ns;
-
-		NEWOP<='1';
-
-		wait for 60 ns;
+		--wait for 60 ns;
 
 
-		NEWOP<='0';
-		DAT<=x"30"; -- octavo bit
+		--NEWOP<='0';
+		--DAT<=x"30"; -- septimo bit
 
-		wait for 20 ns;
+		--wait for 20 ns;
 
-		NEWOP<='1';
+		--NEWOP<='1';
 
-		wait for 60 ns;
+		--wait for 60 ns;
 
-		NEWOP<='0';
+
+		--NEWOP<='0';
+		--DAT<=x"30"; -- octavo bit
+
+		--wait for 20 ns;
+
+		--NEWOP<='1';
+
+		--wait for 60 ns;
+
+		--NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		--DAT<=x"7A"; --comprobacion de que salta el del con un comando desconocido
+
+		--wait for 20 ns;
+
+		--NEWOP<='1';
 
 -------------------------------------------------------------------------------------
 		wait for 100 ns;
