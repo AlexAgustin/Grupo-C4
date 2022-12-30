@@ -117,7 +117,7 @@ architecture arq_tb_uart of tb_uart is
 		DONE_OP<= '0';
 	
 	-------------------------------------------------
-		--prueba trama 2 : draw fig (0110110)
+		--prueba trama 2 : draw fig (0110110) con stop mal
 
 		wait for 60 ns;
 		
@@ -161,7 +161,7 @@ architecture arq_tb_uart of tb_uart is
 
 		wait for 120 ns; --procesa parity bit
 
-		Rx <='1'; --stop
+		Rx <='0'; --stop
 
 		wait for 120 ns; --procesa stop
 
@@ -169,11 +169,58 @@ architecture arq_tb_uart of tb_uart is
 
 		wait for 100 ns;
 
-		DONE_OP<='1';
+----------------------------------------------------------------------------
+		--prueba trama 3 : draw fig (0110110) con parity mal
 
-		wait for 20 ns;
+		wait for 260 ns;
 		
-		DONE_OP<= '0';
+		Rx <= '0';
+
+		wait for 120 ns;
+
+		Rx <='0'; --dato 1
+
+		wait for 120 ns; --procesa dato 1
+
+		Rx <='1'; --dato 2
+
+		wait for 120 ns; --procesa dato 2
+
+		Rx <='1'; --dato 3
+
+		wait for 120 ns; --procesa dato 3
+
+		Rx <='0'; --dato 4
+
+		wait for 120 ns; --procesa dato 4
+
+		Rx <='0'; --dato 5
+
+		wait for 120 ns; --procesa dato 5
+
+		Rx <='1'; --dato 6
+
+		wait for 120 ns; --procesa dato 6
+
+		Rx <='1'; --dato 7
+
+		wait for 120 ns; --procesa dato 7
+
+		Rx <='0'; --dato 8
+
+		wait for 120 ns; --procesa dato 8
+
+		Rx<='1';--parity bit
+
+		wait for 120 ns; --procesa parity bit
+
+		Rx <='1'; --stop
+
+		wait for 120 ns; --procesa stop
+
+		Rx <='1'; --stop2
+
+		wait for 100 ns;
 
 		wait for 200 ns;
 

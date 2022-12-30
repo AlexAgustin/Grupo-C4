@@ -1,10 +1,12 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
+add wave -noupdate -divider Entradas
 add wave -noupdate -label CLK /tb_display/DUT/CLK
 add wave -noupdate -label RESET_L /tb_display/DUT/RESET_L
 add wave -noupdate -color Orange -label LED /tb_display/DUT/LED
 add wave -noupdate -color Orange -label LED_POS /tb_display/DUT/LED_POS
 add wave -noupdate -color Orange -label LED_SIG /tb_display/DUT/LED_SIG
+add wave -noupdate -divider Salidas
 add wave -noupdate -color Magenta -label DISPL -radix hexadecimal /tb_display/DUT/DISPL
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {270000 ps} 0}
@@ -23,4 +25,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {384169 ps}
+WaveRestoreZoom {7635040 ps} {8019209 ps}

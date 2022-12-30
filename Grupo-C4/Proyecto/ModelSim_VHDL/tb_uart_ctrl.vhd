@@ -405,7 +405,7 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 		NEWOP<='0';
 
 -------------------------------------------------------------------------------------
-		wait for 100 ns;--xcol d'200'
+		wait for 100 ns;--yrow d'200'
 		
 		DAT<=x"79";
 		
@@ -511,6 +511,31 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 		wait for 60 ns;
 
 		NEWOP<='0';
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--yrow wring coord
+		DAT<=x"79";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+
+		wait for 40 ns;
+
+		DAT<=x"73";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+
+
 
 -------------------------------------------------------------------------------------
 		wait for 100 ns;

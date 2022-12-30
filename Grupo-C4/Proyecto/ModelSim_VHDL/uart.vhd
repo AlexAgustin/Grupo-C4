@@ -95,7 +95,7 @@ architecture arq_uart of uart is
 	DEC_ITE	<= '1' when EP=LDDATA else '0';
 	DEC_WAIT<= '1' when EP=WTVEL else '0';
 	DEC_LED	<= '1' when EP=WTLED else '0';
-	CL_DAT	<= '1' when EP=WTDONE and DONE_OP='1' else '0';
+	CL_DAT	<= '1' when (EP=WTDONE and DONE_OP='1') or (EP=WTLED and DONE_LED='1') else '0';
 	CL_LED	<= '1' when EP=WTLED and DONE_LED = '1' else '0';
 	SEL	<= '1' when EP=WTTRAMA and Rx='0' else '0';
 	NEWOP	<= '1' when EP=WTDONE else '0';

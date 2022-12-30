@@ -458,19 +458,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		COLOUR_CODE <= "101";
 		HORIZ <= '1';
 
-		wait for 60 ns;
-		DONE_CURSOR <= '1';
-
-		wait for 20 ns;
-		DONE_CURSOR <= '0';
-
-		wait for 60 ns;
-		DONE_COLOUR <= '1';
-
-		wait for 20 ns;
-		DONE_COLOUR <= '0';
-
-		wait for 60 ns;	
+		wait for 40 ns;
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
@@ -494,19 +482,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		COLOUR_CODE <= "000";
 		HORIZ <= '1';
 
-		wait for 60 ns;
-		DONE_CURSOR <= '1';
-
-		wait for 20 ns;
-		DONE_CURSOR <= '0';
-
-		wait for 60 ns;
-		DONE_COLOUR <= '1';
-
-		wait for 20 ns;
-		DONE_COLOUR <= '0';
-
-		wait for 60 ns;	
+		wait for 40 ns;
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
@@ -743,6 +719,18 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		wait for 20 ns;
 		DONE_COLOUR <= '0';
 
+		wait for 80 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
 		wait for 40 ns;
 		EQUIL <= '0';
 		
@@ -777,6 +765,18 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		wait for 20 ns;
 		DONE_COLOUR <= '0';
 
+		wait for 80 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
 		wait for 20 ns;
 		ROMBOIDE <= '0';
 		
@@ -788,6 +788,18 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		EQUIL <= '1';
 
 		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 80 ns;	
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
@@ -845,6 +857,18 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		wait for 20 ns;
 		DONE_COLOUR <= '0';
 
+		wait for 80 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
 		wait for 20 ns;
 		ROMBOIDE <= '0';
 		
@@ -856,6 +880,18 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		TRAP <= '1';
 
 		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 80 ns;	
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
@@ -924,6 +960,18 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		TRAP <= '1';
 
 		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 80 ns;	
 		DONE_CURSOR <= '1';
 
 		wait for 20 ns;
@@ -1124,8 +1172,82 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 
 		wait for 40 ns;
 		PATRON <= '0';
+		wait for 40 ns;
+		
+----------------------------------------------------------------------------------
+
+		--hexagono 1
+		COLOUR_CODE <= "001";
+		HEXAG <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		HEXAG <= '0';
+		
+		wait for 40 ns;
+
+-----------------------------------------------------------------------
+
+		--hexagono 2
+		COLOUR_CODE <= "011";
+		HEXAG <= '1';
+
+		wait for 60 ns;
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 60 ns;	
+		DONE_CURSOR <= '1';
+
+		wait for 20 ns;
+		DONE_CURSOR <= '0';
+
+		wait for 60 ns;
+		DONE_COLOUR <= '1';
+
+		wait for 20 ns;
+		DONE_COLOUR <= '0';
+
+		wait for 20 ns;
+		HEXAG <= '0';
+		
+		wait for 40 ns;
+
 		UART_XCOL <= "00000000";
 		UART_YROW <= "000000000";
+
+-----------------------------------------------------------------------
 		
 		wait for 40 ns;
 	end process;

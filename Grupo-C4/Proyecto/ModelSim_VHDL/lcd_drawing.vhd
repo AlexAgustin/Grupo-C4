@@ -328,9 +328,9 @@ architecture arq_lcd_drawing of lcd_drawing is
 	YROW <= std_logic_vector(cnt_YROW);
 	
 	-- Multiplexor para MUX_NPIX : MUXNPIX
-	MUX_NPIX <= '1'&x"0006" when SEL_DATA = "000" else -- 76800
+	MUX_NPIX <= '0'&x"0006" when SEL_DATA = "000" else -- 76800
 		    '0'&x"0003" when SEL_DATA = "001" else -- 100
-		    '0'&x"0005" when SEL_DATA = "010" else -- 820
+		    '0'&x"0005" when SEL_DATA = "010" else -- 960
 		    '0'&x"0004" when SEL_DATA = "011" else
 		    '0'&x"0002";
 
@@ -350,7 +350,7 @@ architecture arq_lcd_drawing of lcd_drawing is
 	-- Multiplexor para MUX_LINES   
 	MUX_LINES <= '0'&x"0002" when SEL_LINES =  "00" else -- 100 
 		    '0'&x"0004" when SEL_LINES =  "01" else --320
-			'0'&x"0005" when SEL_LINES =  "10" else  -- 1000
+			'0'&x"0005" when SEL_LINES =  "10" else  -- 2048
 			'0'&x"0003";
 			    
 	-- Contador NUM_PIX : CLINES

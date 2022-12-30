@@ -455,7 +455,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		if RESET_L = '0' then cnt_LEDPOS <= (others =>'0'); DONE_LEDPOS <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_LEDPOS = '1' then
-				cnt_LEDPOS <= "00000000000000000000000011";
+				cnt_LEDPOS <= "000000000000000000000000011";
 				DONE_LEDPOS <= '0';
 			elsif CL_LEDPOS='1' then 
 				cnt_LEDPOS<=(others=>'0');
@@ -490,7 +490,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		if RESET_L = '0' then cnt_LEDSIG <= (others =>'0'); DONE_LEDSIG <= '0';
 		elsif CLK'event and CLK='1' then
 			if LD_LEDSIG = '1' then
-				cnt_LEDSIG <= "00000000000000000000000011";
+				cnt_LEDSIG <= "000000000000000000000000011";
 				DONE_LEDSIG <= '0';
 			elsif CL_LEDSIG='1' then 
 				cnt_LEDSIG<=(others=>'0');
