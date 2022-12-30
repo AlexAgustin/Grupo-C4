@@ -21,7 +21,7 @@ end uart_ctrl;
 architecture arq_uart_ctrl of uart_ctrl is
 
 	-- Declaracion de estados
-	type estados is (INICIO, SIGNALS, LDLEDSIG, WTLEDSIG, FORMINGXCOL, WTNOOPX, WTXBIT, FORMINGYROW, WTNOOPY, WTNOOPDEF, WTYBIT, LDLEDPOS, WTLEDPOS, WTORDER, SNDONE, LDDATX, LDDATY); 
+	type estados is (INICIO, SIGNALS, WTORDER, LDLEDSIG, WTLEDSIG, FORMINGXCOL, WTNOOPX, WTXBIT, LDDATX, FORMINGYROW, WTNOOPY, WTYBIT, LDDATY, LDLEDPOS, WTLEDPOS, SNDONE); 
 	signal EP, ES : estados;
 
 	-- Declaracion de senales de control
@@ -65,7 +65,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 									else ES<=WTORDER;
 									end if; 
 			when LDLEDSIG =>	ES <= WTLEDSIG;
-			when WTLEDSIG =>	if DONE_LEDSIG = '1' then ES <= INICIO;
+
+			when WTLEDSIG =>	if DONE_LEDSIG = '1' then ES <= SNDONE;
 									else ES <= WTLEDSIG;
 									end if;
 									
@@ -81,15 +82,11 @@ architecture arq_uart_ctrl of uart_ctrl is
 									else ES<=LDDATX;
 									end if;
 
-			when LDDATX =>		if ISDEF = '1' then ES <= WTNOOPDEF;
+			when LDDATX =>		if ISDEF = '1' then ES <= SNDONE;
 									elsif ISDEF='0' and  ISa0 = '1' then ES <= FORMINGXCOL;
 									elsif ISDEF='0' and  ISa0 = '0' and ISa1 = '1' then ES <= FORMINGXCOL;
 									else ES <= LDLEDPOS;
 									end if;
-
-			when WTNOOPDEF =>	if NEWOP='1' then ES<=WTNOOPDEF;
-						else ES<=INICIO;
-						end if;
 									
 			when FORMINGYROW =>	if DONE_Y = '1' then ES <= INICIO;
 									else ES <= WTNOOPY;
@@ -103,7 +100,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 									else ES<=LDDATY;
 									end if;
 
-			when LDDATY =>		if ISDEF = '1' then ES <= WTNOOPDEF;
+			when LDDATY =>		if ISDEF = '1' then ES <= SNDONE;
 									elsif ISDEF='0' and  ISa0 = '1' then ES <= FORMINGYROW;
 									elsif ISDEF='0' and  ISa0 = '0' and ISa1 = '1' then ES <= FORMINGYROW;
 									else ES <= LDLEDPOS;
@@ -111,14 +108,16 @@ architecture arq_uart_ctrl of uart_ctrl is
 			when LDLEDPOS => 	ES <= WTLEDPOS;
 			
 			when WTLEDPOS => 	if DONE_LEDPOS = '0' then ES <= WTLEDPOS;
-									else ES <= INICIO;
+									else ES <= SNDONE;
 									end if;
 			
 			when WTORDER =>		if DONE_ORDER = '0' then ES<=WTORDER;
 									else ES <= SNDONE;
 									end if;
 
-			when SNDONE =>		ES<=INICIO;
+			when SNDONE =>		if NEWOP='1' then ES<=SNDONE;
+								else ES<=INICIO;
+								end if;
 	
 			when others =>  	ES <= INICIO; -- inalcanzable
 		end case;
@@ -149,24 +148,22 @@ architecture arq_uart_ctrl of uart_ctrl is
 	LD_ROMBOIDE<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '1'  else '0';
 	LD_TRAP	<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '1'  else '0';
 	LD_TRIAN<= '1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '1'  else '0';
-	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
-	DONE_OP	<='1' when EP=SNDONE and EP=FORMINGXCOL and EP=FORMINGYROW else '0';
 	LD_LENX	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='1' else '0';
 	LD_LENY	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='0' and ISY='1' else '0';
-	DEC_LENX<='1' when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else '0';
+	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
+	DONE_OP	<='1' when EP=SNDONE or EP=FORMINGXCOL or EP=FORMINGYROW else '0';
+	DEC_LENX<='1' when EP=FORMINGXCOL else '0';
 	DEC_LENY<='1' when EP=FORMINGYROW else '0';
-	LD_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='1') or (EP=WTYBIT and NEWOP='1' and ISDEF='1') else '0';
-	CL_DEF	<='1' when (EP=WTXBIT and NEWOP='1' and ISDEF='0') or (EP=WTYBIT and NEWOP='1' and ISDEF='0') else '0';
+	LD_DEF	<='1' when (EP=LDDATX and ISDEF='1') or (EP=LDDATY and ISDEF='1') else '0';
+	CL_DEF	<='1' when (EP=LDDATX and ISDEF='0') or (EP=LDDATY and ISDEF='0') else '0';
 	OPX	<="10" when (EP=LDDATX and ISDEF='0' and ISa0='1') or (EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
 	XBIT	<='1' when EP=LDDATX and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
 	OPY	<="10" when (EP=LDDATY and ISDEF='0' and ISa0='1') or (EP=LDDATY and ISDEF='0' and ISa0='0' and ISa1='1') else "00";
 	YBIT	<='1' when EP=LDDATY and ISDEF='0' and ISa0='0' and ISa1='1' else '0';
 	LD_LEDPOS<='1' when EP=LDLEDPOS else '0';
-	--LED_POS	<='1' when EP=WTLEDPOS else '0';
 	DEC_LEDPOS<='1' when EP=WTLEDPOS else '0';
 	CL_LEDPOS<='1' when EP=WTLEDPOS and DONE_LEDPOS='1' else '0';
 	LD_LEDSIG<='1' when EP=LDLEDSIG else '0';
-	--LED_SIG	<='1' when EP=WTLEDSIG else '0';
 	DEC_LEDSIG<='1' when EP=WTLEDSIG else '0';
 	CL_LEDSIG<='1' when EP=WTLEDSIG and DONE_LEDSIG='1' else '0';
 	LD_XCOL	<='1' when EP=FORMINGXCOL and DONE_X='1' else '0';
@@ -179,7 +176,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	-- #######################
 
 	--Comparador DEL_SCREEN : CMPDEL
-	ISDEL <= '1' when RDATO(7 downto 0) = x"62" else '0';
+	ISDEL <= '1' when RDATO = x"62" else '0';
 
 	--Registro RDEL
 	RDEL : process(CLK, RESET_L)
@@ -193,7 +190,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	end process RDEL;
 
 	--Comparador DRAW_FIG :CMPFIG
-	ISFIG <= '1' when RDATO(7 downto 0) = x"66" else '0';
+	ISFIG <= '1' when RDATO = x"66" else '0';
 
 	--Registro RFIG
 	RFIG : process(CLK, RESET_L)
@@ -206,8 +203,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RFIG;
 	
-	--Comparador VERT
-	ISVERT <= '1' when RDATO(7 downto 0) = x"76" else '0';
+	--Comparador VERT: CMPVERT
+	ISVERT <= '1' when RDATO = x"76" else '0';
 	
 	--Registro RVERT
 	RVERT : process(CLK, RESET_L)
@@ -220,8 +217,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RVERT;
 	
-	--Comparador DIAG
-	ISDIAG <= '1' when RDATO(7 downto 0) = x"64" else '0';
+	--Comparador DIAG: CMPDIAG
+	ISDIAG <= '1' when RDATO = x"64" else '0';
 	
 	--Registro RDIAG
 	RDIAG : process(CLK, RESET_L)
@@ -234,9 +231,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RDIAG;
 
-
 	--Comparador HORIZ: CMPHORIZ
-	ISHORIZ <= '1' when RDATO(7 downto 0) = x"68" else '0';
+	ISHORIZ <= '1' when RDATO = x"68" else '0';
 	
 	--Registro RHORIZ
 	RHORIZ : process(CLK, RESET_L)
@@ -249,9 +245,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RHORIZ;
 
-
 	--Comparador EQUIL: CMPEQUIL
-	ISEQUIL <= '1' when RDATO(7 downto 0) = x"65" else '0';
+	ISEQUIL <= '1' when RDATO = x"65" else '0';
 	
 	--Registro REQUIL
 	REQUIL : process(CLK, RESET_L)
@@ -264,9 +259,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process REQUIL;
 	
-	
 	--Comparador ROMBO: CMPROMBO
-	ISROMBO <= '1' when RDATO(7 downto 0) = x"72" else '0';
+	ISROMBO <= '1' when RDATO = x"72" else '0';
 	
 	--Registro RROMBO
 	RROMBO : process(CLK, RESET_L)
@@ -279,9 +273,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RROMBO;
 	
-	
 	--Comparador ROMBOIDE: CMPROMBOIDE
-	ISROMBOIDE <= '1' when RDATO(7 downto 0) = x"52" else '0';
+	ISROMBOIDE <= '1' when RDATO = x"52" else '0';
 	
 	--Registro RROMBOIDE
 	RROMBOIDE : process(CLK, RESET_L)
@@ -294,9 +287,8 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RROMBOIDE;
 	
-	
 	--Comparador TRAP: CMPTRAP
-	ISTRAP <= '1' when RDATO(7 downto 0) = x"74" else '0';
+	ISTRAP <= '1' when RDATO = x"74" else '0';
 	
 	--Registro RTRAP
 	RTRAP : process(CLK, RESET_L)
@@ -310,7 +302,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	end process RTRAP;
 	
 	--Comparador TRIAN: CMPTRIAN
-	ISTRIAN <= '1' when RDATO(7 downto 0) = x"54" else '0';
+	ISTRIAN <= '1' when RDATO = x"54" else '0';
 	
 	--Registro RTRIAN
 	RTRIAN : process(CLK, RESET_L)
@@ -323,11 +315,10 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RTRIAN;
 
-
-	--Comparador Ceros, para comprobar que es un codigo de color
+	--Comparador para comprobar que es un codigo de color: CMPCOLOUR
 	ISCOLOUR <= '1' when RDATO(7 downto 3) = "00110" else '0';
 	
-	--Registro COLOUR_CODE
+	--Registro COLOUR_CODE: RCOLOUR
 	RCOLOUR : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then COLOUR_CODE <= (others => '0');
@@ -337,7 +328,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RCOLOUR;
 	
-	 --Registro DAT
+	 --Registro DAT: RDAT
 	RDAT : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then RDATO <= (others => '0');
@@ -362,7 +353,6 @@ architecture arq_uart_ctrl of uart_ctrl is
 	--Comparador d: CMPDEF
 	ISDEF <= '1' when RDATO = x"44" else '0';
 	
-	
 	-- REG DESPLAZADOR: SXCOL
 	SXCOL : process(CLK, RESET_L)
 	begin
@@ -372,10 +362,9 @@ architecture arq_uart_ctrl of uart_ctrl is
 			elsif OPX="00" then UART_XCOL_buf <= UART_XCOL_buf;
 			end if;
 		end if;
-
 	end process SXCOL;
 	
-	--Registro UART_XCOL_buf
+	--Registro UART_XCOL_buf: RUARTXCOL
 	RUARTXCOL : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then UART_XCOL <= (others => '0');
@@ -385,7 +374,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RUARTXCOL;
 
-	-- Contador  CLENX: CLENX
+	-- Contador LENX: CLENX
 	CLENX : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then cnt_LENX <= (others =>'0'); DONE_X <= '0';
@@ -418,7 +407,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process SYROW;
 	
-	--Registro UART_YROW_buf
+	--Registro UART_YROW_buf: RUARTYROW
 	RUARTYROW : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then UART_YROW <= (others => '0');
@@ -428,7 +417,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process RUARTYROW;
 	
-	-- Contador  CLENY: CLENY
+	-- Contador LENY: CLENY
 	CLENY : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then cnt_LENY <= (others =>'0'); DONE_Y <= '0';
@@ -449,7 +438,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 		end if;
 	end process CLENY;		
 	
-	--Registro DEFAULT
+	--Registro DEFAULT: RDEF
 	RDEF : process(CLK, RESET_L)
 	begin
 		if RESET_L = '0' then DEFAULT <= '0';
@@ -459,8 +448,6 @@ architecture arq_uart_ctrl of uart_ctrl is
 			end if;
 		end if;
 	end process RDEF;
-
-
 
 	-- Contador  LEDPOS: CLEDPOS
 	CLEDPOS : process(CLK, RESET_L)

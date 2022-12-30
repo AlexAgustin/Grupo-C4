@@ -1,27 +1,19 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider Entradas
-add wave -noupdate -label CLK /tb_lcd_drawing/DUT/CLK
-add wave -noupdate -label RESET_L /tb_lcd_drawing/DUT/RESET_L
-add wave -noupdate -color Orange -label DEL_SCREEN /tb_lcd_drawing/DUT/DEL_SCREEN
-add wave -noupdate -color Orange -label DRAW_FIG /tb_lcd_drawing/DUT/DRAW_FIG
-add wave -noupdate -color Orange -label DIAG /tb_lcd_drawing/DUT/DIAG
-add wave -noupdate -color Orange -label VERT /tb_lcd_drawing/DUT/VERT
-add wave -noupdate -color Yellow -label COLOUR_CODE -radix unsigned /tb_lcd_drawing/DUT/COLOUR_CODE
-add wave -noupdate -color White -label DONE_CURSOR /tb_lcd_drawing/DUT/DONE_CURSOR
-add wave -noupdate -color Cyan -label DONE_COLOUR /tb_lcd_drawing/DUT/DONE_COLOUR
+add wave -noupdate -label CLK /tb_uart/DUT/CLK
+add wave -noupdate -label RESET_L /tb_uart/DUT/RESET_L
+add wave -noupdate -color magenta -label Rx /tb_uart/DUT/Rx
+add wave -noupdate -color MAGENTA -label VEL /tb_uart/DUT/VEL
+add wave -noupdate -color ORANGE -label DONE_OP /tb_uart/DUT/DONE_OP
 add wave -noupdate -divider Salidas
-add wave -noupdate -color White -label OP_SETCURSOR /tb_lcd_drawing/DUT/OP_SETCURSOR
-add wave -noupdate -color Magenta -label XCOL -radix hexadecimal /tb_lcd_drawing/DUT/XCOL
-add wave -noupdate -color Magenta -label YROW -radix hexadecimal /tb_lcd_drawing/DUT/YROW
-add wave -noupdate -color Cyan -label OP_DRAWCOLOUR /tb_lcd_drawing/DUT/OP_DRAWCOLOUR
-add wave -noupdate -color Magenta -label RGB /tb_lcd_drawing/DUT/RGB
-add wave -noupdate -color Magenta -label NUM_PIX -radix unsigned /tb_lcd_drawing/DUT/NUM_PIX
-add wave -noupdate -color Thistle -label DONE_ORDER /tb_lcd_drawing/DUT/DONE_ORDER
+add wave -noupdate -color MAGENTA -label DAT /tb_uart/DUT/DAT
+add wave -noupdate -color YELLOW -label LED /tb_uart/DUT/LED
+add wave -noupdate -color ORANGE -label NEWOP /tb_uart/DUT/NEWOP
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {6842011 ps} 0}
-quietly wave cursor active 1
-configure wave -namecolwidth 230
+WaveRestoreCursors {{Cursor 1} {0 ps} 0}
+quietly wave cursor active 0
+configure wave -namecolwidth 150
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -35,4 +27,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {6830925 ps} {7219425 ps}
+WaveRestoreZoom {7999050 ps} {8000050 ps}
