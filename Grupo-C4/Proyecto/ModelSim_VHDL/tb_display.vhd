@@ -11,7 +11,7 @@ end tb_display;
 
 architecture arq_tb_display of tb_display is
 
-	component uart
+	component display
 	port(
 		CLK, RESET_L, LED, LED_POS, LED_SIG: in std_logic;
 		DISPL: out std_logic_vector(41 downto 0)
@@ -26,10 +26,9 @@ architecture arq_tb_display of tb_display is
 
 	begin
 
-	DUT: uart port map(
+	DUT: display port map(
 		CLK =>CLK,
 		RESET_L =>RESET_L,
-		Rx =>Rx,
 		LED =>LED,
 		LED_POS =>LED_POS,
 		LED_SIG=>LED_SIG,
@@ -84,5 +83,5 @@ architecture arq_tb_display of tb_display is
 		wait for 100 ns;
 
 	end process;
-end arq_tb_uart;
+end arq_tb_display;
 

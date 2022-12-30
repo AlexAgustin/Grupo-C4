@@ -66,7 +66,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 									end if; 
 			when LDLEDSIG =>	ES <= WTLEDSIG;
 
-			when WTLEDSIG =>	if DONE_LEDSIG = '1' then ES <= INICIO;
+			when WTLEDSIG =>	if DONE_LEDSIG = '1' then ES <= SNDONE;
 									else ES <= WTLEDSIG;
 									end if;
 									
@@ -108,14 +108,16 @@ architecture arq_uart_ctrl of uart_ctrl is
 			when LDLEDPOS => 	ES <= WTLEDPOS;
 			
 			when WTLEDPOS => 	if DONE_LEDPOS = '0' then ES <= WTLEDPOS;
-									else ES <= INICIO;
+									else ES <= SNDONE;
 									end if;
 			
 			when WTORDER =>		if DONE_ORDER = '0' then ES<=WTORDER;
 									else ES <= SNDONE;
 									end if;
 
-			when SNDONE =>		ES<=INICIO;
+			when SNDONE =>		if NEWOP='1' then ES<=SNDONE;
+								else ES<=INICIO;
+								end if;
 	
 			when others =>  	ES <= INICIO; -- inalcanzable
 		end case;
@@ -149,7 +151,7 @@ architecture arq_uart_ctrl of uart_ctrl is
 	LD_LENX	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='1' else '0';
 	LD_LENY	<='1' when EP=SIGNALS and ISCOLOUR='0' and ISFIG='0' and ISDEL='0' and ISVERT = '0' and ISDIAG = '0' and ISHORIZ='0' and ISEQUIL = '0' and ISROMBO = '0' and ISROMBOIDE = '0' and ISTRAP = '0' and ISTRIAN = '0'  and ISX='0' and ISY='1' else '0';
 	CL_SIGS	<= '1' when EP=WTORDER and DONE_ORDER='1' else '0';
-	DONE_OP	<='1' when EP=SNDONE or EP=FORMINGXCOL or EP=FORMINGYROW or (EP=WTLEDPOS and DONE_LEDPOS='1') or (EP=WTLEDSIG and DONE_LEDSIG='1') else '0';
+	DONE_OP	<='1' when EP=SNDONE or EP=FORMINGXCOL or EP=FORMINGYROW else '0';
 	DEC_LENX<='1' when EP=FORMINGXCOL else '0';
 	DEC_LENY<='1' when EP=FORMINGYROW else '0';
 	LD_DEF	<='1' when (EP=LDDATX and ISDEF='1') or (EP=LDDATY and ISDEF='1') else '0';
