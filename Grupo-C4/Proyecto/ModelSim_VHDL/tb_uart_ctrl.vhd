@@ -75,7 +75,7 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 		NEWOP <='0';
 
 -------------------------------------------------------------------------------------
-		wait for 100 ns;--borar pantalla
+		wait for 100 ns;--borrar pantalla
 
 		DAT<="01100010";
 
@@ -133,165 +133,384 @@ architecture arq_tb_uart_ctrl of tb_uart_ctrl is
 		NEWOP<='0';
 
 -------------------------------------------------------------------------------------
-		--wait for 100 ns;--borar pantalla
+		wait for 100 ns;--borrar pantalla
 
-		--DAT<="01100010";
-		--NEWOP<='1';
+		DAT<="01100010";
 
-		--wait for 60 ns;
+		wait for 20 ns;
 
-		--DONE_ORDER<='1';
+		NEWOP<='1';
 
-		--wait for 20 ns;
+		wait for 60 ns;
 
-		--DONE_ORDER<='0';
-		--NEWOP<='0';
+		DONE_ORDER<='1';
 
--------------------------------------------------------------------------------------
-		--wait for 100 ns;--linea vertical
+		wait for 20 ns;
 
-		--DAT<="01110110";
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-		--DONE_ORDER<='1';
-
-		--wait for 20 ns;
-
-		--DONE_ORDER<='0';
-		--NEWOP<='0';
+		DONE_ORDER<='0';
+		NEWOP<='0';
 
 -------------------------------------------------------------------------------------
-		--wait for 100 ns;--linea diagonal
+		wait for 100 ns;--linea vertical
 
-		--DAT<="01100100";
-		--NEWOP<='1';
+		DAT<="01110110";
 
-		--wait for 60 ns;
+		wait for 20 ns;
 
-		--DONE_ORDER<='1';
+		NEWOP<='1';
 
-		--wait for 20 ns;
+		wait for 60 ns;
 
-		--DONE_ORDER<='0';
-		--NEWOP<='0';
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--linea diagonal
+
+		DAT<="01100100";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--linea horizontal
+
+		DAT<="01101000";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--equilatero
+
+		DAT<="01100101";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--triangulo
+
+		DAT<="01010100";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--trapecio
+
+		DAT<="01110100";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--rombo
+
+		DAT<="01110010";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--romboide
+
+		DAT<="01010010";
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		DONE_ORDER<='1';
+
+		wait for 20 ns;
+
+		DONE_ORDER<='0';
+		NEWOP<='0';
 
 -------------------------------------------------------------------------------------
 		
-		--wait for 100 ns;--yrow default
-		--DAT<=x"79";
-		--NEWOP<='1';
+		wait for 100 ns;--yrow default
+		DAT<=x"79";
+		NEWOP<='1';
 
-		--wait for 60 ns;
+		wait for 60 ns;
 
-		--NEWOP<='0';
+		NEWOP<='0';
 
-		--wait for 40 ns;
+		wait for 40 ns;
 
-		--DAT<=x"44";
+		DAT<=x"44";
 
-		--wait for 20 ns;
+		wait for 20 ns;
 
-		--NEWOP<='1';
+		NEWOP<='1';
 
-		--wait for 60 ns;
+		wait for 60 ns;
 
-		--NEWOP<='0';
-
--------------------------------------------------------------------------------------
-		--wait for 100 ns;--xcol d'200'
-		--DAT<=x"78";
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-		--NEWOP<='0';
-
-		--wait for 40 ns;
-
-		--DAT<=x"31"; -- primer bit
-
-		--wait for 20 ns;
-
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-		--NEWOP<='0';
-		--DAT<=x"31"; -- segundo bit
-
-		--wait for 20 ns;
-
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-		--NEWOP<='0';
-		--DAT<=x"30"; -- tercer bit
-
-		--wait for 20 ns;
-
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-		--NEWOP<='0';
-		--DAT<=x"30"; -- cuarto bit
-
-		--wait for 20 ns;
-
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-		--NEWOP<='0';
-		--DAT<=x"31"; -- quinto bit
-
-		--wait for 20 ns;
-
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-
-		--NEWOP<='0';
-		--DAT<=x"30"; -- sexto bit
-
-		--wait for 20 ns;
-
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-
-		--NEWOP<='0';
-		--DAT<=x"30"; -- septimo bit
-
-		--wait for 20 ns;
-
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-
-		--NEWOP<='0';
-		--DAT<=x"30"; -- octavo bit
-
-		--wait for 20 ns;
-
-		--NEWOP<='1';
-
-		--wait for 60 ns;
-
-		--NEWOP<='0';
+		NEWOP<='0';
 
 -------------------------------------------------------------------------------------
-		--DAT<=x"7A"; --comprobacion de que salta el del con un comando desconocido
+		wait for 100 ns;--xcol d'200'
+		
+		DAT<=x"78";
+		
+		wait for 20 ns;
 
-		--wait for 20 ns;
+		NEWOP<='1';
 
-		--NEWOP<='1';
+		wait for 60 ns;
+
+		NEWOP<='0';
+
+		wait for 40 ns;
+
+		DAT<=x"31"; -- primer bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"31"; -- segundo bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- tercer bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- cuarto bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"31"; -- quinto bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- sexto bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- septimo bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- octavo bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		wait for 100 ns;--xcol d'200'
+		
+		DAT<=x"79";
+		
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+
+		wait for 40 ns;
+
+		DAT<=x"30"; -- primer bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"31"; -- segundo bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"31"; -- tercer bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- cuarto bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- quinto bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"31"; -- sexto bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- septimo bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- octavo bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+		DAT<=x"30"; -- noveno bit
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
+
+-------------------------------------------------------------------------------------
+		DAT<=x"7A"; --comprobacion de que salta el del con un comando desconocido
+
+		wait for 20 ns;
+
+		NEWOP<='1';
+
+		wait for 60 ns;
+
+		NEWOP<='0';
 
 -------------------------------------------------------------------------------------
 		wait for 100 ns;
