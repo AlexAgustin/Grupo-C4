@@ -112,7 +112,7 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 		--prueba dibujar diagonal 1
 		COLOUR_CODE <= "001";
 		DIAG <= '1';
-
+		DEFAULT <='1';
 		wait for 60 ns;
 		DONE_CURSOR <= '1';
 
@@ -559,6 +559,9 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 -------------------------------------------------------------
 
 		--prueba dibujar espejo 1
+		DEFAULT <='0';
+		UART_XCOL <= "01100100";
+		UART_YROW <= "001100100";
 		COLOUR_CODE <= "100";
 		MIRROR <= '1';
 
@@ -1121,6 +1124,8 @@ architecture arq_tb_lcd_drawing of tb_lcd_drawing is
 
 		wait for 40 ns;
 		PATRON <= '0';
+		UART_XCOL <= "00000000";
+		UART_YROW <= "000000000";
 		
 		wait for 40 ns;
 	end process;
